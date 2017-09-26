@@ -16,8 +16,16 @@ namespace KinderArtikelBoerse.Viewmodels
     {
         public MainViewModel()
         {
-
+            
         }
+
+        private string _toolTitle = "Kinderartikelbörse Familientreff Kaltbrunn";
+        public string ToolTitle
+        {
+            get { return _toolTitle; }
+            set { _toolTitle = value; RaisePropertyChanged(); }
+        }
+
 
         private string _sellerExcelFilePath = AppDomain.CurrentDomain.BaseDirectory +"verkäufer.xlsx";
         public string SellerExcelFilePath
