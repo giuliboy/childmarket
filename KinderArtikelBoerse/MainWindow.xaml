@@ -9,17 +9,31 @@
         AllowDrop="True"
         Drop="Window_Drop"
         Title="MainWindow" Height="350" Width="525">
-    <StackPanel Orientation="Vertical">
-        <TextBlock Text="Verkäuferin Liste in Excel" Margin="0,20,0,0"/>
-        <TextBox x:Name="SellerExcelFilePathTextBox" Text="{Binding SellerExcelFilePath, UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBlock Text="Output: Börsen Excel Filename" Margin="0,20,0,0"/>
-        <TextBox x:Name="ExcelWorkBookNameTextBox" Text="{Binding OutputFileName, UpdateSourceTrigger=PropertyChanged}"/>
-        <Button
+    <Grid>
+        <TabControl>
+            <TabItem Header="Excel erzeugen">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Verkäuferin Liste in Excel" Margin="0,20,0,0"/>
+                    <TextBox x:Name="SellerExcelFilePathTextBox" Text="{Binding SellerExcelFilePath, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <TextBlock Text="Excel Schablone pro Verkäufer" Margin="0,20,0,0"/>
+                    <TextBox x:Name="SellerExcelTemplateFilePathTextBox" Text="{Binding TemplateFilePath, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Text="Output: Börsen Excel Filename" Margin="0,20,0,0"/>
+                    <TextBox x:Name="ExcelWorkBookNameTextBox" Text="{Binding OutputFileName, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button
             Margin="0,20,0,0"
             Content="Börsen Excel generieren" Command="{Binding CreateExcelCommand}" CommandParameter="{Binding ElementName=SellerExcelFilePathTextBox, Path=Text}"/>
-        <TextBlock Text="{Binding Result}" Foreground="Red" FontSize="20" />
+                    <TextBlock Text="{Binding Result}" Foreground="Red" FontSize="20" />
 
-        <TextBox x:Name="ItemsListFix" Text="Pfad_zu_Artikellisten_Ordner" Margin="0,20,0,0"/>
-        <Button Margin="0,10,0,0" Content="Fix Artikellisten" Command="{Binding FixItemExcelCommand}" CommandParameter="{Binding ElementName=ItemsListFix, Path=Text}"/>
-    </StackPanel>
+
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Tools">
+                <StackPanel Orientation="Vertical">
+                    <TextBox x:Name="ItemsListFix" Text="Pfad_zu_Artikellisten_Ordner" Margin="0,20,0,0"/>
+                    <Button Margin="0,10,0,0" Content="Fix Artikellisten" Command="{Binding FixItemExcelCommand}" CommandParameter="{Binding ElementName=ItemsListFix, Path=Text}"/>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
 </Window>

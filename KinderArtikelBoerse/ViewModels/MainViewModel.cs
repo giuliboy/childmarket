@@ -26,7 +26,14 @@ namespace KinderArtikelBoerse.Viewmodels
             set { _sellerExcelFilePath = value; RaisePropertyChanged(); }
         }
 
-        private string _outputFileName = @"boerse_13.09.17.xlsx";
+        private string _templateFilePath = AppDomain.CurrentDomain.BaseDirectory + "template.xlsx";
+        public string TemplateFilePath
+        {
+            get { return _templateFilePath; }
+            set { _templateFilePath = value; RaisePropertyChanged(); }
+        }
+
+        private string _outputFileName = @"boerse_2018.xlsx";
         public string OutputFileName
         {
             get { return _outputFileName; }
@@ -52,8 +59,8 @@ namespace KinderArtikelBoerse.Viewmodels
                                                               } );
                                                           } ) );
 
-        private ICommand _readItemsCommand;
-        public ICommand FixItemExcelCommand => _readItemsCommand ?? ( _readItemsCommand = new ActionCommand<string>( ( path ) =>
+        private ICommand _fixItemExcelCommand;
+        public ICommand FixItemExcelCommand => _fixItemExcelCommand ?? ( _fixItemExcelCommand = new ActionCommand<string>( ( path ) =>
         {
             var excelItemLists = Directory.GetFiles( path )
                 .Where( f => f.EndsWith( ".xlsx" ) );
@@ -117,10 +124,8 @@ namespace KinderArtikelBoerse.Viewmodels
                  .ToList();
 
                 var book = excelApp.Workbooks.Add();
-
-                var templateFilePath = Path.Combine( Path.GetDirectoryName( SellerExcelFilePath ), "template.xlsx" );
-
-                var templateWorkbook = excelApp.Workbooks.Open( templateFilePath );
+                
+                var templateWorkbook = excelApp.Workbooks.Open( TemplateFilePath );
                 var templateSheet = (Worksheet)templateWorkbook.Sheets[1];
 
                 templateSheet.UsedRange.Copy();
