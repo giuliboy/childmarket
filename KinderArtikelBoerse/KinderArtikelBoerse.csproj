@@ -67,6 +67,7 @@
     </ApplicationDefinition>
     <Compile Include="Utils\ActionCommand.cs" />
     <Compile Include="Utils\EventCommandBehavior.cs" />
+    <Compile Include="ViewModels\ItemListFixer.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PropertyChangeNotifier.cs" />
     <Compile Include="ViewModels\SellerViewModel.cs" />

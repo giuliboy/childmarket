@@ -12,7 +12,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
-    public class MainViewModel : PropertyChangeNotifier
+    public partial class MainViewModel : PropertyChangeNotifier
     {
         public MainViewModel()
         {
@@ -63,6 +63,7 @@ namespace KinderArtikelBoerse.Viewmodels
                                                           {
                                                               Result =  await Task.Run( () =>
                                                               {
+                                                                  Result = "In Bearbeitung.. Bitte warten";
                                                                   return GenerateExcel();
                                                               } );
                                                           } ) );
@@ -77,29 +78,13 @@ namespace KinderArtikelBoerse.Viewmodels
             var excelApp = new Excel.Application();
             excelApp.Visible = false;
             excelApp.DisplayAlerts = false;
+
+            var itemListFixer = new ItemListFixer();
             try
             {
-
                 foreach ( var f in excelItemLists )
                 {
-
-                    try
-                    {
-                        
-                        var wb = excelApp.Workbooks.Open( f );
-                        var ws = (Worksheet)wb.ActiveSheet;
-                        var range = ws.UsedRange;
-
-                        range.Replace( ".--", "" );
-                        range.Replace( ".-", "" );
-
-                        wb.Save();
-
-                    }
-                    catch ( Exception ex )
-                    {
-                        Console.WriteLine( ex );
-                    }
+                    itemListFixer.FixItemList( excelApp, f );
                 }
             }
             finally
@@ -129,29 +114,36 @@ namespace KinderArtikelBoerse.Viewmodels
                         FamilientreffSharePercentage = int.Parse(c[3].ToString())
                     };
                 } )
+                 .OrderByDescending( o => o.Name )
                  .ToList();
 
                 var book = excelApp.Workbooks.Add();
                 
+                
+
+               
+                
+
+
+                //artikelliste pro verkäufer
                 var templateWorkbook = excelApp.Workbooks.Open( TemplateFilePath );
                 var templateSheet = (Worksheet)templateWorkbook.Sheets[1];
 
                 templateSheet.UsedRange.Copy();
-                foreach ( var seller in sellers.OrderByDescending( o => o.Name ) )
+                foreach ( var seller in sellers )
                 {
                     var sheet = (Worksheet)book.Sheets.Add();
-
-                   
+                    
                     sheet.UsedRange.PasteSpecial( XlPasteType.xlPasteColumnWidths );
                     sheet.UsedRange.PasteSpecial( XlPasteType.xlPasteValuesAndNumberFormats );
                     sheet.UsedRange.PasteSpecial( XlPasteType.xlPasteFormulas );
                     sheet.UsedRange.PasteSpecial( XlPasteType.xlPasteFormats );
 
-                    sheet.Cells[3, "C"].Value = $"{seller.Name} {seller.Vorname}";
+                    sheet.Cells[3, "C"].Value = GetSheetName(seller);
 
-                    sheet.Cells[10, "D"].Value = $"{seller.FamilientreffSharePercentage}%";
+                    sheet.Cells[9, "D"].Value = $"{seller.FamilientreffSharePercentage}%";
 
-                    sheet.Name = $"{seller.Name} {seller.Vorname}";
+                    sheet.Name = GetSheetName(seller);
 
                     //doesnt work... ffs
 
@@ -165,9 +157,30 @@ namespace KinderArtikelBoerse.Viewmodels
 
                 }
 
-                ( (Worksheet)book.Sheets["Tabelle1"] ).Delete();
+                //übersichts tabelle
+                var overviewSheet = (Worksheet)book.Sheets.Add();
+                overviewSheet.Name = $"Übersicht";
+                overviewSheet.Columns["A:A"].ColumnWidth = 30;
+                overviewSheet.Cells[1, "A"].Value = "Übersicht";
+                overviewSheet.Cells[1, "A"].Font.Bold = true;
+                overviewSheet.Cells[3, "A"].Value = "Total Artikel";
 
-                
+                var firstSheetName = GetSheetName( sellers.First() );
+                var lastSheetName = GetSheetName( sellers.Last() );
+                overviewSheet.Cells[3, "B"].FormulaLocal = $"=SUMME('{ firstSheetName }:{ lastSheetName }'!D5)";
+                overviewSheet.Cells[3, "C"].FormulaLocal = $"=SUMME('{firstSheetName}:{lastSheetName}'!E5)";
+                overviewSheet.Cells[3, "C"].NumberFormat = "CHF * #'##0.00";
+
+                overviewSheet.Cells[4, "A"].Value = "davon verkauft";
+                overviewSheet.Cells[4, "B"].FormulaLocal = $"=SUMME('{ firstSheetName }:{ lastSheetName }'!D7)";
+                overviewSheet.Cells[4, "C"].FormulaLocal = $"=SUMME('{firstSheetName}:{lastSheetName}'!E7)";
+                overviewSheet.Cells[4, "C"].NumberFormat = "CHF * #'##0.00";
+
+                overviewSheet.Cells[6, "A"].Value = "Anteil Familientreff";
+                overviewSheet.Cells[6, "C"].FormulaLocal = $"=SUMME('{firstSheetName}:{lastSheetName}'!E9)";
+                overviewSheet.Cells[6, "C"].NumberFormat = "CHF * #'##0.00";
+
+                ( (Worksheet)book.Sheets["Tabelle1"] ).Delete();
 
                 var savePath = Path.Combine( Path.GetDirectoryName( SellerExcelFilePath ), OutputFileName );
                 book.SaveAs( savePath );
@@ -176,7 +189,6 @@ namespace KinderArtikelBoerse.Viewmodels
             }
             catch ( Exception ex )
             {
-
                 Console.WriteLine( ex );
                 return $"{ex.Message}\n{ex.StackTrace}";
             }
@@ -184,6 +196,11 @@ namespace KinderArtikelBoerse.Viewmodels
             {
                 excelApp.Quit();
             }
+        }
+
+        private string GetSheetName( SellerViewModel sellerViewModel )
+        {
+            return $"{sellerViewModel.Name} {sellerViewModel.Vorname}";
         }
 
         private DataSet Read(string excelFilePath)
