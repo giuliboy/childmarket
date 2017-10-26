@@ -2,7 +2,6 @@
 using System;
 using Excel = Microsoft.Office.Interop.Excel;
 
-
 namespace KinderArtikelBoerse.Viewmodels
 {
     public class ItemListFixer

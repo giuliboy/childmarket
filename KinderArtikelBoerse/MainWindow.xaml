@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:System.Windows.Controls"
         xmlns:local="clr-namespace:KinderArtikelBoerse"
+        xmlns:utils="clr-namespace:KinderArtikelBoerse.Utils"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         mc:Ignorable="d"
         AllowDrop="True"
         Drop="Window_Drop"
-        Title="{Binding ToolTitle}" Height="350" Width="525">
+        Title="{Binding ToolTitle}" Height="600" Width="1000">
     <Grid>
         <TabControl>
             <TabItem Header="Excel erzeugen">
@@ -31,6 +33,41 @@
                 <StackPanel Orientation="Vertical">
                     <TextBox x:Name="ItemsListFix" Text="Pfad_zu_Artikellisten_Ordner" Margin="0,20,0,0"/>
                     <Button Margin="0,10,0,0" Content="Fix Artikellisten" Command="{Binding FixItemExcelCommand}" CommandParameter="{Binding ElementName=ItemsListFix, Path=Text}"/>
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Fast I/O" >
+                <StackPanel Orientation="Vertical" Margin="10" AllowDrop="True">
+                    <i:Interaction.Behaviors>
+                        <utils:EventCommandBehavior Command="{Binding }"></utils:EventCommandBehavior>
+                    </i:Interaction.Behaviors>
+                    
+                    <TextBlock Text="Input: Verkäufer Liste in Excel" FontWeight="Bold"/>
+                    <TextBox Text="{Binding InputFilePath, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Button Content="Einlesen" Command="{Binding ReadExcelCommand}"/>
+                    
+                    
+                    
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="100"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="{Binding SelectedSellerViewModel.SelectedItemViewModel.ItemIdentifier, TargetNullValue=-, FallbackValue=-}" />
+
+                        <ListView Grid.Row="1" Grid.Column="0" ItemsSource="{Binding SellerViewModels}" SelectedItem="{Binding SelectedSellerViewModel}">
+                            
+                        </ListView>
+
+                        <ListView Grid.Row="1" Grid.Column="1" DataContext="{Binding SelectedSellerViewModel}" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItemViewModel}">
+
+                        </ListView>
+
+                    </Grid>
                 </StackPanel>
             </TabItem>
         </TabControl>

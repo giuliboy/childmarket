@@ -1,6 +1,9 @@
-﻿using KinderArtikelBoerse.Utils;
+﻿using KinderArtikelBoerse.Contracts;
+using KinderArtikelBoerse.Models;
+using KinderArtikelBoerse.Utils;
 using Microsoft.Office.Interop.Excel;
 using System;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.OleDb;
 using System.IO;
@@ -14,10 +17,14 @@ namespace KinderArtikelBoerse.Viewmodels
 {
     public partial class MainViewModel : PropertyChangeNotifier
     {
-        public MainViewModel()
+        public MainViewModel(ISellerProvider provider)
         {
-            
+            _itemReader = new ExcelItemReader();
+            _provider = provider;
         }
+
+        private IItemReader _itemReader;
+        private ISellerProvider _provider;
 
         private string _toolTitle = "Kinderartikelbörse Familientreff Kaltbrunn";
         public string ToolTitle
@@ -58,6 +65,40 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
+        private string _inputFilePath;
+        public string InputFilePath
+        {
+            get { return _inputFilePath; }
+            set { _inputFilePath = value; RaisePropertyChanged(); }
+        }
+
+
+        private SellerViewModel _selectedSellerViewModel;
+        public SellerViewModel SelectedSellerViewModel
+        {
+            get { return _selectedSellerViewModel; }
+            set { _selectedSellerViewModel = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private ObservableCollection<SellerViewModel> _sellerViewModels;
+        public ObservableCollection<SellerViewModel> SellerViewModels
+        {
+            get
+            {
+                if(_sellerViewModels == null )
+                {
+                    _sellerViewModels = new ObservableCollection<SellerViewModel>( _provider.Sellers.Select( s => new SellerViewModel( s ) ) );
+
+                    SelectedSellerViewModel = _sellerViewModels.FirstOrDefault();
+                }
+
+                return _sellerViewModels;
+            }
+        }
+
+
         private ICommand _createExcelCommand;
         public ICommand CreateExcelCommand => _createExcelCommand ?? ( _createExcelCommand = new ActionCommand<string>( async ( unused ) =>
                                                           {
@@ -92,7 +133,23 @@ namespace KinderArtikelBoerse.Viewmodels
                 excelApp.Quit();
             }               
         } ) );
-        
+
+        private ICommand _readExcelCommand;
+
+        public ICommand ReadExcelCommand => _readExcelCommand ?? ( _readExcelCommand = new ActionCommand( () =>
+        {
+            //ein Excel file eines verkäufers einlesen 
+            //die artikel in die Db migrieren
+
+            //_itemReader.ReadItems()
+
+            //var sellers = _provider.Sellers.ToList();
+
+            //var existingSeller = sellers.FirstOrDefault( s => s.Name + s.Surname == Path.GetFileNameWithoutExtension( InputFilePath ) );
+            //if ()
+
+        } ) );
+
         private string GenerateExcel()
         {
             var excelApp = new Excel.Application();
@@ -100,19 +157,22 @@ namespace KinderArtikelBoerse.Viewmodels
             {
                 excelApp.Visible = false;
 
-                var sellersDataSet = Read( SellerExcelFilePath );
+                var sellersDataSet =  SellerExcelFilePath.ToDataSet();
 
                 var sellers = sellersDataSet.Tables[0]
                 .AsEnumerable()
                 .Select( ( c ) =>
                 {
-                    return new SellerViewModel()
+                    var s = new Seller()
                     {
-                        Number = c[0].ToString(),
-                        Name = c[1].ToString(),
-                        Vorname = c[2].ToString(),
-                        FamilientreffSharePercentage = int.Parse(c[3].ToString())
+                        // = c[0].ToString(),
+                        Surname = c[1].ToString(),
+                        Name = c[2].ToString(),
+                        FamilientreffPercentage = int.Parse( c[3].ToString() )
+
                     };
+                    return new SellerViewModel( s );
+                   
                 } )
                  .OrderByDescending( o => o.Name )
                  .ToList();
@@ -201,25 +261,6 @@ namespace KinderArtikelBoerse.Viewmodels
         private string GetSheetName( SellerViewModel sellerViewModel )
         {
             return $"{sellerViewModel.Name} {sellerViewModel.Vorname}";
-        }
-
-        private DataSet Read(string excelFilePath)
-        {
-            OleDbConnection conn = new System.Data.OleDb.OleDbConnection( ( "provider=Microsoft.ACE.OLEDB.12.0; " + ( $"data source={excelFilePath}; " + "Extended Properties=Excel 12.0;" ) ) );
-
-            try
-            {
-                // Select the data from Sheet1 of the workbook.
-                OleDbDataAdapter ada = new OleDbDataAdapter( $"select * from [{"Tabelle1"}$]", conn );
-                DataSet ds = new DataSet();
-                ada.Fill( ds );
-                
-                return ds;
-            }
-            finally
-            {
-                conn.Close();
-            }
         }
 
         public string[] GetRange( string range, Worksheet excelWorksheet )

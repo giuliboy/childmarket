@@ -1,4 +1,5 @@
-﻿using KinderArtikelBoerse.Viewmodels;
+﻿using KinderArtikelBoerse.Utils;
+using KinderArtikelBoerse.Viewmodels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace KinderArtikelBoerse
         {
             InitializeComponent();
 
-            _mainViewModel = new MainViewModel();
+            _mainViewModel = new MainViewModel( new DemoSellerProvider() );//new SellerProvider( "MarketDbContext" ) );
 
             DataContext = _mainViewModel;
         }
