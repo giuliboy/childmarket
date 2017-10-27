@@ -9,6 +9,7 @@ using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -79,6 +80,49 @@ namespace KinderArtikelBoerse.Viewmodels
             get { return _selectedSellerViewModel; }
             set { _selectedSellerViewModel = value;
                 RaisePropertyChanged();
+            }
+        }
+
+        private ObservableCollection<ItemViewModel> _items;
+        public ObservableCollection<ItemViewModel> Items
+        {
+            get
+            {
+                if(_items == null )
+                {
+                    _items = new ObservableCollection<ItemViewModel>( _provider.Sellers.SelectMany( s => s.Items ).Select( i => new ItemViewModel( i ) ) );
+                }
+
+                return _items;
+            }
+        }
+
+        private ItemViewModel _searchItem;
+        public ItemViewModel SearchItem
+        {
+            get
+            {
+                return _searchItem;
+            }
+            set
+            {
+                _searchItem = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public AutoCompleteFilterPredicate<ItemViewModel> SearchItemFilter
+        {
+            get
+            {
+                return ( searchText, item ) =>
+                {
+                    var normalizedSearchText = searchText.ToLowerInvariant();
+
+                    return item.ItemIdentifier.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
+                        item.Description.ToLowerInvariant().Contains( normalizedSearchText );
+
+                };
             }
         }
 

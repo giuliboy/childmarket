@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="clr-namespace:System.Windows.Controls"
         xmlns:local="clr-namespace:KinderArtikelBoerse"
         xmlns:utils="clr-namespace:KinderArtikelBoerse.Utils"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
         mc:Ignorable="d"
         AllowDrop="True"
         Drop="Window_Drop"
@@ -49,7 +49,9 @@
                     
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="100"/>
+                            <RowDefinition Height="50"/>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="200"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
@@ -59,11 +61,18 @@
 
                         <TextBlock Text="{Binding SelectedSellerViewModel.SelectedItemViewModel.ItemIdentifier, TargetNullValue=-, FallbackValue=-}" />
 
-                        <ListView Grid.Row="1" Grid.Column="0" ItemsSource="{Binding SellerViewModels}" SelectedItem="{Binding SelectedSellerViewModel}">
+                        <controls:AutoCompleteBox 
+                            Grid.Row="1"
+                            ValueMemberPath="ItemIdentifier"
+                            ItemFilter="{Binding SearchItemFilter}"
+                            ItemsSource ="{Binding Items}"
+                            SelectedItem="{Binding SearchItem, Mode=TwoWay}"
+                            />
+                        <ListView Grid.Row="3" Grid.Column="0" ItemsSource="{Binding SellerViewModels}" SelectedItem="{Binding SelectedSellerViewModel}">
                             
                         </ListView>
 
-                        <ListView Grid.Row="1" Grid.Column="1" DataContext="{Binding SelectedSellerViewModel}" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItemViewModel}">
+                        <ListView Grid.Row="3" Grid.Column="1" DataContext="{Binding SelectedSellerViewModel}" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItemViewModel}">
 
                         </ListView>
 
