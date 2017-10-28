@@ -29,7 +29,7 @@ namespace KinderArtikelBoerse.Utils
                     new Item() { ItemIdentifier="CX4", Description="Demo Item CX4" },
                     new Item() { ItemIdentifier="CX5", Description="Demo Item CX5" },
                     new Item() { ItemIdentifier="CX6", Description="Demo Item CX6" },
-                    new Item() { ItemIdentifier="CX7", Description="Demo Item CX7" },
+                    new Item() { ItemIdentifier="CX17", Description="Demo Item CX17" },
                 }
             },
             new Seller()

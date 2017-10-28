@@ -95,10 +95,6 @@
     </ApplicationDefinition>
     <Compile Include="Contracts\IItemReader.cs" />
     <Compile Include="Contracts\ISellerProvider.cs" />
-    <Compile Include="Migrations\201709271932417_Initial.cs" />
-    <Compile Include="Migrations\201709271932417_Initial.Designer.cs">
-      <DependentUpon>201709271932417_Initial.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\MarketDbContext.cs" />
@@ -141,9 +137,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Migrations\201709271932417_Initial.resx">
-      <DependentUpon>201709271932417_Initial.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

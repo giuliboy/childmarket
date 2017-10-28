@@ -21,5 +21,7 @@ namespace KinderArtikelBoerse.Models
         public float Price { get; set; }
 
         public bool IsSold { get; set; }
+
+        public Seller Seller { get; set; }
     }
 }

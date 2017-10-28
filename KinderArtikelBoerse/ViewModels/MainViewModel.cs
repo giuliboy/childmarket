@@ -3,6 +3,7 @@ using KinderArtikelBoerse.Models;
 using KinderArtikelBoerse.Utils;
 using Microsoft.Office.Interop.Excel;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Data.OleDb;
@@ -74,17 +75,17 @@ namespace KinderArtikelBoerse.Viewmodels
         }
 
 
-        private SellerViewModel _selectedSellerViewModel;
-        public SellerViewModel SelectedSellerViewModel
-        {
-            get { return _selectedSellerViewModel; }
-            set { _selectedSellerViewModel = value;
-                RaisePropertyChanged();
-            }
-        }
+        //private SellerViewModel _selectedSellerViewModel;
+        //public SellerViewModel SelectedSellerViewModel
+        //{
+        //    get { return _selectedSellerViewModel; }
+        //    set { _selectedSellerViewModel = value;
+        //        RaisePropertyChanged();
+        //    }
+        //}
 
         private ObservableCollection<ItemViewModel> _items;
-        public ObservableCollection<ItemViewModel> Items
+        public IEnumerable<ItemViewModel> Items
         {
             get
             {
@@ -97,6 +98,20 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
+        private ObservableCollection<string> _itemsText;
+        public IEnumerable<string> ItemsText
+        {
+            get
+            {
+                if ( _itemsText == null )
+                {
+                    _itemsText = new ObservableCollection<string>( _provider.Sellers.SelectMany( s => s.Items ).Select( i => i.ItemIdentifier ) );
+                }
+
+                return _itemsText;
+            }
+        }
+
         private ItemViewModel _searchItem;
         public ItemViewModel SearchItem
         {
@@ -106,17 +121,39 @@ namespace KinderArtikelBoerse.Viewmodels
             }
             set
             {
+                var oldValue = _searchItem;
                 _searchItem = value;
+                
+                if(oldValue != value )
+                {
+                    RaisePropertyChanged();
+                }
+                
+            }
+        }
+
+        private string _searchItemText;
+        public string SearchItemText
+        {
+            get
+            {
+                return _searchItemText;
+            }
+            set
+            {
+                _searchItemText = value;
                 RaisePropertyChanged();
             }
         }
 
-        public AutoCompleteFilterPredicate<ItemViewModel> SearchItemFilter
+
+        public AutoCompleteFilterPredicate<object> SearchItemFilter
         {
             get
             {
-                return ( searchText, item ) =>
+                return ( searchText, obj ) =>
                 {
+                    var item = obj as ItemViewModel;
                     var normalizedSearchText = searchText.ToLowerInvariant();
 
                     return item.ItemIdentifier.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
@@ -126,21 +163,21 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
-        private ObservableCollection<SellerViewModel> _sellerViewModels;
-        public ObservableCollection<SellerViewModel> SellerViewModels
-        {
-            get
-            {
-                if(_sellerViewModels == null )
-                {
-                    _sellerViewModels = new ObservableCollection<SellerViewModel>( _provider.Sellers.Select( s => new SellerViewModel( s ) ) );
+        //private ObservableCollection<SellerViewModel> _sellerViewModels;
+        //public ObservableCollection<SellerViewModel> SellerViewModels
+        //{
+        //    get
+        //    {
+        //        if(_sellerViewModels == null )
+        //        {
+        //            _sellerViewModels = new ObservableCollection<SellerViewModel>( _provider.Sellers.Select( s => new SellerViewModel( s ) ) );
 
-                    SelectedSellerViewModel = _sellerViewModels.FirstOrDefault();
-                }
+        //            SelectedSellerViewModel = _sellerViewModels.FirstOrDefault();
+        //        }
 
-                return _sellerViewModels;
-            }
-        }
+        //        return _sellerViewModels;
+        //    }
+        //}
 
 
         private ICommand _createExcelCommand;

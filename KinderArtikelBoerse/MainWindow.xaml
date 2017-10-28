@@ -59,22 +59,25 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="{Binding SelectedSellerViewModel.SelectedItemViewModel.ItemIdentifier, TargetNullValue=-, FallbackValue=-}" />
+                        <TextBlock Text="{Binding SearchItem.ItemIdentifier, TargetNullValue=-, FallbackValue=-}" />
 
                         <controls:AutoCompleteBox 
+                            
                             Grid.Row="1"
-                            ValueMemberPath="ItemIdentifier"
-                            ItemFilter="{Binding SearchItemFilter}"
-                            ItemsSource ="{Binding Items}"
+                            IsTextCompletionEnabled="False"
+                            ItemsSource ="{Binding Items, Mode=OneWay}"
                             SelectedItem="{Binding SearchItem, Mode=TwoWay}"
+                            ItemFilter="{Binding SearchItemFilter, Mode=OneWay}"
+                            ValueMemberPath="ItemIdentifier"
+                            
                             />
-                        <ListView Grid.Row="3" Grid.Column="0" ItemsSource="{Binding SellerViewModels}" SelectedItem="{Binding SelectedSellerViewModel}">
+                        <!--<ListView Grid.Row="3" Grid.Column="0" ItemsSource="{Binding SellerViewModels}" SelectedItem="{Binding SelectedSellerViewModel}">
                             
                         </ListView>
 
                         <ListView Grid.Row="3" Grid.Column="1" DataContext="{Binding SelectedSellerViewModel}" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItemViewModel}">
 
-                        </ListView>
+                        </ListView>-->
 
                     </Grid>
                 </StackPanel>

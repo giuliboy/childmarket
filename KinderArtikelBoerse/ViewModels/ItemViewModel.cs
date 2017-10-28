@@ -9,6 +9,7 @@ namespace KinderArtikelBoerse.Viewmodels
         public ItemViewModel(Item i)
         {
             _data = i;
+            _sellerViewModel = new SellerViewModel( i.Seller );
         }
 
         public string ItemIdentifier { get { return _data.ItemIdentifier; } }
@@ -21,6 +22,14 @@ namespace KinderArtikelBoerse.Viewmodels
 
         public bool IsSold { get { return _data.IsSold; } }
 
+        private SellerViewModel _sellerViewModel;
+        public SellerViewModel SellerViewModel
+        {
+            get
+            {
+                return _sellerViewModel;
+            }
+        }
         public override string ToString()
         {
             return $"Item:{ItemIdentifier}";
