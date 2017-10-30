@@ -5,12 +5,14 @@ using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -112,8 +114,8 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
-        private ItemViewModel _searchItem;
-        public ItemViewModel SearchItem
+        private IItemViewModel _searchItem;
+        public IItemViewModel SearchItem
         {
             get
             {
@@ -132,7 +134,7 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
-        private string _searchItemText;
+        private string _searchItemText = string.Empty;
         public string SearchItemText
         {
             get
@@ -141,11 +143,53 @@ namespace KinderArtikelBoerse.Viewmodels
             }
             set
             {
+                var oldValue = _searchItemText;
                 _searchItemText = value;
-                RaisePropertyChanged();
+
+                if(oldValue != value )
+                {
+
+                    ItemsCollectionView.Refresh();
+
+                    var filteredCollection = ItemsCollectionView
+                        .Cast<IItemViewModel>()
+                        .ToList()
+                        ;
+
+                    if(filteredCollection.Count == 1 )
+                    {
+                        SearchItem = filteredCollection.First();
+                    }
+
+                    RaisePropertyChanged();
+                }
+                
             }
         }
 
+        private ICollectionView _itemsCollectionView;
+        public ICollectionView ItemsCollectionView
+        {
+            get
+            {
+                if(_itemsCollectionView == null )
+                {
+                    _itemsCollectionView = CollectionViewSource.GetDefaultView( Items );
+
+                    _itemsCollectionView.Filter += (obj) => ItemFilterPredicate( (IItemViewModel)obj );
+
+                }
+                return _itemsCollectionView;
+            }
+        }
+
+        private bool ItemFilterPredicate(IItemViewModel item )
+        {
+            var normalizedSearchText = SearchItemText.ToLowerInvariant();
+
+            return item.ItemIdentifier.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
+                item.Description.ToLowerInvariant().Contains( normalizedSearchText );
+        }
 
         public AutoCompleteFilterPredicate<object> SearchItemFilter
         {
@@ -153,32 +197,39 @@ namespace KinderArtikelBoerse.Viewmodels
             {
                 return ( searchText, obj ) =>
                 {
-                    var item = obj as ItemViewModel;
-                    var normalizedSearchText = searchText.ToLowerInvariant();
-
-                    return item.ItemIdentifier.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
-                        item.Description.ToLowerInvariant().Contains( normalizedSearchText );
-
+                    return ItemFilterPredicate( (IItemViewModel)obj );
                 };
             }
         }
 
-        //private ObservableCollection<SellerViewModel> _sellerViewModels;
-        //public ObservableCollection<SellerViewModel> SellerViewModels
+        private ICommand _isSoldCheckedCommand;
+        public ICommand IsSoldCheckedCommand => _isSoldCheckedCommand ?? ( _isSoldCheckedCommand = new ActionCommand<bool>( ( isChecked ) =>
+        {
+            if ( isChecked )
+            {
+                //SearchItem = null;
+                SearchItemText = string.Empty;
+                //IsAutoCompleteBoxFocused = true;
+            }
+        } ) );
+
+        private ICommand _resetFocusCommand;
+        public ICommand ResetFocusCommand => _resetFocusCommand ?? ( _resetFocusCommand = new ActionCommand<AutoCompleteBox>( ( acb ) =>
+        {
+            //acb.Focus();
+            
+        } ) );
+
+        //private bool _isAutoCompleteBoxFocused;
+        //public bool IsAutoCompleteBoxFocused
         //{
-        //    get
+        //    get { return _isAutoCompleteBoxFocused; }
+        //    set
         //    {
-        //        if(_sellerViewModels == null )
-        //        {
-        //            _sellerViewModels = new ObservableCollection<SellerViewModel>( _provider.Sellers.Select( s => new SellerViewModel( s ) ) );
-
-        //            SelectedSellerViewModel = _sellerViewModels.FirstOrDefault();
-        //        }
-
-        //        return _sellerViewModels;
+        //        _isAutoCompleteBoxFocused = value;
+        //        RaisePropertyChanged();
         //    }
         //}
-
 
         private ICommand _createExcelCommand;
         public ICommand CreateExcelCommand => _createExcelCommand ?? ( _createExcelCommand = new ActionCommand<string>( async ( unused ) =>

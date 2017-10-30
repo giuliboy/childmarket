@@ -94,6 +94,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Contracts\IItemReader.cs" />
+    <Compile Include="Contracts\IItemViewModel.cs" />
     <Compile Include="Contracts\ISellerProvider.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Item.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="Utils\EventCommandBehavior.cs" />
     <Compile Include="Utils\ExcelItemReader.cs" />
     <Compile Include="Utils\ExcelReaderExtensions.cs" />
+    <Compile Include="Utils\FocusExtension.cs" />
     <Compile Include="Utils\SellerProvider.cs" />
     <Compile Include="ViewModels\ItemListFixer.cs" />
     <Compile Include="ViewModels\ItemViewModel.cs" />
