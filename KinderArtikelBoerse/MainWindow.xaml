@@ -13,14 +13,33 @@
         Drop="Window_Drop"
         Title="{Binding ToolTitle}" Height="600" Width="1000">
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <utils:SoldColorConverter x:Key="SoldColorBrush"/>
+       
         <DataTemplate x:Key="ItemTemplate" DataType="{x:Type contracts:ISellable}">
             <Border Height="50" Width="300" BorderBrush="{Binding IsSold, Converter={StaticResource SoldColorBrush}}" BorderThickness="2">
                 <Grid >
                     <TextBlock Foreground="White" Text="{Binding ItemIdentifier}" HorizontalAlignment="Left" VerticalAlignment="Top" />
                     <TextBlock Foreground="White" Text="{Binding Description}" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
-                    <TextBlock Foreground="White" Text="{Binding Price}" HorizontalAlignment="Right" VerticalAlignment="Top"/>
                     <TextBlock Foreground="White" Text="{Binding Seller.Name}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                    <Border HorizontalAlignment="Right" VerticalAlignment="Top" Width="80" CornerRadius="14" Height="30" >
+                        <TextBlock Foreground="White" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                                   Text="{Binding Price, StringFormat=C}" />
+                        <Border.Style >
+                            <Style TargetType="{x:Type Border}">
+                                <Style.Setters>
+                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style.Setters>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSold}" Value="True">
+                                        <Setter Property="Background" Value="Green"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                            
+                        </Border.Style>
+                    </Border>
                 </Grid>
                
             </Border>
