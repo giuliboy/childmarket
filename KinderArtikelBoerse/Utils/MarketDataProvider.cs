@@ -6,14 +6,15 @@ using System.Linq;
 namespace KinderArtikelBoerse.Utils
 {
 
-    public class SellerProvider : ISellerProvider
+    public class MarketDataProvider : IMarketDataProvider
     {
         private readonly string _connectionString;
 
-        public SellerProvider(string connectionString)
+        public MarketDataProvider(string connectionString)
         {
             _connectionString = connectionString;
         }
+
         public IEnumerable<Seller> Sellers
         {
             get
@@ -28,5 +29,7 @@ namespace KinderArtikelBoerse.Utils
                 }
             }
         }
+
+        public IEnumerable<Item> Items => throw new System.NotImplementedException();
     }
 }

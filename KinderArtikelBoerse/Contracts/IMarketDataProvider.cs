@@ -3,8 +3,10 @@ using System.Collections.Generic;
 
 namespace KinderArtikelBoerse.Contracts
 {
-    public interface ISellerProvider
+    public interface IMarketDataProvider
     {
         IEnumerable<Seller> Sellers { get; }
+
+        IEnumerable<Item> Items { get; }
     }
 }

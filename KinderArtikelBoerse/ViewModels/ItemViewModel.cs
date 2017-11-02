@@ -3,17 +3,28 @@ using KinderArtikelBoerse.Models;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
-    public class ItemViewModel : PropertyChangeNotifier, IItemViewModel
+    public class ItemViewModel : PropertyChangeNotifier, ISellable
     {
-        private Item _data;
+        private ISellable _data;
 
-        public ItemViewModel(Item i)
+        public ItemViewModel(ISellable i)
         {
             _data = i;
             _sellerViewModel = new SellerViewModel( i.Seller );
         }
 
-        public string ItemIdentifier { get { return _data.ItemIdentifier; } }
+        public string ItemIdentifier
+        {
+            get
+            {
+                return _data.ItemIdentifier;
+            }
+            set
+            {
+                _data.ItemIdentifier = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public string Description {
             get { return _data.Description; }
@@ -24,9 +35,23 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
-        public string Size { get { return _data.Size; } }
+        public string Size {
+            get { return _data.Size; }
+            set
+            {
+                _data.Size = value;
+                RaisePropertyChanged();
+            }
+        }
 
-        public float Price { get { return _data.Price; } }
+        public float Price {
+            get { return _data.Price; }
+            set
+            {
+                _data.Price = value;
+                RaisePropertyChanged();
+            }
+        }
 
         public bool IsSold {
             get { return _data.IsSold; }
@@ -45,6 +70,11 @@ namespace KinderArtikelBoerse.Viewmodels
                 return _sellerViewModel;
             }
         }
+
+        public int Id => _data.Id;
+
+        public ISeller Seller { get => _data.Seller; set => _data.Seller = value; }
+
         public override string ToString()
         {
             return $"Item:{ItemIdentifier}";

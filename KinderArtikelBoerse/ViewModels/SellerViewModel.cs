@@ -1,4 +1,5 @@
-﻿using KinderArtikelBoerse.Models;
+﻿using KinderArtikelBoerse.Contracts;
+using KinderArtikelBoerse.Models;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -7,34 +8,34 @@ namespace KinderArtikelBoerse.Viewmodels
 
     public class SellerViewModel : PropertyChangeNotifier
     {
-        public SellerViewModel(Seller s)
+        public SellerViewModel(ISeller s)
         {
             _data = s;
         }
 
         public string Number { get; set; }
 
-        private Seller _data;
+        private ISeller _data;
 
         public string Name { get { return _data.Name; } }
 
-        public string Vorname { get { return _data.Surname; } }
+        public string FirstName { get { return _data.FirstName; } }
 
         public float FamilientreffSharePercentage { get { return _data.FamilientreffPercentage; } }
 
-        private ObservableCollection<ItemViewModel> _items;
-        public ObservableCollection<ItemViewModel> Items
-        {
-            get
-            {
-                if(_items == null )
-                {
-                    _items = new ObservableCollection<ItemViewModel>( _data.Items.Select( i => new ItemViewModel( i ) ) );
-                }
+        //private ObservableCollection<ItemViewModel> _items;
+        //public ObservableCollection<ItemViewModel> Items
+        //{
+        //    get
+        //    {
+        //        if(_items == null )
+        //        {
+        //            _items = new ObservableCollection<ItemViewModel>( _data.Items.Select( i => new ItemViewModel( i ) ) );
+        //        }
 
-                return _items;
-            }
-        }
+        //        return _items;
+        //    }
+        //}
 
         private ItemViewModel _selectedItemViewModel;
         public ItemViewModel SelectedItemViewModel
@@ -51,7 +52,7 @@ namespace KinderArtikelBoerse.Viewmodels
 
         public override string ToString()
         {
-            return $"{Name}, {Vorname}";
+            return $"{Name}, {FirstName}";
         }
     }
 

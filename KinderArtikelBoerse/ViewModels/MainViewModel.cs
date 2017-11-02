@@ -21,14 +21,14 @@ namespace KinderArtikelBoerse.Viewmodels
 {
     public partial class MainViewModel : PropertyChangeNotifier
     {
-        public MainViewModel(ISellerProvider provider)
+        public MainViewModel(IMarketDataProvider provider)
         {
             _itemReader = new ExcelItemReader();
             _provider = provider;
         }
 
         private IItemReader _itemReader;
-        private ISellerProvider _provider;
+        private IMarketDataProvider _provider;
 
         private string _toolTitle = "Kinderartikelbörse Familientreff Kaltbrunn";
         public string ToolTitle
@@ -93,7 +93,7 @@ namespace KinderArtikelBoerse.Viewmodels
             {
                 if(_items == null )
                 {
-                    _items = new ObservableCollection<ItemViewModel>( _provider.Sellers.SelectMany( s => s.Items ).Select( i => new ItemViewModel( i ) ) );
+                    _items = new ObservableCollection<ItemViewModel>( _provider.Items.Select( i => new ItemViewModel( i ) ) );
                 }
 
                 return _items;
@@ -107,15 +107,15 @@ namespace KinderArtikelBoerse.Viewmodels
             {
                 if ( _itemsText == null )
                 {
-                    _itemsText = new ObservableCollection<string>( _provider.Sellers.SelectMany( s => s.Items ).Select( i => i.ItemIdentifier ) );
+                    _itemsText = new ObservableCollection<string>( _provider.Items.Select( i => i.ItemIdentifier ) );
                 }
 
                 return _itemsText;
             }
         }
 
-        private IItemViewModel _searchItem;
-        public IItemViewModel SearchItem
+        private ISellable _searchItem;
+        public ISellable SearchItem
         {
             get
             {
@@ -152,7 +152,7 @@ namespace KinderArtikelBoerse.Viewmodels
                     ItemsCollectionView.Refresh();
 
                     var filteredCollection = ItemsCollectionView
-                        .Cast<IItemViewModel>()
+                        .Cast<ISellable>()
                         .ToList()
                         ;
 
@@ -176,19 +176,26 @@ namespace KinderArtikelBoerse.Viewmodels
                 {
                     _itemsCollectionView = CollectionViewSource.GetDefaultView( Items );
 
-                    _itemsCollectionView.Filter += (obj) => ItemFilterPredicate( (IItemViewModel)obj );
+                    _itemsCollectionView.Filter += (obj) => ItemFilterPredicate( (ISellable)obj );
 
                 }
                 return _itemsCollectionView;
             }
         }
 
-        private bool ItemFilterPredicate(IItemViewModel item )
+        private bool ItemFilterPredicate(ISellable item )
         {
             var normalizedSearchText = SearchItemText.ToLowerInvariant();
 
             return item.ItemIdentifier.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
-                item.Description.ToLowerInvariant().Contains( normalizedSearchText );
+                    item.Description.ToLowerInvariant().Contains( normalizedSearchText ) ||
+                    item.Price.ToString().ToLowerInvariant().StartsWith( normalizedSearchText ) ||
+                    item.Size.ToLowerInvariant().Contains(normalizedSearchText) ||
+                    //seller name
+                    item.Seller.Name.ToLowerInvariant().StartsWith(normalizedSearchText) ||
+                    item.Seller.FirstName.ToLowerInvariant().StartsWith( normalizedSearchText ) 
+                    
+                    ;
         }
 
         public AutoCompleteFilterPredicate<object> SearchItemFilter
@@ -197,7 +204,7 @@ namespace KinderArtikelBoerse.Viewmodels
             {
                 return ( searchText, obj ) =>
                 {
-                    return ItemFilterPredicate( (IItemViewModel)obj );
+                    return ItemFilterPredicate( (ISellable)obj );
                 };
             }
         }
@@ -298,7 +305,7 @@ namespace KinderArtikelBoerse.Viewmodels
                     var s = new Seller()
                     {
                         // = c[0].ToString(),
-                        Surname = c[1].ToString(),
+                        FirstName = c[1].ToString(),
                         Name = c[2].ToString(),
                         FamilientreffPercentage = int.Parse( c[3].ToString() )
 
@@ -392,7 +399,7 @@ namespace KinderArtikelBoerse.Viewmodels
 
         private string GetSheetName( SellerViewModel sellerViewModel )
         {
-            return $"{sellerViewModel.Name} {sellerViewModel.Vorname}";
+            return $"{sellerViewModel.Name} {sellerViewModel.FirstName}";
         }
 
         public string[] GetRange( string range, Worksheet excelWorksheet )

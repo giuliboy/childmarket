@@ -94,19 +94,21 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Contracts\IItemReader.cs" />
-    <Compile Include="Contracts\IItemViewModel.cs" />
-    <Compile Include="Contracts\ISellerProvider.cs" />
+    <Compile Include="Contracts\ISellable.cs" />
+    <Compile Include="Contracts\IMarketDataProvider.cs" />
+    <Compile Include="Contracts\ISeller.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\MarketDbContext.cs" />
     <Compile Include="Models\Seller.cs" />
     <Compile Include="Utils\ActionCommand.cs" />
-    <Compile Include="Utils\DemoSellerProvider.cs" />
+    <Compile Include="Utils\DemoMarketDataProvider.cs" />
     <Compile Include="Utils\EventCommandBehavior.cs" />
     <Compile Include="Utils\ExcelItemReader.cs" />
     <Compile Include="Utils\ExcelReaderExtensions.cs" />
     <Compile Include="Utils\FocusExtension.cs" />
-    <Compile Include="Utils\SellerProvider.cs" />
+    <Compile Include="Utils\MarketDataProvider.cs" />
+    <Compile Include="Utils\SoldColorConverter.cs" />
     <Compile Include="ViewModels\ItemListFixer.cs" />
     <Compile Include="ViewModels\ItemViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

@@ -13,11 +13,14 @@
         Drop="Window_Drop"
         Title="{Binding ToolTitle}" Height="600" Width="1000">
     <Window.Resources>
-        <DataTemplate x:Key="ItemTemplate" DataType="{x:Type contracts:IItemViewModel}">
-            <Border Height="50" BorderBrush="White" BorderThickness="2">
-                <Grid>
-                    <TextBlock Text="{Binding ItemIdentifier}" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <TextBlock Text="{Binding Description}" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+        <utils:SoldColorConverter x:Key="SoldColorBrush"/>
+        <DataTemplate x:Key="ItemTemplate" DataType="{x:Type contracts:ISellable}">
+            <Border Height="50" Width="300" BorderBrush="{Binding IsSold, Converter={StaticResource SoldColorBrush}}" BorderThickness="2">
+                <Grid >
+                    <TextBlock Foreground="White" Text="{Binding ItemIdentifier}" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBlock Foreground="White" Text="{Binding Description}" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+                    <TextBlock Foreground="White" Text="{Binding Price}" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                    <TextBlock Foreground="White" Text="{Binding Seller.Name}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
                 </Grid>
                
             </Border>
@@ -26,7 +29,7 @@
     <Grid>
         <TabControl>
             <TabItem Header="Excel erzeugen">
-                <StackPanel Orientation="Vertical" Margin="10">
+                <StackPanel Orientation="Vertical" Margin="10" >
                     <TextBlock Text="Input: Verkäufer Liste in Excel" FontWeight="Bold"/>
                     <TextBox x:Name="SellerExcelFilePathTextBox" Text="{Binding SellerExcelFilePath, UpdateSourceTrigger=PropertyChanged}"/>
 
@@ -47,7 +50,7 @@
                     <Button Margin="0,10,0,0" Content="Fix Artikellisten" Command="{Binding FixItemExcelCommand}" CommandParameter="{Binding ElementName=ItemsListFix, Path=Text}"/>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Fast I/O" >
+            <TabItem Header="Import/Export Excel" >
                 <StackPanel Orientation="Vertical" Margin="10" AllowDrop="True">
                     <i:Interaction.Behaviors>
                         <utils:EventCommandBehavior Command="{Binding }"></utils:EventCommandBehavior>
@@ -57,24 +60,28 @@
                     <TextBox Text="{Binding InputFilePath, UpdateSourceTrigger=PropertyChanged}"/>
                     <Button Content="Einlesen" Command="{Binding ReadExcelCommand}"/>
                     
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="50"/>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
+                    
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Kasse">
+                <Grid Background="Black">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="{Binding SearchItem.ItemIdentifier, TargetNullValue=-, FallbackValue=-}" />
+                    <ContentControl HorizontalAlignment="Left" ContentTemplate="{StaticResource ItemTemplate}" Content="{Binding SearchItem}" />
 
-                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Auto Complete Box" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Auto Complete Box" />
 
-                        <StackPanel Grid.Row="2"  Orientation="Horizontal">
-                            <controls:AutoCompleteBox 
+                    <StackPanel Grid.Row="2"  Orientation="Horizontal">
+                        <controls:AutoCompleteBox 
                                 Width="300"
                                 x:Name="AutoCompleteBox"
                                 IsTextCompletionEnabled="True"
@@ -85,29 +92,29 @@
                                 ValueMemberPath="ItemIdentifier"
                                 ItemTemplate="{StaticResource ItemTemplate}"
                             />
-                            <ToggleButton x:Name="IsSoldToggleButton" Content="Sold" IsChecked="{Binding SearchItem.IsSold}" 
+                        <ToggleButton x:Name="IsSoldToggleButton" Content="Sold" IsChecked="{Binding SearchItem.IsSold}" 
                                           Command="{Binding IsSoldCheckedCommand}" 
                                           CommandParameter="{Binding ElementName=IsSoldToggleButton, Path=IsChecked}" >
-                                <i:Interaction.Behaviors>
-                                    <utils:EventCommandBehavior Event="Checked" Command="{Binding IsSoldCheckedCommand}" 
+                            <i:Interaction.Behaviors>
+                                <utils:EventCommandBehavior Event="Checked" Command="{Binding IsSoldCheckedCommand}" 
                                              CommandParameter="{Binding ElementName=IsSoldToggleButton, Path=IsChecked}"/>
-                                    <utils:EventCommandBehavior Event="Checked" Command="{Binding ResetFocusCommand}" 
+                                <utils:EventCommandBehavior Event="Checked" Command="{Binding ResetFocusCommand}" 
                                             CommandParameter="{Binding ElementName=AutoCompleteBox, Path=.}" />
-                                  
-                                </i:Interaction.Behaviors>
-                                
-                            </ToggleButton>
-                        </StackPanel>
-                       
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="Collection View + Live Filter" />
-                        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SearchItemText,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                        <ListView Grid.Row="3" Grid.Column="1" 
+
+                            </i:Interaction.Behaviors>
+
+                        </ToggleButton>
+                    </StackPanel>
+
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Collection View + Live Filter" />
+                    <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SearchItemText,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <ListView Grid.Row="3" Grid.Column="1" 
                                   SelectedItem="{Binding SearchItem}"
                                   ItemsSource="{Binding Items}" 
                                   ItemTemplate="{StaticResource ItemTemplate}" >
 
-                        </ListView>
-                        <!--<ListView Grid.Row="3" Grid.Column="0" ItemsSource="{Binding SellerViewModels}" SelectedItem="{Binding SelectedSellerViewModel}">
+                    </ListView>
+                    <!--<ListView Grid.Row="3" Grid.Column="0" ItemsSource="{Binding SellerViewModels}" SelectedItem="{Binding SelectedSellerViewModel}">
                             
                         </ListView>
 
@@ -115,8 +122,7 @@
 
                         </ListView>-->
 
-                    </Grid>
-                </StackPanel>
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>
