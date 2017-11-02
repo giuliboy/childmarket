@@ -23,13 +23,5 @@ namespace KinderArtikelBoerse
                 new FrameworkPropertyMetadata(
                     XmlLanguage.GetLanguage( CultureInfo.CurrentCulture.IetfLanguageTag ) ) );
         }
-
-        protected override void OnStartup( StartupEventArgs e )
-        {
-            base.OnStartup( e );
-            CultureInfo culture = new CultureInfo( ConfigurationManager.AppSettings["DefaultCulture"] );
-            Thread.CurrentThread.CurrentCulture = culture;
-            Thread.CurrentThread.CurrentUICulture = culture;
-        }
     }
 }
