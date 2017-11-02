@@ -21,7 +21,15 @@
                 <Grid >
                     <TextBlock Foreground="White" Text="{Binding ItemIdentifier}" HorizontalAlignment="Left" VerticalAlignment="Top" />
                     <TextBlock Foreground="White" Text="{Binding Description}" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
-                    <TextBlock Foreground="White" Text="{Binding Seller.Name}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                    <TextBlock Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} {1}">
+                                <Binding Path="Seller.FirstName" />
+                                <Binding Path="Seller.Name" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+
                     <Border HorizontalAlignment="Right" VerticalAlignment="Top" Width="80" CornerRadius="14" Height="30" >
                         <TextBlock Foreground="White" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" 
                                    Text="{Binding Price, StringFormat=C}" />
