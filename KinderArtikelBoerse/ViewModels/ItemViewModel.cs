@@ -1,5 +1,7 @@
 ﻿using KinderArtikelBoerse.Contracts;
 using KinderArtikelBoerse.Models;
+using KinderArtikelBoerse.Utils;
+using System.Windows.Input;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
@@ -12,6 +14,12 @@ namespace KinderArtikelBoerse.Viewmodels
             _data = i;
             _sellerViewModel = new SellerViewModel( i.Seller );
         }
+
+        private ICommand _soldToggleCommand;
+        public ICommand SoldToggleCommand => _soldToggleCommand ?? ( _soldToggleCommand = new ActionCommand<KeyboardEventArgs>( ( args ) =>
+        {
+        } ) );
+
 
         public string ItemIdentifier
         {

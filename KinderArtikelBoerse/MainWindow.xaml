@@ -17,37 +17,67 @@
         <utils:SoldColorConverter x:Key="SoldColorBrush"/>
        
         <DataTemplate x:Key="ItemTemplate" DataType="{x:Type contracts:ISellable}">
-            <Border Height="50" Width="300" BorderBrush="{Binding IsSold, Converter={StaticResource SoldColorBrush}}" BorderThickness="2">
-                <Grid >
+            <Border Height="50" Width="350" BorderThickness="2">
+                <Border.Style>
+                    <Style TargetType="{x:Type Border}">
+                        <Style.Setters>
+                            <Setter Property="BorderBrush" Value="LightGray"/>
+                        </Style.Setters>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSold}" Value="True">
+                                <Setter Property="BorderBrush" Value="Green"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Grid Background="#01000000">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300" />
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="30"/>
+                    </Grid.ColumnDefinitions>
+                    <i:Interaction.Behaviors>
+                        <utils:EventCommandBehavior Event="PreviewKeyDown" PassArguments="True" Command="{Binding SoldToggleCommand}" />
+                    </i:Interaction.Behaviors>
                     <TextBlock Foreground="White" Text="{Binding ItemIdentifier}" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <TextBlock Foreground="White" Text="{Binding Description}" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
-                    <TextBlock Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="{}{0} {1}">
-                                <Binding Path="Seller.FirstName" />
-                                <Binding Path="Seller.Name" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
+                        <TextBlock Foreground="White" Text="{Binding Description}" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+                        <TextBlock Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} {1}">
+                                    <Binding Path="Seller.FirstName" />
+                                    <Binding Path="Seller.Name" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
 
-                    <Border HorizontalAlignment="Right" VerticalAlignment="Top" Width="80" CornerRadius="14" Height="30" >
-                        <TextBlock Foreground="White" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                        <Border HorizontalAlignment="Right" VerticalAlignment="Top" Width="80" Margin="0,2,0,0" CornerRadius="13" Height="26" >
+                            <TextBlock Foreground="White" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" 
                                    Text="{Binding Price, StringFormat=C}" />
-                        <Border.Style >
-                            <Style TargetType="{x:Type Border}">
-                                <Style.Setters>
-                                    <Setter Property="BorderBrush" Value="Transparent"/>
-                                    <Setter Property="Background" Value="Transparent"/>
-                                </Style.Setters>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSold}" Value="True">
-                                        <Setter Property="Background" Value="Green"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                            
-                        </Border.Style>
-                    </Border>
+                            <Border.Style >
+                                <Style TargetType="{x:Type Border}">
+                                    <Style.Setters>
+                                        <Setter Property="BorderBrush" Value="Transparent"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Style.Setters>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSold}" Value="True">
+                                            <Setter Property="Background" Value="Green"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+
+                            </Border.Style>
+                        </Border>
+                    <ToggleButton Grid.Column="2" x:Name="IsSoldToggleButton" Content="$" IsChecked="{Binding IsSold}" 
+                                          Command="{Binding IsSoldCheckedCommand}" 
+                                          CommandParameter="{Binding ElementName=IsSoldToggleButton, Path=IsChecked}" >
+                        <!--<i:Interaction.Behaviors>
+                            <utils:EventCommandBehavior Event="Checked" 
+                   Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabControl}, Mode=FindAncestor}, Path=DataContext.RefreshCollectionViewCommand}" />
+                           
+                        </i:Interaction.Behaviors>-->
+
+                    </ToggleButton>
                 </Grid>
                
             </Border>
@@ -118,19 +148,9 @@
                                 ItemFilter="{Binding SearchItemFilter, Mode=OneWay}"
                                 ValueMemberPath="ItemIdentifier"
                                 ItemTemplate="{StaticResource ItemTemplate}"
+                                MaxDropDownHeight="600"
                             />
-                        <ToggleButton x:Name="IsSoldToggleButton" Content="Sold" IsChecked="{Binding SearchItem.IsSold}" 
-                                          Command="{Binding IsSoldCheckedCommand}" 
-                                          CommandParameter="{Binding ElementName=IsSoldToggleButton, Path=IsChecked}" >
-                            <i:Interaction.Behaviors>
-                                <utils:EventCommandBehavior Event="Checked" Command="{Binding IsSoldCheckedCommand}" 
-                                             CommandParameter="{Binding ElementName=IsSoldToggleButton, Path=IsChecked}"/>
-                                <utils:EventCommandBehavior Event="Checked" Command="{Binding ResetFocusCommand}" 
-                                            CommandParameter="{Binding ElementName=AutoCompleteBox, Path=.}" />
-
-                            </i:Interaction.Behaviors>
-
-                        </ToggleButton>
+                        <ToggleButton x:Name="IsSoldToggleButton" Content="Sold" IsChecked="{Binding SearchItem.IsSold}" />
                     </StackPanel>
 
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="Collection View + Live Filter" />

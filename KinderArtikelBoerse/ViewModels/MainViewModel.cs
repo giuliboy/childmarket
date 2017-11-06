@@ -100,6 +100,26 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
+        private ICollectionView _unSoldItemsCollectionView;
+        public ICollectionView UnSoldItemsCollectionView
+        {
+            get
+            {
+                if ( _unSoldItemsCollectionView == null )
+                {
+                    _unSoldItemsCollectionView = CollectionViewSource.GetDefaultView( Items );
+
+                    _unSoldItemsCollectionView.Filter += ( obj ) =>
+                    {
+                        var item = obj as ISellable;
+                        return !item.IsSold;
+                    };
+
+                }
+                return _unSoldItemsCollectionView;
+            }
+        }
+
         private ObservableCollection<string> _itemsText;
         public IEnumerable<string> ItemsText
         {
@@ -148,7 +168,6 @@ namespace KinderArtikelBoerse.Viewmodels
 
                 if(oldValue != value )
                 {
-
                     ItemsCollectionView.Refresh();
 
                     var filteredCollection = ItemsCollectionView
@@ -220,6 +239,13 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         } ) );
 
+        private ICommand _refreshCollectionViewCommand;
+        public ICommand RefreshCollectionViewCommand => _refreshCollectionViewCommand ?? ( _refreshCollectionViewCommand = new ActionCommand( ( ) =>
+        {
+            UnSoldItemsCollectionView.Refresh();
+        } ) );
+
+        
         private ICommand _resetFocusCommand;
         public ICommand ResetFocusCommand => _resetFocusCommand ?? ( _resetFocusCommand = new ActionCommand<AutoCompleteBox>( ( acb ) =>
         {
