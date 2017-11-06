@@ -13,6 +13,7 @@ namespace KinderArtikelBoerse.Utils
             new Item() { ItemIdentifier="AB2", Description="Pulover", Price=5.0f , Size="38", Seller= Sellers.Last()},
             new Item() { ItemIdentifier="AB3", Description="jojo", Price=5.5f , Seller= Sellers.Last()},
             new Item() { ItemIdentifier="AB4", Description="puzzli", Price=25.0f , Seller= Sellers.Last()},
+            new Item() { ItemIdentifier="AB11", Description="pulli mit stern", Price=55.0f , Seller= Sellers.Last()},
 
             new Item() { ItemIdentifier="C1", Description="buch ", Price=2.5f, Seller = Sellers.First() },
             new Item() { ItemIdentifier="C2", Description="bobby car ", Price=2.5f, Seller = Sellers.First() },
