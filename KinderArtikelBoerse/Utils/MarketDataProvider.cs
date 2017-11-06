@@ -1,6 +1,7 @@
 ﻿using KinderArtikelBoerse.Contracts;
 using KinderArtikelBoerse.Models;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 
 namespace KinderArtikelBoerse.Utils
@@ -30,6 +31,18 @@ namespace KinderArtikelBoerse.Utils
             }
         }
 
-        public IEnumerable<Item> Items => throw new System.NotImplementedException();
+        public IEnumerable<Item> Items
+        {
+            get
+            {
+                using ( var ctx = new MarketDbContext( _connectionString ) )
+                {
+                    return ctx.ItemsDbSet
+                        .AsNoTracking()
+                        .Include( s => s.Seller )
+                        .ToList();
+                }
+            }
+        }
     }
 }

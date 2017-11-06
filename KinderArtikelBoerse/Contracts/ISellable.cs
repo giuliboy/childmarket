@@ -1,4 +1,6 @@
-﻿namespace KinderArtikelBoerse.Contracts
+﻿using KinderArtikelBoerse.Models;
+
+namespace KinderArtikelBoerse.Contracts
 {
     public interface ISellable
     {
@@ -14,6 +16,6 @@
 
         bool IsSold { get; set; }
 
-        ISeller Seller { get; set; }
+        Seller Seller { get; set; }
     }
 }

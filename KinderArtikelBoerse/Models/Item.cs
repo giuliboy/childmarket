@@ -1,9 +1,5 @@
 ﻿using KinderArtikelBoerse.Contracts;
-using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace KinderArtikelBoerse.Models
 {
@@ -23,6 +19,6 @@ namespace KinderArtikelBoerse.Models
 
         public bool IsSold { get; set; }
 
-        public ISeller Seller { get; set; }
+        public Seller Seller { get; set; }
     }
 }

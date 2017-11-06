@@ -81,7 +81,7 @@ namespace KinderArtikelBoerse.Viewmodels
 
         public int Id => _data.Id;
 
-        public ISeller Seller { get => _data.Seller; set => _data.Seller = value; }
+        public Seller Seller { get => _data.Seller; set => _data.Seller = value; }
 
         public override string ToString()
         {

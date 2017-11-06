@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using KinderArtikelBoerse.Migrations;
+using System.Data.Entity;
 
 namespace KinderArtikelBoerse.Models
 {
@@ -6,7 +7,7 @@ namespace KinderArtikelBoerse.Models
     {
         static MarketDbContext()
         {
-            Database.SetInitializer( new CreateDatabaseIfNotExists<MarketDbContext>() );
+            Database.SetInitializer( new MigrateDatabaseToLatestVersion<MarketDbContext, Configuration>( true ) );
         }
 
         public MarketDbContext()
@@ -21,5 +22,7 @@ namespace KinderArtikelBoerse.Models
         }
 
         public DbSet<Seller> SellersDbSet { get; set; }
+
+        public DbSet<Item> ItemsDbSet { get; set; }
     }
 }
