@@ -141,7 +141,7 @@
                         <controls:AutoCompleteBox 
                                 Width="300"
                                 x:Name="AutoCompleteBox"
-                                IsTextCompletionEnabled="True"
+                                IsTextCompletionEnabled="False"
                                 ItemsSource ="{Binding Items, Mode=OneWay}"
                                 SelectedItem="{Binding SearchItem, Mode=TwoWay}"
                                 Text="{Binding SearchItemText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
