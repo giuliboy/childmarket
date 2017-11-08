@@ -19,7 +19,7 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
-    public class MainViewModel : PropertyChangeNotifier, IMarketService
+    public class MainViewModel : PropertyChangeNotifier
     {
         public MainViewModel(IMarketService dataService, IStatisticsService statisticsService)
         {
@@ -77,14 +77,18 @@ namespace KinderArtikelBoerse.Viewmodels
             set { _inputFilePath = value; RaisePropertyChanged(); }
         }
 
-        private ObservableCollection<ItemViewModel> _items;
-        public IEnumerable<ItemViewModel> Items
+        private ObservableCollection<ItemAssociationViewModel> _items;
+        public IEnumerable<ItemAssociationViewModel> Items
         {
             get
             {
                 if(_items == null )
                 {
-                    _items = new ObservableCollection<ItemViewModel>( _dataService.Items );
+                    var associations = from i in _dataService.Items
+                            join s in _dataService.Sellers on i.SellerId equals s.Id
+                            select new ItemAssociationViewModel() { Item = i, Seller = s };
+
+                    _items = new ObservableCollection<ItemAssociationViewModel>( associations );
                 }
 
                 return _items;
@@ -116,7 +120,7 @@ namespace KinderArtikelBoerse.Viewmodels
                     {
 
                         var stats = new SellerStatisticsViewModel( s );
-                        stats.Update( _statisticsService.GetStatistics( s.Id, _dataService ) );
+                        stats.Update( _statisticsService.GetStatistics( s.Id, Items.Select(a => a.Item ) ) );
                         return stats;
                     } ) );
                 }
@@ -136,8 +140,8 @@ namespace KinderArtikelBoerse.Viewmodels
 
                     _unSoldItemsCollectionView.Filter += ( obj ) =>
                     {
-                        var item = obj as ISellable;
-                        return !item.IsSold;
+                        var ass = obj as ItemAssociationViewModel;
+                        return !ass.Item.IsSold;
                     };
 
                 }
@@ -159,8 +163,8 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
-        private ISellable _searchItem;
-        public ISellable SearchItem
+        private ItemAssociationViewModel _searchItem;
+        public ItemAssociationViewModel SearchItem
         {
             get
             {
@@ -196,7 +200,7 @@ namespace KinderArtikelBoerse.Viewmodels
                     ItemsCollectionView.Refresh();
 
                     var filteredCollection = ItemsCollectionView
-                        .Cast<ISellable>()
+                        .Cast<ItemAssociationViewModel>()
                         .ToList()
                         ;
 
@@ -220,23 +224,29 @@ namespace KinderArtikelBoerse.Viewmodels
                 {
                     _itemsCollectionView = CollectionViewSource.GetDefaultView( Items );
 
-                    _itemsCollectionView.Filter += (obj) => ItemFilterPredicate( (ISellable)obj );
+                    _itemsCollectionView.Filter += (obj) => ItemFilterPredicate( (ItemAssociationViewModel)obj );
 
                 }
                 return _itemsCollectionView;
             }
         }
 
-        private bool ItemFilterPredicate(ISellable item )
+        private bool ItemFilterPredicate(ItemAssociationViewModel association )
         {
             var normalizedSearchText = SearchItemText.ToLowerInvariant();
+
+            var item = association.Item;
 
             var isItemMatching = item.ItemIdentifier.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
                     item.Description.ToLowerInvariant().Contains( normalizedSearchText ) ||
                     item.Price.ToString().ToLowerInvariant().StartsWith( normalizedSearchText ) ||
                     item.Size.ToLowerInvariant().Contains( normalizedSearchText );
 
-            return isItemMatching;
+
+            var isSellerMatching = association.Seller.Name.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
+                association.Seller.FirstName.ToLowerInvariant().StartsWith( normalizedSearchText );
+
+            return isItemMatching || isSellerMatching;
         }
 
         public AutoCompleteFilterPredicate<object> SearchItemFilter
@@ -245,23 +255,26 @@ namespace KinderArtikelBoerse.Viewmodels
             {
                 return ( searchText, obj ) =>
                 {
-                    return ItemFilterPredicate( (ISellable)obj );
+                    return ItemFilterPredicate( (ItemAssociationViewModel)obj );
                 };
             }
         }
 
         private ICommand _sellCommand;
-        public ICommand SellCommand => _sellCommand ?? ( _sellCommand = new ActionCommand<ItemViewModel>( ( sellable ) =>
+        public ICommand SellCommand => _sellCommand ?? ( _sellCommand = new ActionCommand<ItemAssociationViewModel>( ( association ) =>
         {
 
-            if ( sellable.IsSold )
+            var item = association.Item;
+            if ( item.IsSold )
             {
                 SearchItemText = string.Empty;
             }
             
-            var stats = _statisticsService.GetStatistics( sellable.SellerId, this );
+            //TODO :
+            //item association verwenden und statistics hilfswerk entfernen und in SellerViewModel stecken
+            var stats = _statisticsService.GetStatistics( item.SellerId, Items.Select(a => a.Item ) );
 
-            SellerStatistics.First( s => s.Seller.Id == sellable.SellerId ).Update( stats );
+            SellerStatistics.First( s => s.Seller.Id == item.SellerId ).Update( stats );
 
         } ) );
 

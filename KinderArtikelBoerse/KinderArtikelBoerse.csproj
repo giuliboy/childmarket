@@ -95,9 +95,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Contracts\IItemReader.cs" />
-    <Compile Include="Contracts\ISellable.cs" />
     <Compile Include="Contracts\IMarketService.cs" />
-    <Compile Include="Contracts\ISeller.cs" />
     <Compile Include="Contracts\IStatisticsService.cs" />
     <Compile Include="Migrations\201711061926133_Initial.cs" />
     <Compile Include="Migrations\201711061926133_Initial.Designer.cs">
@@ -116,6 +114,7 @@
     <Compile Include="Utils\FocusExtension.cs" />
     <Compile Include="Utils\MarketDataService.cs" />
     <Compile Include="Utils\SoldColorConverter.cs" />
+    <Compile Include="ViewModels\ItemAssociationViewModel.cs" />
     <Compile Include="ViewModels\ItemListFixer.cs" />
     <Compile Include="ViewModels\ItemViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

@@ -12,7 +12,7 @@ namespace KinderArtikelBoerse.Models
         public IEnumerable<Item> Items { get; set; }
     }
 
-    public class Item : ISellable
+    public class Item 
     {
         [DatabaseGenerated( DatabaseGeneratedOption.Identity )]
         public int Id { get; set; }

@@ -6,11 +6,12 @@ using System.Windows.Input;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
-    public class ItemViewModel : PropertyChangeNotifier, ISellable
-    {
-        private ISellable _data;
 
-        public ItemViewModel(ISellable i)
+    public class ItemViewModel : PropertyChangeNotifier
+    {
+        private Item _data;
+
+        public ItemViewModel(Item i)
         {
             _data = i;
         }

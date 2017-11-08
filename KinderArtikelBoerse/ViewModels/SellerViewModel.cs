@@ -1,10 +1,11 @@
 ﻿using KinderArtikelBoerse.Contracts;
+using KinderArtikelBoerse.Models;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
     public class SellerViewModel : PropertyChangeNotifier
     {
-        public SellerViewModel(ISeller s)
+        public SellerViewModel(Seller s)
         {
             _data = s;
         }
@@ -16,7 +17,7 @@ namespace KinderArtikelBoerse.Viewmodels
 
         public string Number { get; set; }
 
-        private ISeller _data;
+        private Seller _data;
 
         public string Name { get { return _data.Name; } }
 
