@@ -1,8 +1,16 @@
 ﻿using KinderArtikelBoerse.Contracts;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KinderArtikelBoerse.Models
 {
+
+    public class Ownership
+    {
+        public Seller Seller { get; set; }
+
+        public IEnumerable<Item> Items { get; set; }
+    }
 
     public class Item : ISellable
     {
@@ -19,6 +27,6 @@ namespace KinderArtikelBoerse.Models
 
         public bool IsSold { get; set; }
 
-        public Seller Seller { get; set; }
+        public int SellerId { get; set; }
     }
 }

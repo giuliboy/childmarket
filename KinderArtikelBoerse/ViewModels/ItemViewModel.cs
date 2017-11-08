@@ -1,6 +1,7 @@
 ﻿using KinderArtikelBoerse.Contracts;
 using KinderArtikelBoerse.Models;
 using KinderArtikelBoerse.Utils;
+using System.Linq;
 using System.Windows.Input;
 
 namespace KinderArtikelBoerse.Viewmodels
@@ -12,14 +13,37 @@ namespace KinderArtikelBoerse.Viewmodels
         public ItemViewModel(ISellable i)
         {
             _data = i;
-            _sellerViewModel = new SellerViewModel( i.Seller );
         }
 
         private ICommand _soldToggleCommand;
+
         public ICommand SoldToggleCommand => _soldToggleCommand ?? ( _soldToggleCommand = new ActionCommand<KeyboardEventArgs>( ( args ) =>
         {
         } ) );
 
+        //public string Name
+        //{
+        //    get
+        //    {
+        //        return _seller.Name;
+        //    }
+        //}
+
+        //public string FirstName
+        //{
+        //    get
+        //    {
+        //        return _seller.FirstName;
+        //    }
+        //}
+
+        public int SellerId
+        {
+            get
+            {
+                return _data.SellerId;
+            }
+        }
 
         public string ItemIdentifier
         {
@@ -70,19 +94,8 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
-        private SellerViewModel _sellerViewModel;
-        public SellerViewModel SellerViewModel
-        {
-            get
-            {
-                return _sellerViewModel;
-            }
-        }
-
         public int Id => _data.Id;
-
-        public Seller Seller { get => _data.Seller; set => _data.Seller = value; }
-
+        
         public override string ToString()
         {
             return $"Item:{ItemIdentifier}";

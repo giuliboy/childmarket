@@ -19,16 +19,17 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
-    public partial class MainViewModel : PropertyChangeNotifier
+    public class MainViewModel : PropertyChangeNotifier, IMarketService
     {
-        public MainViewModel(IMarketDataProvider provider)
+        public MainViewModel(IMarketService dataService, IStatisticsService statisticsService)
         {
             _itemReader = new ExcelItemReader();
-            _provider = provider;
+            _dataService = dataService;
+            _statisticsService = statisticsService;
         }
 
         private IItemReader _itemReader;
-        private IMarketDataProvider _provider;
+        private IMarketService _dataService;
 
         private string _toolTitle = "Kinderartikelbörse Familientreff Kaltbrunn";
         public string ToolTitle
@@ -76,16 +77,6 @@ namespace KinderArtikelBoerse.Viewmodels
             set { _inputFilePath = value; RaisePropertyChanged(); }
         }
 
-
-        //private SellerViewModel _selectedSellerViewModel;
-        //public SellerViewModel SelectedSellerViewModel
-        //{
-        //    get { return _selectedSellerViewModel; }
-        //    set { _selectedSellerViewModel = value;
-        //        RaisePropertyChanged();
-        //    }
-        //}
-
         private ObservableCollection<ItemViewModel> _items;
         public IEnumerable<ItemViewModel> Items
         {
@@ -93,10 +84,44 @@ namespace KinderArtikelBoerse.Viewmodels
             {
                 if(_items == null )
                 {
-                    _items = new ObservableCollection<ItemViewModel>( _provider.Items.Select( i => new ItemViewModel( i ) ) );
+                    _items = new ObservableCollection<ItemViewModel>( _dataService.Items );
                 }
 
                 return _items;
+            }
+        }
+
+        private ObservableCollection<SellerViewModel> _sellers;
+        public IEnumerable<SellerViewModel> Sellers
+        {
+            get
+            {
+                if ( _sellers == null )
+                {
+                    _sellers = new ObservableCollection<SellerViewModel>( _dataService.Sellers );
+                }
+
+                return _sellers;
+            }
+        }
+
+        private ObservableCollection<SellerStatisticsViewModel> _sellerStatistics;
+        public IEnumerable<SellerStatisticsViewModel> SellerStatistics
+        {
+            get
+            {
+                if ( _sellerStatistics == null )
+                {
+                    _sellerStatistics = new ObservableCollection<SellerStatisticsViewModel>( _dataService.Sellers.Select( s =>
+                    {
+
+                        var stats = new SellerStatisticsViewModel( s );
+                        stats.Update( _statisticsService.GetStatistics( s.Id, _dataService ) );
+                        return stats;
+                    } ) );
+                }
+
+                return _sellerStatistics;
             }
         }
 
@@ -127,7 +152,7 @@ namespace KinderArtikelBoerse.Viewmodels
             {
                 if ( _itemsText == null )
                 {
-                    _itemsText = new ObservableCollection<string>( _provider.Items.Select( i => i.ItemIdentifier ) );
+                    _itemsText = new ObservableCollection<string>( _dataService.Items.Select( i => i.ItemIdentifier ) );
                 }
 
                 return _itemsText;
@@ -206,15 +231,12 @@ namespace KinderArtikelBoerse.Viewmodels
         {
             var normalizedSearchText = SearchItemText.ToLowerInvariant();
 
-            return item.ItemIdentifier.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
+            var isItemMatching = item.ItemIdentifier.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
                     item.Description.ToLowerInvariant().Contains( normalizedSearchText ) ||
                     item.Price.ToString().ToLowerInvariant().StartsWith( normalizedSearchText ) ||
-                    item.Size.ToLowerInvariant().Contains(normalizedSearchText) ||
-                    //seller name
-                    item.Seller.Name.ToLowerInvariant().StartsWith(normalizedSearchText) ||
-                    item.Seller.FirstName.ToLowerInvariant().StartsWith( normalizedSearchText ) 
-                    
-                    ;
+                    item.Size.ToLowerInvariant().Contains( normalizedSearchText );
+
+            return isItemMatching;
         }
 
         public AutoCompleteFilterPredicate<object> SearchItemFilter
@@ -228,15 +250,19 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
-        private ICommand _isSoldCheckedCommand;
-        public ICommand IsSoldCheckedCommand => _isSoldCheckedCommand ?? ( _isSoldCheckedCommand = new ActionCommand<bool>( ( isChecked ) =>
+        private ICommand _sellCommand;
+        public ICommand SellCommand => _sellCommand ?? ( _sellCommand = new ActionCommand<ItemViewModel>( ( sellable ) =>
         {
-            if ( isChecked )
+
+            if ( sellable.IsSold )
             {
-                //SearchItem = null;
                 SearchItemText = string.Empty;
-                //IsAutoCompleteBoxFocused = true;
             }
+            
+            var stats = _statisticsService.GetStatistics( sellable.SellerId, this );
+
+            SellerStatistics.First( s => s.Seller.Id == sellable.SellerId ).Update( stats );
+
         } ) );
 
         private ICommand _refreshCollectionViewCommand;
@@ -300,6 +326,7 @@ namespace KinderArtikelBoerse.Viewmodels
         } ) );
 
         private ICommand _readExcelCommand;
+        private IStatisticsService _statisticsService;
 
         public ICommand ReadExcelCommand => _readExcelCommand ?? ( _readExcelCommand = new ActionCommand( () =>
         {

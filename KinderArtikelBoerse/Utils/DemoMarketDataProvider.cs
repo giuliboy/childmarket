@@ -1,46 +1,79 @@
 ﻿using KinderArtikelBoerse.Contracts;
 using KinderArtikelBoerse.Models;
+using KinderArtikelBoerse.Viewmodels;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace KinderArtikelBoerse.Utils
 {
-    public class DemoMarketDataProvider : IMarketDataProvider
+    public class DemoMarketDataProvider : IMarketService
     {
-        public IEnumerable<Item> Items => new List<Item>()
+        private List<ItemViewModel> _items;
+        public IEnumerable<ItemViewModel> Items
         {
-            new Item() { ItemIdentifier="AB1", Description="roter Pulli", Price=5.0f , Size="36/38", Seller= Sellers.Last()},
-            new Item() { ItemIdentifier="AB2", Description="Pulover", Price=5.0f , Size="38", Seller= Sellers.Last()},
-            new Item() { ItemIdentifier="AB3", Description="jojo", Price=5.5f , Seller= Sellers.Last()},
-            new Item() { ItemIdentifier="AB4", Description="puzzli", Price=25.0f , Seller= Sellers.Last()},
-            new Item() { ItemIdentifier="AB11", Description="pulli mit stern", Price=55.0f , Seller= Sellers.Last()},
+            get
+            {
+                if(_items == null )
+                {
+                    _items = new List<Item>()
+                    {
+                        new Item() { ItemIdentifier="AB1", Description="roter Pulli", Price=5.0f , Size="36/38", SellerId= Sellers.Last().Id},
+                        new Item() { ItemIdentifier="AB2", Description="Pulover", Price=5.0f , Size="38", SellerId= Sellers.Last().Id},
+                        new Item() { ItemIdentifier="AB3", Description="jojo", Price=5.5f , SellerId= Sellers.Last().Id},
+                        new Item() { ItemIdentifier="AB4", Description="puzzli", Price=25.0f , SellerId= Sellers.Last().Id},
+                        new Item() { ItemIdentifier="AB11", Description="pulli mit stern", Price=55.0f , SellerId= Sellers.Last().Id},
 
-            new Item() { ItemIdentifier="C1", Description="buch ", Price=2.5f, Seller = Sellers.First() },
-            new Item() { ItemIdentifier="C2", Description="bobby car ", Price=2.5f, Seller = Sellers.First() },
-            new Item() { ItemIdentifier="C3", Description="ente", Price=2.5f, Seller = Sellers.First() },
+                        new Item() { ItemIdentifier="C1", Description="buch ", Price=2.5f, SellerId = Sellers.First().Id },
+                        new Item() { ItemIdentifier="C2", Description="bobby car ", Price=2.5f, SellerId = Sellers.First().Id  },
+                        new Item() { ItemIdentifier="C3", Description="ente", Price=2.5f, SellerId = Sellers.First().Id  },
 
-            new Item() { ItemIdentifier="CD1", Description="jacke blau", Price=11f , Size="108", Seller=Sellers.Skip(1).First()},
-            new Item() { ItemIdentifier="CD2", Description="socken", Price=1f , Size="112", Seller=Sellers.Skip(1).First()},
+                        new Item() { ItemIdentifier="CD1", Description="jacke blau", Price=11f , Size="108", SellerId=Sellers.Skip(1).First().Id },
+                        new Item() { ItemIdentifier="CD2", Description="socken", Price=1f , Size="112", SellerId=Sellers.Skip(1).First().Id },
 
-        };
+                    }
+                        .Select( i => new ItemViewModel( i ) )
+                        .ToList();
+                }
 
-        public IEnumerable<Seller> Sellers => new List<Seller>()
+                return _items;
+            }
+        }
+
+        private List<SellerViewModel> _sellers;
+        public IEnumerable<SellerViewModel> Sellers
         {
-            new Seller()
+            get
             {
-                Name = "Zahner",
-                FirstName = "Nina"
-            },
-            new Seller()
-            {
-                Name = "Zahner",
-                FirstName = "Nicole"
-            },
-            new Seller()
-            {
-                Name = "Brunner",
-                FirstName="Marianne"
-            },
-        };
+                if ( _sellers == null )
+                {
+                    _sellers = new List<Seller>()
+                    {
+                        new Seller()
+                        {
+                            Id=1,
+                            Name = "Zahner",
+                            FirstName = "Nina"
+                        },
+                        new Seller()
+                        {
+                            Id=2,
+                            Name = "Zahner",
+                            FirstName = "Nicole"
+                        },
+                        new Seller()
+                        {
+                            Id=3,
+                            Name = "Brunner",
+                            FirstName="Marianne"
+                        },
+                    }
+                        .Select( s => new SellerViewModel( s ) )
+                        .ToList();
+                }
+                return _sellers;
+            }
+        }
+       
+        
     }
 }

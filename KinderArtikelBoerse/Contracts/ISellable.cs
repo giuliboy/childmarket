@@ -1,6 +1,4 @@
-﻿using KinderArtikelBoerse.Models;
-
-namespace KinderArtikelBoerse.Contracts
+﻿namespace KinderArtikelBoerse.Contracts
 {
     public interface ISellable
     {
@@ -16,6 +14,6 @@ namespace KinderArtikelBoerse.Contracts
 
         bool IsSold { get; set; }
 
-        Seller Seller { get; set; }
+        int SellerId { get; }
     }
 }

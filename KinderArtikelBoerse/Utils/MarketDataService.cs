@@ -1,22 +1,22 @@
 ﻿using KinderArtikelBoerse.Contracts;
 using KinderArtikelBoerse.Models;
+using KinderArtikelBoerse.Viewmodels;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 
 namespace KinderArtikelBoerse.Utils
 {
 
-    public class MarketDataProvider : IMarketDataProvider
+    public class MarketDataService : IMarketService
     {
         private readonly string _connectionString;
 
-        public MarketDataProvider(string connectionString)
+        public MarketDataService(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public IEnumerable<Seller> Sellers
+        public IEnumerable<SellerViewModel> Sellers
         {
             get
             {
@@ -24,14 +24,13 @@ namespace KinderArtikelBoerse.Utils
                 {
                     return ctx.SellersDbSet
                         .AsNoTracking()
-                        //.Include( s => s.Items )
+                        .Select(s => new SellerViewModel(s))
                         .ToList();
-
                 }
             }
         }
 
-        public IEnumerable<Item> Items
+        public IEnumerable<ItemViewModel> Items
         {
             get
             {
@@ -39,7 +38,7 @@ namespace KinderArtikelBoerse.Utils
                 {
                     return ctx.ItemsDbSet
                         .AsNoTracking()
-                        .Include( s => s.Seller )
+                        .Select(i => new ItemViewModel(i))
                         .ToList();
                 }
             }

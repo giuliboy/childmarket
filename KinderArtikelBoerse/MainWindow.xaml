@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KinderArtikelBoerse"
         xmlns:utils="clr-namespace:KinderArtikelBoerse.Utils"
-                xmlns:contracts="clr-namespace:KinderArtikelBoerse.Contracts"
+        xmlns:contracts="clr-namespace:KinderArtikelBoerse.Contracts"
+        xmlns:vm="clr-namespace:KinderArtikelBoerse.Viewmodels"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
         mc:Ignorable="d"
@@ -44,8 +45,8 @@
                         <TextBlock Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                             <TextBlock.Text>
                                 <MultiBinding StringFormat="{}{0} {1}">
-                                    <Binding Path="Seller.FirstName" />
-                                    <Binding Path="Seller.Name" />
+                                    <Binding Path="FirstName" />
+                                    <Binding Path="Name" />
                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
@@ -69,8 +70,8 @@
                             </Border.Style>
                         </Border>
                     <ToggleButton Grid.Column="2" x:Name="IsSoldToggleButton" Content="$" IsChecked="{Binding IsSold}" 
-                                          Command="{Binding IsSoldCheckedCommand}" 
-                                          CommandParameter="{Binding ElementName=IsSoldToggleButton, Path=IsChecked}" >
+                                          Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.SellCommand}" 
+                                          CommandParameter="{Binding Path=.}" >
                         <!--<i:Interaction.Behaviors>
                             <utils:EventCommandBehavior Event="Checked" 
                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabControl}, Mode=FindAncestor}, Path=DataContext.RefreshCollectionViewCommand}" />
@@ -81,6 +82,32 @@
                 </Grid>
                
             </Border>
+        </DataTemplate>
+        <DataTemplate x:Key="SellerStatisticsItemTemplate" DataType="{x:Type vm:SellerStatisticsViewModel}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock >
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0} {1}">
+                            <Binding Path="Seller.FirstName" />
+                            <Binding Path="Seller.Name" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+
+                <TextBlock Grid.Column="2">
+                    <TextBlock.Text>
+                        <MultiBinding StringFormat="{}{0}/{1}">
+                            <Binding Path="SoldItems" />
+                            <Binding Path="TotalItems" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+            </Grid>
         </DataTemplate>
     </Window.Resources>
     <Grid>
@@ -150,12 +177,13 @@
                                 ItemTemplate="{StaticResource ItemTemplate}"
                                 MaxDropDownHeight="600"
                             />
-                        <ToggleButton x:Name="IsSoldToggleButton" Content="Sold" IsChecked="{Binding SearchItem.IsSold}" />
+                        <!--<ToggleButton x:Name="IsSoldToggleButton" Content="Sold" IsChecked="{Binding SearchItem.IsSold}" />-->
                     </StackPanel>
 
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="Collection View + Live Filter" />
                     <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SearchItemText,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <ListView Grid.Row="3" Grid.Column="1" 
+                              Background="Black"
                                   SelectedItem="{Binding SearchItem}"
                                   ItemsSource="{Binding Items}" 
                                   ItemTemplate="{StaticResource ItemTemplate}" >
@@ -170,6 +198,13 @@
                         </ListView>-->
 
                 </Grid>
+            </TabItem>
+            <TabItem Header="Statistics">
+                <ListView 
+                    ItemsSource="{Binding SellerStatistics}"
+                    ItemTemplate="{StaticResource SellerStatisticsItemTemplate}">
+
+                </ListView>
             </TabItem>
         </TabControl>
     </Grid>

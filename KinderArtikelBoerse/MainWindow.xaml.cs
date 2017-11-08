@@ -1,19 +1,7 @@
 ﻿using KinderArtikelBoerse.Utils;
 using KinderArtikelBoerse.Viewmodels;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace KinderArtikelBoerse
 {
@@ -28,7 +16,7 @@ namespace KinderArtikelBoerse
         {
             InitializeComponent();
 
-            _mainViewModel = new MainViewModel( new DemoMarketDataProvider() );
+            _mainViewModel = new MainViewModel( new DemoMarketDataProvider(), new StatisticsService() );
             //_mainViewModel = new MainViewModel( new MarketDataProvider( "MarketDbContext" ) );
 
             DataContext = _mainViewModel;
