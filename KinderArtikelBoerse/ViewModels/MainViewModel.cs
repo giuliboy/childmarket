@@ -16,6 +16,13 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Excel = Microsoft.Office.Interop.Excel;
 
+/*
+ * TODOS:
+ * Schalter um verkaufte items zu filtern 
+ * Kassa VM isolieren
+ * "neuer Kunde" und Summe als Knopf kombiniert
+ * 
+ */
 
 namespace KinderArtikelBoerse.Viewmodels
 {
@@ -197,19 +204,9 @@ namespace KinderArtikelBoerse.Viewmodels
 
                 if(oldValue != value )
                 {
-                    ItemsCollectionView.Refresh();
-
-                    var filteredCollection = ItemsCollectionView
-                        .Cast<ItemAssociationViewModel>()
-                        .ToList()
-                        ;
-
-                    if(filteredCollection.Count == 1 )
-                    {
-                        SearchItem = filteredCollection.First();
-                    }
 
                     RaisePropertyChanged();
+                    ItemsCollectionView.Refresh();
                 }
                 
             }
@@ -236,6 +233,11 @@ namespace KinderArtikelBoerse.Viewmodels
             var normalizedSearchText = SearchItemText.ToLowerInvariant();
 
             var item = association.Item;
+
+            if ( item.IsSold )
+            {
+                return false;
+            }
 
             var isItemMatching = item.ItemIdentifier.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
                     item.Description.ToLowerInvariant().Contains( normalizedSearchText ) ||
@@ -269,7 +271,14 @@ namespace KinderArtikelBoerse.Viewmodels
             {
                 SearchItemText = string.Empty;
             }
-            
+
+            if ( !Batch.Contains( association ) )
+            {
+                Batch.Add( association );
+            }
+
+            RaisePropertyChanged( nameof( BatchValue ) );
+
             //TODO :
             //item association verwenden und statistics hilfswerk entfernen und in SellerViewModel stecken
             var stats = _statisticsService.GetStatistics( item.SellerId, Items.Select(a => a.Item ) );
@@ -284,7 +293,61 @@ namespace KinderArtikelBoerse.Viewmodels
             UnSoldItemsCollectionView.Refresh();
         } ) );
 
-        
+        private ICommand _enterKeyCommand;
+        public ICommand EnterKeyCommand => _enterKeyCommand ?? ( _enterKeyCommand = new ActionCommand<object>( (args) =>
+        {
+            if ( Keyboard.IsKeyDown( Key.Enter ) )
+            {
+                var filteredCollection = ItemsCollectionView
+               .Cast<ItemAssociationViewModel>()
+               .ToList()
+               ;
+                
+                if ( filteredCollection.Any() )
+                {
+                    var sellItem = filteredCollection.First();
+
+                    sellItem.Item.IsSold = true;
+
+                    if ( !Batch.Contains( sellItem ) )
+                    {
+                        Batch.Add( sellItem );
+                    }
+
+                    SearchItemText = string.Empty;
+
+                    RaisePropertyChanged( nameof( BatchValue ) );
+
+                }
+            }
+           
+        } ) );
+
+        private ICommand _newBatchCommand;
+        public ICommand NewBatchCommand => _newBatchCommand ?? ( _newBatchCommand = new ActionCommand( () =>
+        {
+            Batch.Clear();
+            RaisePropertyChanged( nameof( BatchValue ) );
+        } ) );
+
+        public float BatchValue
+        {
+            get
+            {
+                return Batch.Sum( b => b.Item.Price );
+            }
+        }
+
+        private ObservableCollection<ItemAssociationViewModel> _batch = new ObservableCollection<ItemAssociationViewModel>();
+        public ObservableCollection<ItemAssociationViewModel> Batch
+        {
+            get
+            {
+                return _batch;
+            }
+        }
+
+
         private ICommand _resetFocusCommand;
         public ICommand ResetFocusCommand => _resetFocusCommand ?? ( _resetFocusCommand = new ActionCommand<AutoCompleteBox>( ( acb ) =>
         {

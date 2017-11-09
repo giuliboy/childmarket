@@ -149,24 +149,25 @@
                 <Grid Background="Black">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="50"/>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="30"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="40"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <ContentControl HorizontalAlignment="Left" ContentTemplate="{StaticResource ItemTemplate}" Content="{Binding SearchItem}" />
+                    <!--debugging-->
+                    <!--<ContentControl HorizontalAlignment="Left" ContentTemplate="{StaticResource ItemTemplate}" Content="{Binding SearchItem}" />-->
+                    <Button Grid.Row="0" Grid.Column="0" Content="Neuer Kunde" Command="{Binding NewBatchCommand}"/>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Auto Complete Box" />
-
-                    <StackPanel Grid.Row="2"  Orientation="Horizontal">
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
                         <controls:AutoCompleteBox 
                                 Width="300"
                                 x:Name="AutoCompleteBox"
                                 IsTextCompletionEnabled="False"
+                                
                                 ItemsSource ="{Binding Items, Mode=OneWay}"
                                 SelectedItem="{Binding SearchItem, Mode=TwoWay}"
                                 Text="{Binding SearchItemText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -174,11 +175,26 @@
                                 ValueMemberPath="Item.ItemIdentifier"
                                 ItemTemplate="{StaticResource ItemTemplate}"
                                 MaxDropDownHeight="600"
-                            />
-                        <!--<ToggleButton x:Name="IsSoldToggleButton" Content="Sold" IsChecked="{Binding SearchItem.IsSold}" />-->
+                            >
+                            <i:Interaction.Behaviors>
+                                <utils:EventCommandBehavior Event="PreviewKeyDown" Command="{Binding EnterKeyCommand}"/>
+                            </i:Interaction.Behaviors>
+                        </controls:AutoCompleteBox>
+                        <!--<ToggleButton x:Name="IsSoldToggleButton" Content="Sold" IsChecked="{Binding SearchItem.Item.IsSold}" />-->
                     </StackPanel>
 
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="Collection View + Live Filter" />
+
+                    <TextBlock Grid.Row="0" Grid.Column="1" 
+                               FontSize="16" Text="{Binding BatchValue, StringFormat=C}" Foreground="White"/>
+
+                    <ItemsControl Grid.Row="2" Grid.Column="1" 
+                              Background="Black"
+                                  ItemsSource="{Binding Batch}" 
+                                  ItemTemplate="{StaticResource ItemTemplate}" >
+
+                    </ItemsControl>
+
+                    <!--<TextBlock Grid.Row="1" Grid.Column="1" Text="Collection View + Live Filter" />
                     <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding SearchItemText,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                     <ListView Grid.Row="3" Grid.Column="1" 
                               Background="Black"
@@ -186,7 +202,10 @@
                                   ItemsSource="{Binding Items}" 
                                   ItemTemplate="{StaticResource ItemTemplate}" >
 
-                    </ListView>
+                    </ListView>-->
+                    
+                    
+                    
                     <!--<ListView Grid.Row="3" Grid.Column="0" ItemsSource="{Binding SellerViewModels}" SelectedItem="{Binding SelectedSellerViewModel}">
                             
                         </ListView>
