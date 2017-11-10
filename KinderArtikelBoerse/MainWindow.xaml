@@ -18,7 +18,7 @@
         <utils:SoldColorConverter x:Key="SoldColorBrush"/>
        
         <DataTemplate x:Key="ItemTemplate" DataType="{x:Type vm:ItemAssociationViewModel}">
-            <Border Height="50" Width="350" BorderThickness="2">
+            <Border Height="50" HorizontalAlignment="Stretch" BorderThickness="2">
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Style.Setters>
@@ -33,7 +33,7 @@
                 </Border.Style>
                 <Grid Background="#01000000">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="300" />
+                        <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="20"/>
                         <ColumnDefinition Width="30"/>
                     </Grid.ColumnDefinitions>
@@ -149,9 +149,7 @@
                 <Grid Background="Black">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="50"/>
-                        <RowDefinition Height="30"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="40"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -160,37 +158,35 @@
 
                     <!--debugging-->
                     <!--<ContentControl HorizontalAlignment="Left" ContentTemplate="{StaticResource ItemTemplate}" Content="{Binding SearchItem}" />-->
-                    <Button Grid.Row="0" Grid.Column="0" Content="Neuer Kunde" Command="{Binding NewBatchCommand}"/>
 
-                    <StackPanel Grid.Row="1" Orientation="Horizontal">
-                        <controls:AutoCompleteBox 
-                                Width="300"
+                    <controls:AutoCompleteBox 
                                 x:Name="AutoCompleteBox"
                                 IsTextCompletionEnabled="False"
-                                
                                 ItemsSource ="{Binding Items, Mode=OneWay}"
                                 SelectedItem="{Binding SearchItem, Mode=TwoWay}"
                                 Text="{Binding SearchItemText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 ItemFilter="{Binding SearchItemFilter, Mode=OneWay}"
                                 ValueMemberPath="Item.ItemIdentifier"
                                 ItemTemplate="{StaticResource ItemTemplate}"
-                                MaxDropDownHeight="600"
-                            >
-                            <i:Interaction.Behaviors>
-                                <utils:EventCommandBehavior Event="PreviewKeyDown" Command="{Binding KeyDownCommand}"/>
-                            </i:Interaction.Behaviors>
-                        </controls:AutoCompleteBox>
-                    </StackPanel>
+                                MaxDropDownHeight="600" >
+                        <i:Interaction.Behaviors>
+                            <utils:EventCommandBehavior Event="PreviewKeyDown" Command="{Binding KeyDownCommand}"/>
+                        </i:Interaction.Behaviors>
+                    </controls:AutoCompleteBox>
 
+                    <Button Grid.Row="0" Grid.Column="1" Command="{Binding NewBatchCommand}">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontSize="16" Text="{Binding BatchValue, StringFormat=C}" Foreground="White"/>
+                                <TextBlock Margin="20,0,0,0" FontSize="16" Text="Neuer Kunde" Foreground="White"/>
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
 
-                    <TextBlock Grid.Row="0" Grid.Column="1" 
-                               FontSize="16" Text="{Binding BatchValue, StringFormat=C}" Foreground="White"/>
-
-                    <ItemsControl Grid.Row="2" Grid.Column="1" 
+                    <ItemsControl Grid.Row="1" Grid.Column="1" 
                               Background="Black"
                                   ItemsSource="{Binding Batch}" 
                                   ItemTemplate="{StaticResource ItemTemplate}" >
-
                     </ItemsControl>
 
                     <!--<TextBlock Grid.Row="1" Grid.Column="1" Text="Collection View + Live Filter" />
