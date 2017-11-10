@@ -1,10 +1,11 @@
 ﻿using KinderArtikelBoerse.Models;
+using System.Collections.Generic;
 
 namespace KinderArtikelBoerse.Contracts
 {
 
     public interface IItemReader
     {
-        Seller ReadItems( string filePath );
+        IEnumerable<Item> ReadItems( string filePath );
     }
 }

@@ -31,7 +31,7 @@ namespace KinderArtikelBoerse.Viewmodels
 
         public MainViewModel(IMarketService dataService, IStatisticsService statisticsService)
         {
-            _itemReader = new ExcelItemReader();
+            _itemReader = new ExcelItemReader(dataService);
             _dataService = dataService;
             _statisticsService = statisticsService;
             CashRegisterViewModel = new CashRegisterViewModel( dataService, statisticsService );
@@ -79,7 +79,7 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
-        private string _inputFilePath;
+        private string _inputFilePath = @"C:\Users\Dg8\Source\Repos\ChildMarket\KinderArtikelBoerse\Assets\testitems.xlsx";
         public string InputFilePath
         {
             get { return _inputFilePath; }
@@ -168,7 +168,7 @@ namespace KinderArtikelBoerse.Viewmodels
             //ein Excel file eines verkäufers einlesen 
             //die artikel in die Db migrieren
 
-            //_itemReader.ReadItems()
+            var seller = _itemReader.ReadItems( InputFilePath );
 
             //var sellers = _provider.Sellers.ToList();
 
