@@ -19,8 +19,6 @@ using Excel = Microsoft.Office.Interop.Excel;
 /*
  * TODOS:
  * Schalter um verkaufte items zu filtern 
- * Kassa VM isolieren
- * "neuer Kunde" und Summe als Knopf kombiniert
  * 
  */
 
@@ -126,97 +124,7 @@ namespace KinderArtikelBoerse.Viewmodels
                 return _sellers;
             }
         }
-        
-        private ICollectionView _unSoldItemsCollectionView;
-        public ICollectionView UnSoldItemsCollectionView
-        {
-            get
-            {
-                if ( _unSoldItemsCollectionView == null )
-                {
-                    _unSoldItemsCollectionView = CollectionViewSource.GetDefaultView( Items );
-
-                    _unSoldItemsCollectionView.Filter += ( obj ) =>
-                    {
-                        var ass = obj as ItemAssociationViewModel;
-                        return !ass.Item.IsSold;
-                    };
-
-                }
-                return _unSoldItemsCollectionView;
-            }
-        }
-
-        private ObservableCollection<string> _itemsText;
-        public IEnumerable<string> ItemsText
-        {
-            get
-            {
-                if ( _itemsText == null )
-                {
-                    _itemsText = new ObservableCollection<string>( _dataService.Items.Select( i => i.ItemIdentifier ) );
-                }
-
-                return _itemsText;
-            }
-        }
-
        
-
-     
-
-      
-
-        private ICommand _refreshCollectionViewCommand;
-        public ICommand RefreshCollectionViewCommand => _refreshCollectionViewCommand ?? ( _refreshCollectionViewCommand = new ActionCommand( ( ) =>
-        {
-            UnSoldItemsCollectionView.Refresh();
-        } ) );
-
-
-        private ICommand _newBatchCommand;
-        public ICommand NewBatchCommand => _newBatchCommand ?? ( _newBatchCommand = new ActionCommand( () =>
-        {
-            Batch.Clear();
-            RaisePropertyChanged( nameof( BatchValue ) );
-        } ) );
-
-        public float BatchValue
-        {
-            get
-            {
-                return Batch.Sum( b => b.Item.Price );
-            }
-        }
-
-        private ObservableCollection<ItemAssociationViewModel> _batch = new ObservableCollection<ItemAssociationViewModel>();
-        public ObservableCollection<ItemAssociationViewModel> Batch
-        {
-            get
-            {
-                return _batch;
-            }
-        }
-
-
-        private ICommand _resetFocusCommand;
-        public ICommand ResetFocusCommand => _resetFocusCommand ?? ( _resetFocusCommand = new ActionCommand<AutoCompleteBox>( ( acb ) =>
-        {
-            //acb.Focus();
-            
-        } ) );
-
-        //private bool _isAutoCompleteBoxFocused;
-        //public bool IsAutoCompleteBoxFocused
-        //{
-        //    get { return _isAutoCompleteBoxFocused; }
-        //    set
-        //    {
-        //        _isAutoCompleteBoxFocused = value;
-        //        RaisePropertyChanged();
-        //    }
-        //}
-
         private ICommand _createExcelCommand;
         public ICommand CreateExcelCommand => _createExcelCommand ?? ( _createExcelCommand = new ActionCommand<string>( async ( unused ) =>
                                                           {
