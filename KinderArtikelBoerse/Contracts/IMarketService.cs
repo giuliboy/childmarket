@@ -7,8 +7,15 @@ namespace KinderArtikelBoerse.Contracts
 
     public interface IMarketService
     {
-        IEnumerable<SellerViewModel> Sellers { get; }
+        Seller Add( Seller seller );
 
-        IEnumerable<ItemViewModel> Items { get; }
+        Seller Remove( Seller seller );
+        
+        void Update( int sellerId, Seller seller );
+
+        IEnumerable<Seller> Sellers { get; }
+
+        IEnumerable<Item> Items { get; }
+
     }
 }

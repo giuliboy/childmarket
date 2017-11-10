@@ -95,7 +95,7 @@ namespace KinderArtikelBoerse.Viewmodels
                 {
                     var associations = from i in _dataService.Items
                             join s in _dataService.Sellers on i.SellerId equals s.Id
-                            select new ItemAssociationViewModel() { Item = i, Seller = s };
+                            select new ItemAssociationViewModel() { Item = new ItemViewModel(i), Seller = new SellerViewModel(s.Id, _dataService) };
 
                     _items = new ObservableCollection<ItemAssociationViewModel>( associations );
                 }
@@ -109,16 +109,15 @@ namespace KinderArtikelBoerse.Viewmodels
         {
             get
             {
+                var seq = new SellerEqualityComparer();
                 if ( _sellers == null )
                 {
-                    _sellers = new ObservableCollection<SellerViewModel>( Items.Select(ass => ass.Seller)
-                    .Distinct()
-                    .Select( seller => 
-                    {
-                        seller.Update( _statisticsService.GetStatistics(seller.Id, Items.Select(i => i.Item)) );
-                        return seller;
-                    }) );
-                    
+                    _sellers = new ObservableCollection<SellerViewModel> ( 
+                        Items
+                        .Select( i => i.Seller )
+                        .Distinct( seq ) 
+                        .ToList()
+                    );
                 }
 
                 return _sellers;
@@ -198,7 +197,7 @@ namespace KinderArtikelBoerse.Viewmodels
                         FamilientreffPercentage = int.Parse( c[3].ToString() )
 
                     };
-                    return new SellerViewModel( s );
+                    return new SellerViewModel( s.Id, _dataService );
                    
                 } )
                  .OrderByDescending( o => o.Name )

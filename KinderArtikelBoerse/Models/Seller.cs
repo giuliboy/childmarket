@@ -15,5 +15,11 @@ namespace KinderArtikelBoerse.Models
 
         public float FamilientreffPercentage { get; set; }
 
+        public float SoldValue { get; set; }
+
+        public int SoldItems { get; set; }
+
+        public int TotalItems { get; set; }
+
     }
 }

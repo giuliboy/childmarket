@@ -1,4 +1,5 @@
 ﻿using KinderArtikelBoerse.Contracts;
+using KinderArtikelBoerse.Models;
 using KinderArtikelBoerse.Utils;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -80,7 +81,7 @@ namespace KinderArtikelBoerse.Viewmodels
                 {
                     var associations = from i in _dataService.Items
                                        join s in _dataService.Sellers on i.SellerId equals s.Id
-                                       select new ItemAssociationViewModel() { Item = i, Seller = s };
+                                       select new ItemAssociationViewModel() { Item = new ItemViewModel( i ), Seller = new SellerViewModel( s.Id, _dataService ) };
 
                     _items = new ObservableCollection<ItemAssociationViewModel>( associations );
                 }
@@ -158,9 +159,15 @@ namespace KinderArtikelBoerse.Viewmodels
             {
                 Batch.Remove( association );
             }
-            
-            association.Seller.Update( _statisticsService.GetStatistics( association.Seller.Id, Items.Select( i => i.Item ) ) );
 
+            var sellerToUpdate =_dataService.Sellers.First( s => s.Id == item.SellerId );
+
+            var updatedStats = _statisticsService.GetStatistics( association.Seller.Id, Items.Select( i => i.Item ) );
+            sellerToUpdate.SoldItems = updatedStats.SoldItems;
+            sellerToUpdate.TotalItems = updatedStats.TotalItems;
+            sellerToUpdate.SoldValue = updatedStats.SoldValue;
+
+            association.Seller.Update( item.SellerId );
             RaisePropertyChanged( nameof( BatchValue ) );
 
             

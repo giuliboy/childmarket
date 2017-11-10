@@ -8,8 +8,8 @@ namespace KinderArtikelBoerse.Utils
 {
     public class DemoMarketDataProvider : IMarketService
     {
-        private List<ItemViewModel> _items;
-        public IEnumerable<ItemViewModel> Items
+        private List<Item> _items;
+        public IEnumerable<Item> Items
         {
             get
             {
@@ -31,7 +31,6 @@ namespace KinderArtikelBoerse.Utils
                         new Item() { ItemIdentifier="CD2", Description="socken", Price=1f , Size="112", SellerId=Sellers.Skip(1).First().Id },
 
                     }
-                        .Select( i => new ItemViewModel( i ) )
                         .ToList();
                 }
 
@@ -39,8 +38,8 @@ namespace KinderArtikelBoerse.Utils
             }
         }
 
-        private List<SellerViewModel> _sellers;
-        public IEnumerable<SellerViewModel> Sellers
+        private List<Seller> _sellers;
+        public IEnumerable<Seller> Sellers
         {
             get
             {
@@ -67,13 +66,41 @@ namespace KinderArtikelBoerse.Utils
                             FirstName="Marianne"
                         },
                     }
-                        .Select( s => new SellerViewModel( s ) )
                         .ToList();
                 }
                 return _sellers;
             }
         }
-       
-        
+
+        public Seller Add( Seller seller )
+        {
+            seller.Id = _sellers.Select( s => s.Id ).Distinct().Max() + 1;
+            _sellers.Add( seller );
+
+            return seller;
+        }
+
+        public Seller Remove( Seller seller )
+        {
+            _sellers.Remove( seller );
+
+            return seller;
+        }
+
+        public void Update( int sellerId, Seller seller )
+        {
+            var updatingSeller =_sellers.FirstOrDefault( s => s.Id == sellerId );
+            if(updatingSeller == null )
+            {
+                return;
+            }
+
+            updatingSeller.SoldItems = seller.SoldItems;
+            updatingSeller.TotalItems = seller.TotalItems;
+            updatingSeller.SoldValue = seller.SoldValue;
+            updatingSeller.Name = seller.Name;
+            updatingSeller.FirstName = seller.FirstName;
+            updatingSeller.FamilientreffPercentage = seller.FamilientreffPercentage;
+        }
     }
 }

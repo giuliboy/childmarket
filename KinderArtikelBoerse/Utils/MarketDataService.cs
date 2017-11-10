@@ -16,7 +16,50 @@ namespace KinderArtikelBoerse.Utils
             _connectionString = connectionString;
         }
 
-        public IEnumerable<SellerViewModel> Sellers
+        public Seller Add( Seller seller )
+        {
+            using(var ctx = new MarketDbContext( _connectionString ) )
+            {
+                var addedEntity = ctx.SellersDbSet.Add( seller );
+
+                ctx.SaveChanges();
+                return addedEntity;
+            }
+        }
+
+        public Seller Remove( Seller seller )
+        {
+            using ( var ctx = new MarketDbContext( _connectionString ) )
+            {
+                var removedEntity = ctx.SellersDbSet.Remove( seller );
+
+                ctx.SaveChanges();
+                return removedEntity;
+            }
+        }
+
+        public void Update( int sellerId, Seller seller )
+        {
+            using ( var ctx = new MarketDbContext( _connectionString ) )
+            {
+                var updatingSeller = ctx.SellersDbSet.FirstOrDefault( s => s.Id == sellerId );
+                if ( updatingSeller == null )
+                {
+                    return;
+                }
+
+                updatingSeller.SoldItems = seller.SoldItems;
+                updatingSeller.TotalItems = seller.TotalItems;
+                updatingSeller.SoldValue = seller.SoldValue;
+                updatingSeller.Name = seller.Name;
+                updatingSeller.FirstName = seller.FirstName;
+                updatingSeller.FamilientreffPercentage = seller.FamilientreffPercentage;
+
+                ctx.SaveChanges();
+            }
+        }
+
+        public IEnumerable<Seller> Sellers
         {
             get
             {
@@ -24,13 +67,12 @@ namespace KinderArtikelBoerse.Utils
                 {
                     return ctx.SellersDbSet
                         .AsNoTracking()
-                        .Select(s => new SellerViewModel(s))
                         .ToList();
                 }
             }
         }
 
-        public IEnumerable<ItemViewModel> Items
+        public IEnumerable<Item> Items
         {
             get
             {
@@ -38,7 +80,6 @@ namespace KinderArtikelBoerse.Utils
                 {
                     return ctx.ItemsDbSet
                         .AsNoTracking()
-                        .Select(i => new ItemViewModel(i))
                         .ToList();
                 }
             }

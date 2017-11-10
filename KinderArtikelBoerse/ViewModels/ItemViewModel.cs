@@ -22,22 +22,6 @@ namespace KinderArtikelBoerse.Viewmodels
         {
         } ) );
 
-        //public string Name
-        //{
-        //    get
-        //    {
-        //        return _seller.Name;
-        //    }
-        //}
-
-        //public string FirstName
-        //{
-        //    get
-        //    {
-        //        return _seller.FirstName;
-        //    }
-        //}
-
         public int SellerId
         {
             get

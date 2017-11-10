@@ -31,7 +31,7 @@ namespace KinderArtikelBoerse.Utils
                         Size = c[2].ToString(),
                         Price = float.Parse( c[3].ToString() ),
 
-                        SellerId = -1,//GetSeller( c[4].ToString(), c[5].ToString() ).Id,
+                        SellerId = GetSeller( c[4].ToString(), c[5].ToString() ).Id,
 
                     };
                     return i;
@@ -50,10 +50,10 @@ namespace KinderArtikelBoerse.Utils
 
             if(existingSeller == null )
             {
-                //todo
+                existingSeller = _dataService.Add( new Seller() { Name = name, FirstName = firstName, FamilientreffPercentage = 0.0f } );
             }
 
-            return null;
+            return existingSeller;
         }
     }
 }
