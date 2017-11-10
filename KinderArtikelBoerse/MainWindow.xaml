@@ -18,8 +18,8 @@
         <utils:SoldColorConverter x:Key="SoldColorBrush"/>
        
         <DataTemplate x:Key="ItemTemplate" DataType="{x:Type vm:ItemAssociationViewModel}">
-            <Border Height="50" HorizontalAlignment="Stretch" BorderThickness="2">
-                <Border.Style>
+            <Border Height="50" HorizontalAlignment="Stretch" BorderThickness="2" BorderBrush="LightGray">
+                <!--<Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Style.Setters>
                             <Setter Property="BorderBrush" Value="LightGray"/>
@@ -30,26 +30,43 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </Border.Style>
+                </Border.Style>-->
                 <Grid Background="#01000000">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*"  x:Name="MainContent" />
                         <ColumnDefinition Width="20"/>
                         <ColumnDefinition Width="30"/>
                     </Grid.ColumnDefinitions>
-                   
-                    <TextBlock Foreground="White" Text="{Binding Item.ItemIdentifier}" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                        <TextBlock Foreground="White" Text="{Binding Item.Description}" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
-                        <TextBlock Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}{0} {1}">
-                                    <Binding Path="Seller.FirstName" />
-                                    <Binding Path="Seller.Name" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>
 
-                        <Border HorizontalAlignment="Right" VerticalAlignment="Top" Width="80" Margin="0,2,0,0" CornerRadius="13" Height="26" >
+                    <Rectangle >
+                        <Rectangle.Style>
+                            <Style TargetType="{x:Type Rectangle}">
+                                <Style.Setters>
+                                    <Setter Property="Fill" Value="Brown"/>
+                                </Style.Setters>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Item.Size}" Value="">
+                                        <Setter Property="Fill" Value="Blue"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Rectangle.Style>
+                    </Rectangle>
+                    <TextBlock Grid.Column="2" Foreground="White" Text="{Binding Item.ItemIdentifier}" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBlock Grid.Column="2" Foreground="White" Text="{Binding Item.Description}" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+                    <TextBlock Grid.Column="2" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} {1}">
+                                <Binding Path="Seller.FirstName" />
+                                <Binding Path="Seller.Name" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <TextBlock Grid.Column="2" Text="{Binding Item.Size}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+
+                    <Border Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Top" Width="80" Margin="0,2,0,0" CornerRadius="13" Height="26" >
                             <TextBlock Foreground="White" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" 
                                    Text="{Binding Item.Price, StringFormat=C}" />
                             <Border.Style >
@@ -67,8 +84,8 @@
 
                             </Border.Style>
                         </Border>
-                    <ToggleButton Grid.Column="2" x:Name="IsSoldToggleButton" Content="$" IsChecked="{Binding Item.IsSold}" 
-                                          Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.CashRegisterViewModel.SellCommand}" 
+                    <ToggleButton Grid.Column="4" x:Name="IsSoldToggleButton" Content="$" IsChecked="{Binding Item.IsSold}" 
+                                          Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.CashRegisterViewModel.ToggleSellCommand}" 
                                           CommandParameter="{Binding Path=.}" >
                         <!--<i:Interaction.Behaviors>
                             <utils:EventCommandBehavior Event="Checked" 
@@ -162,6 +179,7 @@
                     <controls:AutoCompleteBox 
                                 x:Name="AutoCompleteBox"
                                 IsTextCompletionEnabled="False"
+                        FontSize="16"
                                 ItemsSource ="{Binding Items, Mode=OneWay}"
                                 SelectedItem="{Binding SearchItem, Mode=TwoWay}"
                                 Text="{Binding SearchItemText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

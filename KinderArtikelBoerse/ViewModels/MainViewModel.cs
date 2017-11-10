@@ -113,9 +113,12 @@ namespace KinderArtikelBoerse.Viewmodels
             {
                 if ( _sellers == null )
                 {
-                    _sellers = new ObservableCollection<SellerViewModel>( _dataService.Sellers.Select(s => {
-                        s.Update( _statisticsService.GetStatistics(s.Id, _dataService.Items) );
-                        return s;
+                    _sellers = new ObservableCollection<SellerViewModel>( Items.Select(ass => ass.Seller)
+                    .Distinct()
+                    .Select( seller => 
+                    {
+                        seller.Update( _statisticsService.GetStatistics(seller.Id, Items.Select(i => i.Item)) );
+                        return seller;
                     }) );
                     
                 }

@@ -139,8 +139,8 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
-        private ICommand _sellCommand;
-        public ICommand SellCommand => _sellCommand ?? ( _sellCommand = new ActionCommand<ItemAssociationViewModel>( HandleSold ) );
+        private ICommand _toggleSellCommand;
+        public ICommand ToggleSellCommand => _toggleSellCommand ?? ( _toggleSellCommand = new ActionCommand<ItemAssociationViewModel>( HandleSold ) );
 
         private void HandleSold( ItemAssociationViewModel association )
         {
@@ -149,13 +149,16 @@ namespace KinderArtikelBoerse.Viewmodels
             if ( item.IsSold )
             {
                 SearchItemText = string.Empty;
+                if ( !Batch.Contains( association ) )
+                {
+                    Batch.Add( association );
+                }
             }
-
-            if ( !Batch.Contains( association ) )
+            else
             {
-                Batch.Add( association );
+                Batch.Remove( association );
             }
-
+            
             association.Seller.Update( _statisticsService.GetStatistics( association.Seller.Id, Items.Select( i => i.Item ) ) );
 
             RaisePropertyChanged( nameof( BatchValue ) );
