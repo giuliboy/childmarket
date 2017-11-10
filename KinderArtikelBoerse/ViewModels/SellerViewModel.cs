@@ -26,6 +26,41 @@ namespace KinderArtikelBoerse.Viewmodels
 
         public float FamilientreffSharePercentage { get { return _data.FamilientreffPercentage; } }
 
+        private SellStatistic _sellStatistics = new SellStatistic();
+
+        public void Update( SellStatistic ss )
+        {
+            _sellStatistics = ss;
+            RaisePropertyChanged( nameof(SoldItems) );
+            RaisePropertyChanged( nameof( SoldValue ) );
+            RaisePropertyChanged( nameof( TotalItems ) );
+        }
+
+        public int SoldItems
+        {
+            get
+            {
+                return _sellStatistics.SoldItems;
+            }
+        }
+
+        public int TotalItems
+        {
+            get
+            {
+                return _sellStatistics.TotalItems;
+            }
+        }
+
+        public float SoldValue
+        {
+            get
+            {
+                return _sellStatistics.SoldValue;
+            }
+        }
+
+
         public override string ToString()
         {
             return $"{Name}, {FirstName}";

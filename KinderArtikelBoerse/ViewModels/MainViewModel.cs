@@ -26,13 +26,17 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
+    
     public class MainViewModel : PropertyChangeNotifier
     {
+        public CashRegisterViewModel CashRegisterViewModel { get; }
+
         public MainViewModel(IMarketService dataService, IStatisticsService statisticsService)
         {
             _itemReader = new ExcelItemReader();
             _dataService = dataService;
             _statisticsService = statisticsService;
+            CashRegisterViewModel = new CashRegisterViewModel( dataService, statisticsService );
         }
 
         private IItemReader _itemReader;
@@ -109,33 +113,17 @@ namespace KinderArtikelBoerse.Viewmodels
             {
                 if ( _sellers == null )
                 {
-                    _sellers = new ObservableCollection<SellerViewModel>( _dataService.Sellers );
+                    _sellers = new ObservableCollection<SellerViewModel>( _dataService.Sellers.Select(s => {
+                        s.Update( _statisticsService.GetStatistics(s.Id, _dataService.Items) );
+                        return s;
+                    }) );
+                    
                 }
 
                 return _sellers;
             }
         }
-
-        private ObservableCollection<SellerStatisticsViewModel> _sellerStatistics;
-        public IEnumerable<SellerStatisticsViewModel> SellerStatistics
-        {
-            get
-            {
-                if ( _sellerStatistics == null )
-                {
-                    _sellerStatistics = new ObservableCollection<SellerStatisticsViewModel>( _dataService.Sellers.Select( s =>
-                    {
-
-                        var stats = new SellerStatisticsViewModel( s );
-                        stats.Update( _statisticsService.GetStatistics( s.Id, Items.Select(a => a.Item ) ) );
-                        return stats;
-                    } ) );
-                }
-
-                return _sellerStatistics;
-            }
-        }
-
+        
         private ICollectionView _unSoldItemsCollectionView;
         public ICollectionView UnSoldItemsCollectionView
         {
@@ -170,122 +158,11 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
-        private ItemAssociationViewModel _searchItem;
-        public ItemAssociationViewModel SearchItem
-        {
-            get
-            {
-                return _searchItem;
-            }
-            set
-            {
-                var oldValue = _searchItem;
-                _searchItem = value;
-                
-                if(oldValue != value )
-                {
-                    RaisePropertyChanged();
-                }
-                
-            }
-        }
+       
 
-        private string _searchItemText = string.Empty;
-        public string SearchItemText
-        {
-            get
-            {
-                return _searchItemText;
-            }
-            set
-            {
-                var oldValue = _searchItemText;
-                _searchItemText = value;
+     
 
-                if(oldValue != value )
-                {
-
-                    RaisePropertyChanged();
-                    ItemsCollectionView.Refresh();
-                }
-                
-            }
-        }
-
-        private ICollectionView _itemsCollectionView;
-        public ICollectionView ItemsCollectionView
-        {
-            get
-            {
-                if(_itemsCollectionView == null )
-                {
-                    _itemsCollectionView = CollectionViewSource.GetDefaultView( Items );
-
-                    _itemsCollectionView.Filter += (obj) => ItemFilterPredicate( (ItemAssociationViewModel)obj );
-
-                }
-                return _itemsCollectionView;
-            }
-        }
-
-        private bool ItemFilterPredicate(ItemAssociationViewModel association )
-        {
-            var normalizedSearchText = SearchItemText.ToLowerInvariant();
-
-            var item = association.Item;
-
-            if ( item.IsSold )
-            {
-                return false;
-            }
-
-            var isItemMatching = item.ItemIdentifier.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
-                    item.Description.ToLowerInvariant().Contains( normalizedSearchText ) ||
-                    item.Price.ToString().ToLowerInvariant().StartsWith( normalizedSearchText ) ||
-                    item.Size.ToLowerInvariant().Contains( normalizedSearchText );
-
-
-            var isSellerMatching = association.Seller.Name.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
-                association.Seller.FirstName.ToLowerInvariant().StartsWith( normalizedSearchText );
-
-            return isItemMatching || isSellerMatching;
-        }
-
-        public AutoCompleteFilterPredicate<object> SearchItemFilter
-        {
-            get
-            {
-                return ( searchText, obj ) =>
-                {
-                    return ItemFilterPredicate( (ItemAssociationViewModel)obj );
-                };
-            }
-        }
-
-        private ICommand _sellCommand;
-        public ICommand SellCommand => _sellCommand ?? ( _sellCommand = new ActionCommand<ItemAssociationViewModel>( ( association ) =>
-        {
-
-            var item = association.Item;
-            if ( item.IsSold )
-            {
-                SearchItemText = string.Empty;
-            }
-
-            if ( !Batch.Contains( association ) )
-            {
-                Batch.Add( association );
-            }
-
-            RaisePropertyChanged( nameof( BatchValue ) );
-
-            //TODO :
-            //item association verwenden und statistics hilfswerk entfernen und in SellerViewModel stecken
-            var stats = _statisticsService.GetStatistics( item.SellerId, Items.Select(a => a.Item ) );
-
-            SellerStatistics.First( s => s.Seller.Id == item.SellerId ).Update( stats );
-
-        } ) );
+      
 
         private ICommand _refreshCollectionViewCommand;
         public ICommand RefreshCollectionViewCommand => _refreshCollectionViewCommand ?? ( _refreshCollectionViewCommand = new ActionCommand( ( ) =>
@@ -293,35 +170,6 @@ namespace KinderArtikelBoerse.Viewmodels
             UnSoldItemsCollectionView.Refresh();
         } ) );
 
-        private ICommand _enterKeyCommand;
-        public ICommand EnterKeyCommand => _enterKeyCommand ?? ( _enterKeyCommand = new ActionCommand<object>( (args) =>
-        {
-            if ( Keyboard.IsKeyDown( Key.Enter ) )
-            {
-                var filteredCollection = ItemsCollectionView
-               .Cast<ItemAssociationViewModel>()
-               .ToList()
-               ;
-                
-                if ( filteredCollection.Any() )
-                {
-                    var sellItem = filteredCollection.First();
-
-                    sellItem.Item.IsSold = true;
-
-                    if ( !Batch.Contains( sellItem ) )
-                    {
-                        Batch.Add( sellItem );
-                    }
-
-                    SearchItemText = string.Empty;
-
-                    RaisePropertyChanged( nameof( BatchValue ) );
-
-                }
-            }
-           
-        } ) );
 
         private ICommand _newBatchCommand;
         public ICommand NewBatchCommand => _newBatchCommand ?? ( _newBatchCommand = new ActionCommand( () =>

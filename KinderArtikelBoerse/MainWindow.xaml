@@ -68,7 +68,7 @@
                             </Border.Style>
                         </Border>
                     <ToggleButton Grid.Column="2" x:Name="IsSoldToggleButton" Content="$" IsChecked="{Binding Item.IsSold}" 
-                                          Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.SellCommand}" 
+                                          Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.CashRegisterViewModel.SellCommand}" 
                                           CommandParameter="{Binding Path=.}" >
                         <!--<i:Interaction.Behaviors>
                             <utils:EventCommandBehavior Event="Checked" 
@@ -81,7 +81,7 @@
                
             </Border>
         </DataTemplate>
-        <DataTemplate x:Key="SellerStatisticsItemTemplate" DataType="{x:Type vm:SellerStatisticsViewModel}">
+        <DataTemplate x:Key="SellerStatisticsItemTemplate" DataType="{x:Type vm:SellerViewModel}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
@@ -91,8 +91,8 @@
                 <TextBlock >
                     <TextBlock.Text>
                         <MultiBinding StringFormat="{}{0} {1}">
-                            <Binding Path="Seller.FirstName" />
-                            <Binding Path="Seller.Name" />
+                            <Binding Path="FirstName" />
+                            <Binding Path="Name" />
                         </MultiBinding>
                     </TextBlock.Text>
                 </TextBlock>
@@ -145,7 +145,7 @@
                     
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Kasse">
+            <TabItem DataContext="{Binding CashRegisterViewModel}" Header="Kasse">
                 <Grid Background="Black">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="50"/>
@@ -177,10 +177,9 @@
                                 MaxDropDownHeight="600"
                             >
                             <i:Interaction.Behaviors>
-                                <utils:EventCommandBehavior Event="PreviewKeyDown" Command="{Binding EnterKeyCommand}"/>
+                                <utils:EventCommandBehavior Event="PreviewKeyDown" Command="{Binding KeyDownCommand}"/>
                             </i:Interaction.Behaviors>
                         </controls:AutoCompleteBox>
-                        <!--<ToggleButton x:Name="IsSoldToggleButton" Content="Sold" IsChecked="{Binding SearchItem.Item.IsSold}" />-->
                     </StackPanel>
 
 
@@ -218,7 +217,7 @@
             </TabItem>
             <TabItem Header="Statistics">
                 <ListView 
-                    ItemsSource="{Binding SellerStatistics}"
+                    ItemsSource="{Binding Sellers}"
                     ItemTemplate="{StaticResource SellerStatisticsItemTemplate}">
 
                 </ListView>

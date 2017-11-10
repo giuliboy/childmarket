@@ -114,12 +114,12 @@
     <Compile Include="Utils\FocusExtension.cs" />
     <Compile Include="Utils\MarketDataService.cs" />
     <Compile Include="Utils\SoldColorConverter.cs" />
+    <Compile Include="ViewModels\CashRegisterViewModel.cs" />
     <Compile Include="ViewModels\ItemAssociationViewModel.cs" />
     <Compile Include="ViewModels\ItemListFixer.cs" />
     <Compile Include="ViewModels\ItemViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PropertyChangeNotifier.cs" />
-    <Compile Include="ViewModels\SellerStatisticsViewModel.cs" />
     <Compile Include="ViewModels\SellerViewModel.cs" />
     <Compile Include="ViewModels\StatisticsService.cs" />
     <Page Include="MainWindow.xaml">
