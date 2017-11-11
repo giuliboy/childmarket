@@ -3,6 +3,7 @@ using KinderArtikelBoerse.Models;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
@@ -22,44 +23,31 @@ namespace KinderArtikelBoerse.Viewmodels
     public class SellerViewModel : PropertyChangeNotifier
     {
 
-        private IMarketService _dataService;
-        private Seller _data;
+        public Seller Data { get; }
 
-        public SellerViewModel(int id, IMarketService s)
+        public SellerViewModel(Seller s)
         {
-            _dataService = s;
-            Update( id );
-        }
-
-        public void Update(int id)
-        {
-            _data = _dataService.Sellers.First( se => se.Id == id );
-            RaisePropertyChanged( string.Empty );
+            Data = s;
         }
 
         public int Id
         {
-            get { return _data.Id; }
+            get { return Data.Id; }
         }
 
         public string Number { get; set; }
 
-        public string Name { get { return _data.Name; } }
+        public string Name { get { return Data.Name; } }
 
-        public string FirstName { get { return _data.FirstName; } }
+        public string FirstName { get { return Data.FirstName; } }
 
-        public float FamilientreffSharePercentage { get { return _data.FamilientreffPercentage; } }
+        public float FamilientreffSharePercentage { get { return Data.FamilientreffPercentage; } }
         
         public int SoldItems
         {
             get
             {
-                return _data.SoldItems;
-            }
-            set
-            {
-                _data.SoldItems = value;
-                RaisePropertyChanged();
+                return Data.Items.Count(i => i.IsSold);
             }
         }
 
@@ -67,25 +55,18 @@ namespace KinderArtikelBoerse.Viewmodels
         {
             get
             {
-                return _data.TotalItems;
+                return Data.Items.Count();
             }
-            set
-            {
-                _data.TotalItems = value;
-                RaisePropertyChanged();
-            }
+           
         }
 
         public float SoldValue
         {
             get
             {
-                return _data.SoldValue;
-            }
-            set
-            {
-                _data.SoldValue = value;
-                RaisePropertyChanged();
+                return Data.Items
+                    .Where( i => i.IsSold )
+                    .Sum( i => i.Price);
             }
         }
 
@@ -93,6 +74,11 @@ namespace KinderArtikelBoerse.Viewmodels
         public override string ToString()
         {
             return $"{Name}, {FirstName}";
+        }
+
+        internal void Update()
+        {
+            RaisePropertyChanged( string.Empty );
         }
     }
 

@@ -8,6 +8,13 @@ namespace KinderArtikelBoerse.Utils
 {
     public class DemoMarketDataProvider : IMarketService
     {
+        public DemoMarketDataProvider()
+        {
+            Sellers.First().Items = Items.Take( 5 ).ToList();
+            Sellers.Skip(1).First().Items = Items.Skip(5).Take( 3 ).ToList(); 
+            Sellers.Skip( 2 ).First().Items = Items.Skip(8 ).Take( 2 ).ToList();
+        }
+
         private List<Item> _items;
         public IEnumerable<Item> Items
         {
@@ -17,18 +24,18 @@ namespace KinderArtikelBoerse.Utils
                 {
                     _items = new List<Item>()
                     {
-                        new Item() { ItemIdentifier="AB1", Description="roter Pulli", Price=5.0f , Size="36/38", SellerId= Sellers.Last().Id},
-                        new Item() { ItemIdentifier="AB2", Description="Pulover", Price=5.0f , Size="38", SellerId= Sellers.Last().Id},
-                        new Item() { ItemIdentifier="AB3", Description="jojo", Price=5.5f , SellerId= Sellers.Last().Id},
-                        new Item() { ItemIdentifier="AB4", Description="puzzli mit extrem langer beschreibung was es genau für ein puzzli ist", Price=25.0f , SellerId= Sellers.Last().Id},
-                        new Item() { ItemIdentifier="AB11", Description="pulli mit stern", Price=55.0f , SellerId= Sellers.Last().Id},
+                        new Item() { ItemIdentifier="AB1", Description="roter Pulli", Price=5.0f , Size="36/38", Seller = Sellers.First(),},
+                        new Item() { ItemIdentifier="AB2", Description="Pulover", Price=5.0f , Size="38", Seller = Sellers.First(),},
+                        new Item() { ItemIdentifier="AB3", Description="jojo", Price=5.5f , Seller = Sellers.First(),},
+                        new Item() { ItemIdentifier="AB4", Description="puzzli mit extrem langer beschreibung was es genau für ein puzzli ist", Price=25.0f , Seller = Sellers.First(),},
+                        new Item() { ItemIdentifier="AB11", Description="pulli mit stern", Price=55.0f, Seller = Sellers.First(),},
 
-                        new Item() { ItemIdentifier="C1", Description="buch ", Price=2.5f, SellerId = Sellers.First().Id },
-                        new Item() { ItemIdentifier="C2", Description="bobby car ", Price=2.5f, SellerId = Sellers.First().Id  },
-                        new Item() { ItemIdentifier="C3", Description="ente", Price=2.5f, SellerId = Sellers.First().Id  },
+                        new Item() { ItemIdentifier="C1", Description="buch ", Price=2.5f,  Seller = Sellers.Skip(1).First(), },
+                        new Item() { ItemIdentifier="C2", Description="bobby car ", Price=2.5f,  Seller = Sellers.Skip(1).First(),  },
+                        new Item() { ItemIdentifier="C3", Description="ente", Price=2.5f,  Seller = Sellers.Skip(1).First(),  },
 
-                        new Item() { ItemIdentifier="CD1", Description="jacke blau", Price=11f , Size="108", SellerId=Sellers.Skip(1).First().Id },
-                        new Item() { ItemIdentifier="CD2", Description="socken", Price=1f , Size="112", SellerId=Sellers.Skip(1).First().Id },
+                        new Item() { ItemIdentifier="CD1", Description="jacke blau", Price=11f , Size="108",  Seller = Sellers.Skip(2).First(), },
+                        new Item() { ItemIdentifier="CD2", Description="socken", Price=1f , Size="112",  Seller = Sellers.Skip(2).First(), },
 
                     }
                         .ToList();
@@ -51,7 +58,7 @@ namespace KinderArtikelBoerse.Utils
                         {
                             Id=1,
                             Name = "Zahner",
-                            FirstName = "Nina"
+                            FirstName = "Nina",
                         },
                         new Seller()
                         {
@@ -63,15 +70,16 @@ namespace KinderArtikelBoerse.Utils
                         {
                             Id=3,
                             Name = "Brunner",
-                            FirstName="Marianne"
+                            FirstName="Marianne",
                         },
                     }
-                        .ToList();
+                    .ToList();
+
                 }
                 return _sellers;
             }
         }
-
+        
         public Seller Add( Seller seller )
         {
             seller.Id = _sellers.Select( s => s.Id ).Distinct().Max() + 1;
@@ -85,22 +93,6 @@ namespace KinderArtikelBoerse.Utils
             _sellers.Remove( seller );
 
             return seller;
-        }
-
-        public void Update( int sellerId, Seller seller )
-        {
-            var updatingSeller =_sellers.FirstOrDefault( s => s.Id == sellerId );
-            if(updatingSeller == null )
-            {
-                return;
-            }
-
-            updatingSeller.SoldItems = seller.SoldItems;
-            updatingSeller.TotalItems = seller.TotalItems;
-            updatingSeller.SoldValue = seller.SoldValue;
-            updatingSeller.Name = seller.Name;
-            updatingSeller.FirstName = seller.FirstName;
-            updatingSeller.FamilientreffPercentage = seller.FamilientreffPercentage;
         }
     }
 }

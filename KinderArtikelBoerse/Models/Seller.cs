@@ -15,11 +15,11 @@ namespace KinderArtikelBoerse.Models
 
         public float FamilientreffPercentage { get; set; }
 
-        public float SoldValue { get; set; }
+        public virtual ICollection<Item> Items { get; set; } = new List<Item>();
 
-        public int SoldItems { get; set; }
-
-        public int TotalItems { get; set; }
-
+        public override string ToString()
+        {
+            return $"[{Id}]{Name},{FirstName}";
+        }
     }
 }

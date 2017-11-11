@@ -9,11 +9,11 @@ namespace KinderArtikelBoerse.Viewmodels
 
     public class ItemViewModel : PropertyChangeNotifier
     {
-        private Item _data;
+        public Item Data { get; }
 
         public ItemViewModel(Item i)
         {
-            _data = i;
+            Data = i;
         }
 
         private ICommand _soldToggleCommand;
@@ -22,11 +22,17 @@ namespace KinderArtikelBoerse.Viewmodels
         {
         } ) );
 
+        public Seller Seller
+        {
+            get { return Data.Seller; }
+        }
+
+
         public int SellerId
         {
             get
             {
-                return _data.SellerId;
+                return Seller.Id;
             }
         }
 
@@ -34,52 +40,52 @@ namespace KinderArtikelBoerse.Viewmodels
         {
             get
             {
-                return _data.ItemIdentifier;
+                return Data.ItemIdentifier;
             }
             set
             {
-                _data.ItemIdentifier = value;
+                Data.ItemIdentifier = value;
                 RaisePropertyChanged();
             }
         }
 
         public string Description {
-            get { return _data.Description; }
+            get { return Data.Description; }
             set
             {
-                _data.Description = value;
+                Data.Description = value;
                 RaisePropertyChanged();
             }
         }
 
         public string Size {
-            get { return _data.Size; }
+            get { return Data.Size; }
             set
             {
-                _data.Size = value;
+                Data.Size = value;
                 RaisePropertyChanged();
             }
         }
 
         public float Price {
-            get { return _data.Price; }
+            get { return Data.Price; }
             set
             {
-                _data.Price = value;
+                Data.Price = value;
                 RaisePropertyChanged();
             }
         }
 
         public bool IsSold {
-            get { return _data.IsSold; }
+            get { return Data.IsSold; }
             set
             {
-                _data.IsSold = value;
+                Data.IsSold = value;
                 RaisePropertyChanged();
             }
         }
 
-        public int Id => _data.Id;
+        public int Id => Data.Id;
         
         public override string ToString()
         {

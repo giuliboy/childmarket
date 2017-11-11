@@ -29,12 +29,11 @@ namespace KinderArtikelBoerse.Viewmodels
     {
         public CashRegisterViewModel CashRegisterViewModel { get; }
 
-        public MainViewModel(IMarketService dataService, IStatisticsService statisticsService)
+        public MainViewModel(IMarketService dataService)
         {
             _itemReader = new ExcelItemReader(dataService);
             _dataService = dataService;
-            _statisticsService = statisticsService;
-            CashRegisterViewModel = new CashRegisterViewModel( dataService, statisticsService );
+            CashRegisterViewModel = new CashRegisterViewModel( dataService, Sellers);
         }
 
         private IItemReader _itemReader;
@@ -86,24 +85,6 @@ namespace KinderArtikelBoerse.Viewmodels
             set { _inputFilePath = value; RaisePropertyChanged(); }
         }
 
-        private ObservableCollection<ItemAssociationViewModel> _items;
-        public IEnumerable<ItemAssociationViewModel> Items
-        {
-            get
-            {
-                if(_items == null )
-                {
-                    var associations = from i in _dataService.Items
-                            join s in _dataService.Sellers on i.SellerId equals s.Id
-                            select new ItemAssociationViewModel() { Item = new ItemViewModel(i), Seller = new SellerViewModel(s.Id, _dataService) };
-
-                    _items = new ObservableCollection<ItemAssociationViewModel>( associations );
-                }
-
-                return _items;
-            }
-        }
-
         private ObservableCollection<SellerViewModel> _sellers;
         public IEnumerable<SellerViewModel> Sellers
         {
@@ -112,10 +93,8 @@ namespace KinderArtikelBoerse.Viewmodels
                 var seq = new SellerEqualityComparer();
                 if ( _sellers == null )
                 {
-                    _sellers = new ObservableCollection<SellerViewModel> ( 
-                        Items
-                        .Select( i => i.Seller )
-                        .Distinct( seq ) 
+                    _sellers = new ObservableCollection<SellerViewModel>(
+                        _dataService.Sellers.Select( s => new SellerViewModel( s ) )
                         .ToList()
                     );
                 }
@@ -160,7 +139,6 @@ namespace KinderArtikelBoerse.Viewmodels
         } ) );
 
         private ICommand _readExcelCommand;
-        private IStatisticsService _statisticsService;
 
         public ICommand ReadExcelCommand => _readExcelCommand ?? ( _readExcelCommand = new ActionCommand( () =>
         {
@@ -197,7 +175,7 @@ namespace KinderArtikelBoerse.Viewmodels
                         FamilientreffPercentage = int.Parse( c[3].ToString() )
 
                     };
-                    return new SellerViewModel( s.Id, _dataService );
+                    return new SellerViewModel( s );
                    
                 } )
                  .OrderByDescending( o => o.Name )

@@ -30,9 +30,6 @@ namespace KinderArtikelBoerse.Utils
                         Description = c[1].ToString(),
                         Size = c[2].ToString(),
                         Price = float.Parse( c[3].ToString() ),
-
-                        SellerId = GetSeller( c[4].ToString(), c[5].ToString() ).Id,
-
                     };
                     return i;
 

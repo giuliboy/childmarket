@@ -11,8 +11,6 @@ namespace KinderArtikelBoerse.Contracts
 
         Seller Remove( Seller seller );
         
-        void Update( int sellerId, Seller seller );
-
         IEnumerable<Seller> Sellers { get; }
 
         IEnumerable<Item> Items { get; }

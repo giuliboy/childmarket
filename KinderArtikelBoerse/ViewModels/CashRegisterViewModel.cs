@@ -21,10 +21,10 @@ namespace KinderArtikelBoerse.Viewmodels
 {
     public class CashRegisterViewModel : PropertyChangeNotifier
     {
-        public CashRegisterViewModel(IMarketService dataService, IStatisticsService statisticsService )
+        public CashRegisterViewModel(IMarketService dataService, IEnumerable<SellerViewModel> sellers )
         {
             _dataService = dataService;
-            _statisticsService = statisticsService;
+            _sellers = sellers;
         }
 
         private string _searchItemText = string.Empty;
@@ -49,8 +49,8 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
-        private ItemAssociationViewModel _searchItem;
-        public ItemAssociationViewModel SearchItem
+        private ItemViewModel _searchItem;
+        public ItemViewModel SearchItem
         {
             get
             {
@@ -69,21 +69,16 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
-        private ObservableCollection<ItemAssociationViewModel> _items;
+        private ObservableCollection<ItemViewModel> _items;
         private IMarketService _dataService;
-        private IStatisticsService _statisticsService;
 
-        public IEnumerable<ItemAssociationViewModel> Items
+        public IEnumerable<ItemViewModel> Items
         {
             get
             {
                 if ( _items == null )
                 {
-                    var associations = from i in _dataService.Items
-                                       join s in _dataService.Sellers on i.SellerId equals s.Id
-                                       select new ItemAssociationViewModel() { Item = new ItemViewModel( i ), Seller = new SellerViewModel( s.Id, _dataService ) };
-
-                    _items = new ObservableCollection<ItemAssociationViewModel>( associations );
+                    _items = new ObservableCollection<ItemViewModel>( _dataService.Items.Select(i => new ItemViewModel( i ) ) );
                 }
 
                 return _items;
@@ -99,18 +94,16 @@ namespace KinderArtikelBoerse.Viewmodels
                 {
                     _itemsCollectionView = CollectionViewSource.GetDefaultView( Items );
 
-                    _itemsCollectionView.Filter += ( obj ) => ItemFilterPredicate( (ItemAssociationViewModel)obj );
+                    _itemsCollectionView.Filter += ( obj ) => ItemFilterPredicate( (ItemViewModel)obj );
 
                 }
                 return _itemsCollectionView;
             }
         }
 
-        private bool ItemFilterPredicate( ItemAssociationViewModel association )
+        private bool ItemFilterPredicate( ItemViewModel item )
         {
             var normalizedSearchText = SearchItemText.ToLowerInvariant();
-
-            var item = association.Item;
 
             if ( item.IsSold )
             {
@@ -123,8 +116,8 @@ namespace KinderArtikelBoerse.Viewmodels
                     item.Size.ToLowerInvariant().Contains( normalizedSearchText );
 
 
-            var isSellerMatching = association.Seller.Name.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
-                association.Seller.FirstName.ToLowerInvariant().StartsWith( normalizedSearchText );
+            var isSellerMatching = item.Seller.Name.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
+                item.Seller.FirstName.ToLowerInvariant().StartsWith( normalizedSearchText );
 
             return isItemMatching || isSellerMatching;
         }
@@ -135,39 +128,41 @@ namespace KinderArtikelBoerse.Viewmodels
             {
                 return ( searchText, obj ) =>
                 {
-                    return ItemFilterPredicate( (ItemAssociationViewModel)obj );
+                    return ItemFilterPredicate( (ItemViewModel)obj );
                 };
             }
         }
 
         private ICommand _toggleSellCommand;
-        public ICommand ToggleSellCommand => _toggleSellCommand ?? ( _toggleSellCommand = new ActionCommand<ItemAssociationViewModel>( HandleSold ) );
+        public ICommand ToggleSellCommand => _toggleSellCommand ?? ( _toggleSellCommand = new ActionCommand<ItemViewModel>( HandleSold ) );
 
-        private void HandleSold( ItemAssociationViewModel association )
+        private void HandleSold( ItemViewModel item )
         {
-            var item = association.Item;
-
             if ( item.IsSold )
             {
                 SearchItemText = string.Empty;
-                if ( !Batch.Contains( association ) )
+                if ( !Batch.Contains( item ) )
                 {
-                    Batch.Add( association );
+                    Batch.Add( item );
                 }
             }
             else
             {
-                Batch.Remove( association );
+                Batch.Remove( item );
             }
 
-            var sellerToUpdate =_dataService.Sellers.First( s => s.Id == item.SellerId );
 
-            var updatedStats = _statisticsService.GetStatistics( association.Seller.Id, Items.Select( i => i.Item ) );
-            sellerToUpdate.SoldItems = updatedStats.SoldItems;
-            sellerToUpdate.TotalItems = updatedStats.TotalItems;
-            sellerToUpdate.SoldValue = updatedStats.SoldValue;
+            var seller = _sellers.FirstOrDefault( s => s.Id == item.Seller.Id );
+            seller.Update();
 
-            association.Seller.Update( item.SellerId );
+           // var sellerToUpdate =_dataService.Sellers.First( s => s.Id == item.SellerId );
+            //TODO
+            //var updatedStats = _statisticsService.GetStatistics( association.Seller.Id, Items.Select( i => i.Item ) );
+            //sellerToUpdate.SoldItems = updatedStats.SoldItems;
+            //sellerToUpdate.TotalItems = updatedStats.TotalItems;
+            //sellerToUpdate.SoldValue = updatedStats.SoldValue;
+
+            //association.Seller.Update( item.SellerId );
             RaisePropertyChanged( nameof( BatchValue ) );
 
             
@@ -176,20 +171,27 @@ namespace KinderArtikelBoerse.Viewmodels
         private ICommand _keyDownCommand;
         public ICommand KeyDownCommand => _keyDownCommand ?? ( _keyDownCommand = new ActionCommand<object>( ( args ) =>
         {
-            if ( Keyboard.IsKeyDown( Key.Enter ) )
+            if( string.IsNullOrEmpty( SearchItemText ) )
             {
-                var filteredCollection = ItemsCollectionView
-               .Cast<ItemAssociationViewModel>()
-               .ToList()
-               ;
+                return;
+            }
 
-                if ( filteredCollection.Any() )
-                {
-                    var ass = filteredCollection.First();
+            if ( !Keyboard.IsKeyDown( Key.Enter ) )
+            {
+                return;
+            }
 
-                    ass.Item.IsSold = true;
-                    HandleSold( ass );
-                }
+            var filteredCollection = ItemsCollectionView
+            .Cast<ItemViewModel>()
+            .ToList()
+            ;
+
+            if ( filteredCollection.Any() )
+            {
+                var ass = filteredCollection.First();
+
+                ass.IsSold = true;
+                HandleSold( ass );
             }
 
         } ) );
@@ -205,12 +207,14 @@ namespace KinderArtikelBoerse.Viewmodels
         {
             get
             {
-                return Batch.Sum( b => b.Item.Price );
+                return Batch.Sum( b => b.Price );
             }
         }
 
-        private ObservableCollection<ItemAssociationViewModel> _batch = new ObservableCollection<ItemAssociationViewModel>();
-        public ObservableCollection<ItemAssociationViewModel> Batch
+        private ObservableCollection<ItemViewModel> _batch = new ObservableCollection<ItemViewModel>();
+        private IEnumerable<SellerViewModel> _sellers;
+
+        public ObservableCollection<ItemViewModel> Batch
         {
             get
             {
