@@ -31,8 +31,9 @@
                         </Style.Triggers>
                     </Style>
                 </Border.Style>-->
-                <Grid Background="#01000000">
+                <Grid Background="#01000000" x:Name="ItemGrid">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0"/>
                         <ColumnDefinition Width="10"/>
                         <ColumnDefinition Width="5"/>
                         <ColumnDefinition Width="*"  x:Name="MainContent" />
@@ -40,7 +41,9 @@
                         <ColumnDefinition Width="30"/>
                     </Grid.ColumnDefinitions>
 
-                    <Rectangle >
+                    <!--<ToggleButton Content="Edit" x:Name="EditToggleButton"/>-->
+                    
+                    <Rectangle Grid.Column="1">
                         <Rectangle.Style>
                             <Style TargetType="{x:Type Rectangle}">
                                 <Style.Setters>
@@ -54,9 +57,10 @@
                             </Style>
                         </Rectangle.Style>
                     </Rectangle>
-                    <TextBlock Grid.Column="2" Foreground="White" Text="{Binding ItemIdentifier}" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <TextBlock Grid.Column="2" Foreground="White" Text="{Binding Description}" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
-                    <TextBlock Grid.Column="2" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    
+                    <TextBlock Grid.Column="3" Foreground="White" Text="{Binding ItemIdentifier}" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBlock Grid.Column="3" Foreground="White" Text="{Binding Description}" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+                    <TextBlock Grid.Column="3" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                         <TextBlock.Text>
                             <MultiBinding StringFormat="{}{0} {1}">
                                 <Binding Path="Seller.FirstName" />
@@ -64,9 +68,9 @@
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
-                    <TextBlock Grid.Column="2" Text="{Binding Size}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                    <TextBlock Grid.Column="3" Text="{Binding Size}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 
-                    <Border Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Top" Width="80" Margin="0,2,0,0" CornerRadius="13" Height="26" >
+                    <Border  Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Top" Width="80" Margin="0,2,0,0" CornerRadius="13" Height="26" >
                             <TextBlock Foreground="White" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" 
                                    Text="{Binding Price, StringFormat=C}" />
                             <Border.Style >
@@ -84,7 +88,20 @@
 
                             </Border.Style>
                         </Border>
-                    <ToggleButton Grid.Column="4" x:Name="IsSoldToggleButton" Content="$" IsChecked="{Binding IsSold}" 
+                    <!--<Popup Grid.Column="3" Placement="RelativePoint"
+                           PlacementRectangle="60,0,500,48"
+                            PlacementTarget="{Binding ElementName=ItemGrid}" 
+                           PopupAnimation="Slide"
+                           IsOpen="{Binding ElementName=EditToggleButton, Path=IsChecked}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Width="50" Text="{Binding ItemIdentifier, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
+                            <TextBox Width="300" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
+                            <TextBox Width="80" Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
+                            
+                        </StackPanel>
+                       
+                    </Popup>-->
+                    <ToggleButton Grid.Column="5" x:Name="IsSoldToggleButton" Content="$" IsChecked="{Binding IsSold}" 
                                           Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.CashRegisterViewModel.ToggleSellCommand}" 
                                           CommandParameter="{Binding Path=.}" >
                         <!--<i:Interaction.Behaviors>
@@ -191,7 +208,7 @@
                             <utils:EventCommandBehavior Event="PreviewKeyDown" Command="{Binding KeyDownCommand}"/>
                         </i:Interaction.Behaviors>
                     </controls:AutoCompleteBox>
-
+                   
                     <Button Grid.Row="0" Grid.Column="1" Command="{Binding NewBatchCommand}">
                         <Button.Content>
                             <StackPanel Orientation="Horizontal">
@@ -235,6 +252,19 @@
                     ItemTemplate="{StaticResource SellerStatisticsItemTemplate}">
 
                 </ListView>
+            </TabItem>
+            <TabItem Header="Data" DataContext="{Binding DataViewModel}">
+                <Grid Background="Black">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Orientation="Vertical">
+                        <ComboBox ItemsSource="{}"
+                    </StackPanel>
+                </Grid>
+               
             </TabItem>
         </TabControl>
     </Grid>

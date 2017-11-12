@@ -24,16 +24,57 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
-    
+    //todo
+    public class DataViewModel : PropertyChangeNotifier
+    {
+        private IMarketService _dataService;
+
+        public DataViewModel(IMarketService dataService)
+        {
+            _dataService = dataService;
+        }
+
+        private ObservableCollection<SellerViewModel> _sellers;
+        
+
+        public IEnumerable<SellerViewModel> Sellers
+        {
+            get
+            {
+                if ( _sellers == null )
+                {
+                    _sellers = new ObservableCollection<SellerViewModel>(
+                        _dataService.Sellers.Select( s => new SellerViewModel( s ) )
+                        .ToList()
+                    );
+                }
+
+                return _sellers;
+            }
+        }
+
+        private SellerViewModel _selectedSeller;
+        public SellerViewModel SelectedSeller
+        {
+            get
+            {
+                return _selectedSeller;
+            }
+        }
+    }
+
     public class MainViewModel : PropertyChangeNotifier
     {
         public CashRegisterViewModel CashRegisterViewModel { get; }
+
+        public DataViewModel DataViewModel { get; }
 
         public MainViewModel(IMarketService dataService)
         {
             _itemReader = new ExcelItemReader(dataService);
             _dataService = dataService;
             CashRegisterViewModel = new CashRegisterViewModel( dataService, Sellers);
+            DataViewModel = new DataViewModel(dataService);
         }
 
         private IItemReader _itemReader;
