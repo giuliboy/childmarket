@@ -115,6 +115,105 @@
                
             </Border>
         </DataTemplate>
+        
+        <DataTemplate x:Key="EditItemTemplate" DataType="{x:Type vm:ItemViewModel}">
+            <Border Height="60" HorizontalAlignment="Stretch" BorderThickness="2" BorderBrush="LightGray">
+                <!--<Border.Style>
+                    <Style TargetType="{x:Type Border}">
+                        <Style.Setters>
+                            <Setter Property="BorderBrush" Value="LightGray"/>
+                        </Style.Setters>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Item.IsSold}" Value="True">
+                                <Setter Property="BorderBrush" Value="Green"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>-->
+                <Grid Background="#01000000" x:Name="ItemGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*"  x:Name="MainContent" />
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="30"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--<ToggleButton Content="Edit" x:Name="EditToggleButton"/>-->
+
+                    <Rectangle Grid.Column="1">
+                        <Rectangle.Style>
+                            <Style TargetType="{x:Type Rectangle}">
+                                <Style.Setters>
+                                    <Setter Property="Fill" Value="Brown"/>
+                                </Style.Setters>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Size}" Value="">
+                                        <Setter Property="Fill" Value="Blue"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Rectangle.Style>
+                    </Rectangle>
+
+                    <TextBlock Grid.Column="3" Foreground="White" Text="{Binding ItemIdentifier}" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                    <TextBlock Grid.Column="3" Foreground="White" Text="{Binding Description}" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
+                    <TextBlock Grid.Column="3" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} {1}">
+                                <Binding Path="Seller.FirstName" />
+                                <Binding Path="Seller.Name" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <TextBlock Grid.Column="3" Text="{Binding Size}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+
+                    <Border  Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Top" Width="80" Margin="0,2,0,0" CornerRadius="13" Height="26" >
+                        <TextBlock Foreground="White" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                                   Text="{Binding Price, StringFormat=C}" />
+                        <Border.Style >
+                            <Style TargetType="{x:Type Border}">
+                                <Style.Setters>
+                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style.Setters>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSold}" Value="True">
+                                        <Setter Property="Background" Value="Green"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+
+                        </Border.Style>
+                    </Border>
+                    <!--<Popup Grid.Column="3" Placement="RelativePoint"
+                           PlacementRectangle="60,0,500,48"
+                            PlacementTarget="{Binding ElementName=ItemGrid}" 
+                           PopupAnimation="Slide"
+                           IsOpen="{Binding ElementName=EditToggleButton, Path=IsChecked}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox Width="50" Text="{Binding ItemIdentifier, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
+                            <TextBox Width="300" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
+                            <TextBox Width="80" Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
+                            
+                        </StackPanel>
+                       
+                    </Popup>-->
+                    <ToggleButton Grid.Column="5" x:Name="IsSoldToggleButton" Content="$" IsChecked="{Binding IsSold}" 
+                                          Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.CashRegisterViewModel.ToggleSellCommand}" 
+                                          CommandParameter="{Binding Path=.}" >
+                        <!--<i:Interaction.Behaviors>
+                            <utils:EventCommandBehavior Event="Checked" 
+                   Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabControl}, Mode=FindAncestor}, Path=DataContext.RefreshCollectionViewCommand}" />
+                           
+                        </i:Interaction.Behaviors>-->
+
+                    </ToggleButton>
+                </Grid>
+
+            </Border>
+        </DataTemplate>
         <DataTemplate x:Key="SellerStatisticsItemTemplate" DataType="{x:Type vm:SellerViewModel}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -255,15 +354,31 @@
             </TabItem>
             <TabItem Header="Data" DataContext="{Binding DataViewModel}">
                 <Grid Background="Black">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="300"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <StackPanel Orientation="Vertical">
-                        <ComboBox ItemsSource="{Binding Sellers}" 
+
+                    <ComboBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Sellers}" 
                                   SelectedItem="{Binding SelectedSeller}"/>
-                    </StackPanel>
+                    
+                    <TextBox Grid.Row="0"  Grid.Column="1" Text="{Binding FilterText, Delay=100,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <ScrollViewer Grid.Row="1" Grid.Column="1" 
+                                  HorizontalScrollBarVisibility="Disabled" 
+                                  VerticalScrollBarVisibility="Visible">
+                        <ItemsControl Grid.Row="1" Grid.Column="1" 
+                              Background="Black"
+                                  ItemsSource="{Binding ItemsCollectionView}" 
+                                  ItemTemplate="{StaticResource EditItemTemplate}" >
+                        </ItemsControl>
+                    </ScrollViewer>
+
                 </Grid>
                
             </TabItem>

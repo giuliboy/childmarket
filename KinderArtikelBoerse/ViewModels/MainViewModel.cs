@@ -43,8 +43,8 @@ namespace KinderArtikelBoerse.Viewmodels
                 if ( _sellers == null )
                 {
                     _sellers = new ObservableCollection<SellerViewModel>(
-                        _dataService.Sellers.Select( s => new SellerViewModel( s ) )
-                        .ToList()
+                        new[] {new WildCardSeller()}
+                        .Concat( _dataService.Sellers.Select( s => new SellerViewModel( s ) ).ToList() )
                     );
                 }
 
@@ -57,12 +57,18 @@ namespace KinderArtikelBoerse.Viewmodels
         {
             get
             {
+                if(_selectedSeller == null )
+                {
+                    _selectedSeller = Sellers.First();
+                }
                 return _selectedSeller;
             }
             set
             {
                 _selectedSeller = value;
                 RaisePropertyChanged();
+
+                ItemsCollectionView.Refresh();
             }
         }
 
@@ -97,11 +103,39 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
+        private string _filterText = string.Empty;
+        public string FilterText
+        {
+            get
+            {
+                return _filterText;
+            }
+            set
+            {
+                _filterText = value;
+                RaisePropertyChanged();
+
+                ItemsCollectionView.Refresh();
+            }
+        }
+
         bool Filter(ItemViewModel item )
         {
-            //add filters
+            
+            var normalizedSearchText = FilterText.ToLowerInvariant();
+            
+            var isItemMatching = item.ItemIdentifier.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
+                    item.Description.ToLowerInvariant().Contains( normalizedSearchText ) ||
+                    item.Price.ToString().ToLowerInvariant().StartsWith( normalizedSearchText ) ||
+                    item.Size.ToLowerInvariant().Contains( normalizedSearchText );
 
-            return true;
+            var isSellerMatching = true;
+            if ( SelectedSeller != null && !(SelectedSeller is WildCardSeller) )
+            {
+                isSellerMatching = item.Seller.Id == SelectedSeller.Id;
+            }
+
+            return isSellerMatching && isItemMatching ;
         }
 
     }
@@ -174,7 +208,6 @@ namespace KinderArtikelBoerse.Viewmodels
         {
             get
             {
-                var seq = new SellerEqualityComparer();
                 if ( _sellers == null )
                 {
                     _sellers = new ObservableCollection<SellerViewModel>(

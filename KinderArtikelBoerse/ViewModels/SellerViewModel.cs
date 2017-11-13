@@ -7,16 +7,18 @@ using System;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
-    public class SellerEqualityComparer : IEqualityComparer<SellerViewModel>
+    public class WildCardSeller : SellerViewModel
     {
-        public bool Equals( SellerViewModel x, SellerViewModel y )
+        public WildCardSeller(  ) 
+            : base( new Seller() {
+                Id = -1,
+            } )
         {
-            return x.Id == y.Id;
         }
 
-        public int GetHashCode( SellerViewModel obj )
+        public override string ToString()
         {
-            return obj.Id.GetHashCode();
+            return "Alle";
         }
     }
 
