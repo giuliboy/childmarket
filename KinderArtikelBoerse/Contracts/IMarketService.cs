@@ -1,11 +1,11 @@
 ﻿using KinderArtikelBoerse.Models;
-using KinderArtikelBoerse.Viewmodels;
+using System;
 using System.Collections.Generic;
 
 namespace KinderArtikelBoerse.Contracts
 {
 
-    public interface IMarketService
+    public interface IMarketService : IDisposable
     {
         Seller Add( Seller seller );
 
@@ -15,5 +15,8 @@ namespace KinderArtikelBoerse.Contracts
 
         IEnumerable<Item> Items { get; }
 
+        Item Add( Item data );
+
+        Item Remove( Item data );
     }
 }

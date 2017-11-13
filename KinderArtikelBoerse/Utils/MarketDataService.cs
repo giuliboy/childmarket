@@ -1,54 +1,63 @@
 ﻿using KinderArtikelBoerse.Contracts;
 using KinderArtikelBoerse.Models;
-using KinderArtikelBoerse.Viewmodels;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace KinderArtikelBoerse.Utils
 {
 
     public class MarketDataService : IMarketService
     {
-        private readonly string _connectionString;
+        private readonly MarketDbContext _context;
 
         public MarketDataService(string connectionString)
         {
-            _connectionString = connectionString;
+            _context = new MarketDbContext( connectionString);
         }
 
         public Seller Add( Seller seller )
         {
-            using(var ctx = new MarketDbContext( _connectionString ) )
-            {
-                var addedEntity = ctx.SellersDbSet.Add( seller );
+            var addedEntity = _context.SellersDbSet.Add( seller );
 
-                ctx.SaveChanges();
-                return addedEntity;
-            }
+            _context.SaveChanges();
+            return addedEntity;
         }
 
         public Seller Remove( Seller seller )
         {
-            using ( var ctx = new MarketDbContext( _connectionString ) )
-            {
-                var removedEntity = ctx.SellersDbSet.Remove( seller );
+            var removedEntity = _context.SellersDbSet.Remove( seller );
 
-                ctx.SaveChanges();
-                return removedEntity;
-            }
+            _context.SaveChanges();
+            return removedEntity;
         }
-        
+
+        public Item Add( Item data )
+        {
+            var addedEntity = _context.ItemsDbSet.Add( data );
+
+            _context.SaveChanges();
+            return addedEntity;
+        }
+
+        public Item Remove( Item data )
+        {
+            var removedEntity = _context.ItemsDbSet.Remove( data );
+
+            _context.SaveChanges();
+            return removedEntity;
+        }
+
+        public void Dispose()
+        {
+            
+        }
+
         public IEnumerable<Seller> Sellers
         {
             get
             {
-                using(var ctx = new MarketDbContext( _connectionString ) )
-                {
-                    return ctx.SellersDbSet
-                        .AsNoTracking()
-                        .ToList();
-                }
+                return _context.SellersDbSet
+                        .AsEnumerable();
             }
         }
 
@@ -56,12 +65,8 @@ namespace KinderArtikelBoerse.Utils
         {
             get
             {
-                using ( var ctx = new MarketDbContext( _connectionString ) )
-                {
-                    return ctx.ItemsDbSet
-                        .AsNoTracking()
-                        .ToList();
-                }
+                return _context.ItemsDbSet
+                    .AsEnumerable();
             }
         }
     }

@@ -36,7 +36,6 @@ namespace KinderArtikelBoerse.Viewmodels
 
         private ObservableCollection<SellerViewModel> _sellers;
         
-
         public IEnumerable<SellerViewModel> Sellers
         {
             get
@@ -60,7 +59,51 @@ namespace KinderArtikelBoerse.Viewmodels
             {
                 return _selectedSeller;
             }
+            set
+            {
+                _selectedSeller = value;
+                RaisePropertyChanged();
+            }
         }
+
+        private ObservableCollection<ItemViewModel> _items;
+
+        public IEnumerable<ItemViewModel> Items
+        {
+            get
+            {
+                if ( _items == null )
+                {
+                    _items = new ObservableCollection<ItemViewModel>( _dataService.Items.Select( i => new ItemViewModel( i ) ) );
+                }
+
+                return _items;
+            }
+        }
+
+        private ICollectionView _itemsCollectionView;
+        public ICollectionView ItemsCollectionView
+        {
+            get
+            {
+                if ( _itemsCollectionView == null )
+                {
+                    _itemsCollectionView = CollectionViewSource.GetDefaultView( Items );
+
+                    _itemsCollectionView.Filter += ( obj ) => Filter( (ItemViewModel)obj );
+
+                }
+                return _itemsCollectionView;
+            }
+        }
+
+        bool Filter(ItemViewModel item )
+        {
+            //add filters
+
+            return true;
+        }
+
     }
 
     public class MainViewModel : PropertyChangeNotifier

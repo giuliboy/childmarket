@@ -261,7 +261,8 @@
                     </Grid.ColumnDefinitions>
 
                     <StackPanel Orientation="Vertical">
-                        <ComboBox ItemsSource="{}"
+                        <ComboBox ItemsSource="{Binding Sellers}" 
+                                  SelectedItem="{Binding SelectedSeller}"/>
                     </StackPanel>
                 </Grid>
                

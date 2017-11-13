@@ -6,7 +6,6 @@ using System.Windows.Input;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
-
     public class ItemViewModel : PropertyChangeNotifier
     {
         public Item Data { get; }

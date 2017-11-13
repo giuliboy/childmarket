@@ -1,5 +1,6 @@
 ﻿using KinderArtikelBoerse.Migrations;
 using System.Data.Entity;
+using System.Linq;
 
 namespace KinderArtikelBoerse.Models
 {

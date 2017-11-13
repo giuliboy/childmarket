@@ -94,5 +94,22 @@ namespace KinderArtikelBoerse.Utils
 
             return seller;
         }
+
+        public Item Add( Item data )
+        {
+            _items.Add( data );
+            return data;
+        }
+
+        public Item Remove( Item data )
+        {
+            _items.Remove( data );
+            return data;
+        }
+
+        public void Dispose()
+        {
+            //do nothing
+        }
     }
 }
