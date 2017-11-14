@@ -104,12 +104,6 @@
                     <ToggleButton Grid.Column="5" x:Name="IsSoldToggleButton" Content="$" IsChecked="{Binding IsSold}" 
                                           Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.CashRegisterViewModel.ToggleSellCommand}" 
                                           CommandParameter="{Binding Path=.}" >
-                        <!--<i:Interaction.Behaviors>
-                            <utils:EventCommandBehavior Event="Checked" 
-                   Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabControl}, Mode=FindAncestor}, Path=DataContext.RefreshCollectionViewCommand}" />
-                           
-                        </i:Interaction.Behaviors>-->
-
                     </ToggleButton>
                 </Grid>
                
@@ -153,7 +147,12 @@
                     </ComboBox>-->
                 <TextBox Grid.Column="3" Text="{Binding Size}" />
 
-                <TextBox Grid.Column="4" Text="{Binding Price, StringFormat={}{0:C} ,UpdateSourceTrigger=PropertyChanged}" FontSize="16" FontWeight="Bold"/>
+                <TextBox Grid.Column="4" Text="{Binding Price, StringFormat={}{0:C} ,UpdateSourceTrigger=PropertyChanged}" FontSize="16" FontWeight="Bold">
+                    <i:Interaction.Behaviors>
+                        <utils:EventCommandBehavior Event="TextChanged" 
+                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabControl}, Mode=FindAncestor}, Path=DataContext.DataViewModel.UpdateCommand}" />
+                    </i:Interaction.Behaviors>
+                </TextBox>
 
                 <ToggleButton  Grid.Column="5" IsChecked="{Binding IsSold}" Content="$"
                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.CashRegisterViewModel.ToggleSellCommand}" 

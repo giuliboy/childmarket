@@ -110,13 +110,8 @@ namespace KinderArtikelBoerse.Viewmodels
                 ItemIdentifier = "TODO"
             };
 
-            Items.Add( new ItemViewModel(item) );
-
-            Sellers.Select( s =>
-            {
-                s.Update();
-                return s;
-            } ).ToList();
+            Items.Add( new ItemViewModel( item ) );
+            UpdateSellers();
         }
 
         private ICommand _removeItemCommand;
@@ -125,12 +120,8 @@ namespace KinderArtikelBoerse.Viewmodels
         private void RemoveItem(ItemViewModel item)
         {
             Items.Remove( item );
-            
-            Sellers.Select( s =>
-             {
-                 s.Update();
-                 return s;
-             } ).ToList();
+
+            UpdateSellers();
         }
 
         private ICommand _exportCommand;
@@ -140,6 +131,19 @@ namespace KinderArtikelBoerse.Viewmodels
         {
             //todo excel oder pdf generieren
         }
+
+        private ICommand _updateCommand;
+        public ICommand UpdateCommand => _updateCommand ?? ( _updateCommand = new ActionCommand( UpdateSellers ) );
+
+        private void UpdateSellers()
+        {
+            Sellers.Select( s =>
+            {
+                s.Update();
+                return s;
+            } ).ToList();
+        }
+
 
     }
 
