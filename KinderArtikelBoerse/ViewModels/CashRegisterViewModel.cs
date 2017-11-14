@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System;
 
 /*
  * TODOS:
@@ -19,12 +20,13 @@ using System.Windows.Input;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
+
     public class CashRegisterViewModel : PropertyChangeNotifier
     {
-        public CashRegisterViewModel(IMarketService dataService, IEnumerable<SellerViewModel> sellers )
+        public CashRegisterViewModel( ISellerProvider sellerProvider, IItemsProvider itemsProvider )
         {
-            _dataService = dataService;
-            _sellers = sellers;
+            _sellerProvider = sellerProvider;
+            Items = new ObservableCollection<ItemViewModel>( itemsProvider.Items );
         }
 
         private string _searchItemText = string.Empty;
@@ -69,21 +71,9 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
-        private ObservableCollection<ItemViewModel> _items;
-        private IMarketService _dataService;
+        public IEnumerable<ItemViewModel> Items { get; }
 
-        public IEnumerable<ItemViewModel> Items
-        {
-            get
-            {
-                if ( _items == null )
-                {
-                    _items = new ObservableCollection<ItemViewModel>( _dataService.Items.Select(i => new ItemViewModel( i ) ) );
-                }
-
-                return _items;
-            }
-        }
+        public IEnumerable<SellerViewModel> Sellers => _sellerProvider.Sellers;
 
         private ICollectionView _itemsCollectionView;
         public ICollectionView ItemsCollectionView
@@ -152,7 +142,7 @@ namespace KinderArtikelBoerse.Viewmodels
             }
 
 
-            var seller = _sellers.FirstOrDefault( s => s.Id == item.Seller.Id );
+            var seller = Sellers.FirstOrDefault( s => s.Id == item.Seller.Id );
             seller.Update();
 
            // var sellerToUpdate =_dataService.Sellers.First( s => s.Id == item.SellerId );
@@ -212,7 +202,8 @@ namespace KinderArtikelBoerse.Viewmodels
         }
 
         private ObservableCollection<ItemViewModel> _batch = new ObservableCollection<ItemViewModel>();
-        private IEnumerable<SellerViewModel> _sellers;
+       
+        private ISellerProvider _sellerProvider;
 
         public ObservableCollection<ItemViewModel> Batch
         {

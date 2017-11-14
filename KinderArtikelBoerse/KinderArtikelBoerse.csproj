@@ -95,8 +95,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Contracts\IItemReader.cs" />
+    <Compile Include="Contracts\IItemsProvider.cs" />
     <Compile Include="Contracts\IMarketService.cs" />
-    <Compile Include="Contracts\IStatisticsService.cs" />
+    <Compile Include="Contracts\ISellerProvider.cs" />
     <Compile Include="Migrations\201711112309046_Initial.cs" />
     <Compile Include="Migrations\201711112309046_Initial.Designer.cs">
       <DependentUpon>201711112309046_Initial.cs</DependentUpon>
@@ -115,10 +116,13 @@
     <Compile Include="Utils\MarketDataService.cs" />
     <Compile Include="Utils\SoldColorConverter.cs" />
     <Compile Include="ViewModels\CashRegisterViewModel.cs" />
+    <Compile Include="ViewModels\DataViewModel.cs" />
     <Compile Include="ViewModels\ItemListFixer.cs" />
+    <Compile Include="ViewModels\ItemsViewModelProvider.cs" />
     <Compile Include="ViewModels\ItemViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PropertyChangeNotifier.cs" />
+    <Compile Include="ViewModels\SellersViewModelProvider.cs" />
     <Compile Include="ViewModels\SellerViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

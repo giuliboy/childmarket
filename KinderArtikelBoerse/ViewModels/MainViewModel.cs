@@ -4,15 +4,11 @@ using KinderArtikelBoerse.Utils;
 using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Data;
 using System.Data.OleDb;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using Excel = Microsoft.Office.Interop.Excel;
 
@@ -24,121 +20,6 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
-    //todo
-    public class DataViewModel : PropertyChangeNotifier
-    {
-        private IMarketService _dataService;
-
-        public DataViewModel(IMarketService dataService)
-        {
-            _dataService = dataService;
-        }
-
-        private ObservableCollection<SellerViewModel> _sellers;
-        
-        public IEnumerable<SellerViewModel> Sellers
-        {
-            get
-            {
-                if ( _sellers == null )
-                {
-                    _sellers = new ObservableCollection<SellerViewModel>(
-                        new[] {new WildCardSeller()}
-                        .Concat( _dataService.Sellers.Select( s => new SellerViewModel( s ) ).ToList() )
-                    );
-                }
-
-                return _sellers;
-            }
-        }
-
-        private SellerViewModel _selectedSeller;
-        public SellerViewModel SelectedSeller
-        {
-            get
-            {
-                if(_selectedSeller == null )
-                {
-                    _selectedSeller = Sellers.First();
-                }
-                return _selectedSeller;
-            }
-            set
-            {
-                _selectedSeller = value;
-                RaisePropertyChanged();
-
-                ItemsCollectionView.Refresh();
-            }
-        }
-
-        private ObservableCollection<ItemViewModel> _items;
-
-        public IEnumerable<ItemViewModel> Items
-        {
-            get
-            {
-                if ( _items == null )
-                {
-                    _items = new ObservableCollection<ItemViewModel>( _dataService.Items.Select( i => new ItemViewModel( i ) ) );
-                }
-
-                return _items;
-            }
-        }
-
-        private ICollectionView _itemsCollectionView;
-        public ICollectionView ItemsCollectionView
-        {
-            get
-            {
-                if ( _itemsCollectionView == null )
-                {
-                    _itemsCollectionView = CollectionViewSource.GetDefaultView( Items );
-
-                    _itemsCollectionView.Filter += ( obj ) => Filter( (ItemViewModel)obj );
-
-                }
-                return _itemsCollectionView;
-            }
-        }
-
-        private string _filterText = string.Empty;
-        public string FilterText
-        {
-            get
-            {
-                return _filterText;
-            }
-            set
-            {
-                _filterText = value;
-                RaisePropertyChanged();
-
-                ItemsCollectionView.Refresh();
-            }
-        }
-
-        bool Filter(ItemViewModel item )
-        {
-            
-            var normalizedSearchText = FilterText.ToLowerInvariant();
-            
-            var isItemMatching = item.ItemIdentifier.ToLowerInvariant().StartsWith( normalizedSearchText ) ||
-                    item.Description.ToLowerInvariant().Contains( normalizedSearchText ) ||
-                    item.Price.ToString().ToLowerInvariant().StartsWith( normalizedSearchText ) ||
-                    item.Size.ToLowerInvariant().Contains( normalizedSearchText );
-
-            var isSellerMatching = true;
-            if ( SelectedSeller != null && !(SelectedSeller is WildCardSeller) )
-            {
-                isSellerMatching = item.Seller.Id == SelectedSeller.Id;
-            }
-
-            return isSellerMatching && isItemMatching ;
-        }
-
-    }
 
     public class MainViewModel : PropertyChangeNotifier
     {
@@ -146,16 +27,15 @@ namespace KinderArtikelBoerse.Viewmodels
 
         public DataViewModel DataViewModel { get; }
 
-        public MainViewModel(IMarketService dataService)
+        public MainViewModel(IItemReader itemReader, ISellerProvider sellerProvider, IItemsProvider itemsProvider)
         {
-            _itemReader = new ExcelItemReader(dataService);
-            _dataService = dataService;
-            CashRegisterViewModel = new CashRegisterViewModel( dataService, Sellers);
-            DataViewModel = new DataViewModel(dataService);
+            _sellerProvider = sellerProvider;
+            _itemReader = itemReader;
+            CashRegisterViewModel = new CashRegisterViewModel( sellerProvider, itemsProvider);
+            DataViewModel = new DataViewModel(sellerProvider,  itemsProvider);
         }
 
         private IItemReader _itemReader;
-        private IMarketService _dataService;
 
         private string _toolTitle = "Kinderartikelbörse Familientreff Kaltbrunn";
         public string ToolTitle
@@ -203,20 +83,11 @@ namespace KinderArtikelBoerse.Viewmodels
             set { _inputFilePath = value; RaisePropertyChanged(); }
         }
 
-        private ObservableCollection<SellerViewModel> _sellers;
         public IEnumerable<SellerViewModel> Sellers
         {
             get
             {
-                if ( _sellers == null )
-                {
-                    _sellers = new ObservableCollection<SellerViewModel>(
-                        _dataService.Sellers.Select( s => new SellerViewModel( s ) )
-                        .ToList()
-                    );
-                }
-
-                return _sellers;
+                return _sellerProvider.Sellers;
             }
         }
        
@@ -256,6 +127,7 @@ namespace KinderArtikelBoerse.Viewmodels
         } ) );
 
         private ICommand _readExcelCommand;
+        private ISellerProvider _sellerProvider;
 
         public ICommand ReadExcelCommand => _readExcelCommand ?? ( _readExcelCommand = new ActionCommand( () =>
         {

@@ -16,8 +16,13 @@ namespace KinderArtikelBoerse
         {
             InitializeComponent();
 
-            _mainViewModel = new MainViewModel( new DemoMarketDataProvider() );
-            //_mainViewModel = new MainViewModel( new MarketDataProvider( "MarketDbContext" ) );
+            var dataService = new DemoMarketDataProvider();
+            var sellersViewModelProvider = new SellersViewModelProvider( dataService );
+            var itemsViewModelProvider = new ItemsViewModelProvider( dataService );
+
+            var itemsReader = new ExcelItemReader( dataService );
+
+            _mainViewModel = new MainViewModel( itemsReader, sellersViewModelProvider, itemsViewModelProvider );
 
             DataContext = _mainViewModel;
         }
