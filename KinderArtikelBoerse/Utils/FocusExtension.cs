@@ -4,6 +4,16 @@ using System.Windows;
 
 namespace KinderArtikelBoerse.Utils
 {
+    public static class IEnumerableExtensions
+    {
+        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action )
+        {
+            foreach(var e in enumerable )
+            {
+                action.Invoke( e );
+            }
+        }
+    }
 
     public static class FocusExtension
     {

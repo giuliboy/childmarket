@@ -15,8 +15,6 @@ namespace KinderArtikelBoerse.Models
 
         public float FamilientreffPercentage { get; set; }
 
-        public virtual ICollection<Item> Items { get; set; } = new List<Item>();
-
         public override string ToString()
         {
             return $"[{Id}]{Name},{FirstName}";

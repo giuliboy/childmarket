@@ -15,11 +15,11 @@ namespace KinderArtikelBoerse.Viewmodels
         public DataViewModel(ISellerProvider sellerProvider, IItemsProvider itemsProvider)
         {
             Sellers = new ObservableCollection<SellerViewModel>( sellerProvider.Sellers );
-            Items = new ObservableCollection<ItemViewModel>( itemsProvider.Items );
+            Items = itemsProvider.Items;
         }
 
         public IEnumerable<SellerViewModel> Sellers { get; }
-        public ObservableCollection<ItemViewModel> Items { get; }
+        public IList<ItemViewModel> Items { get; }
 
         private SellerViewModel _selectedSeller;
         public SellerViewModel SelectedSeller
@@ -110,10 +110,7 @@ namespace KinderArtikelBoerse.Viewmodels
                 ItemIdentifier = "TODO"
             };
 
-            SelectedSeller.Data.Items.Add( item );
             Items.Add( new ItemViewModel(item) );
-
-            Sellers.First( s => s is AllSellerViewModel ).Data.Items.Add( item );
 
             Sellers.Select( s =>
             {
@@ -127,18 +124,21 @@ namespace KinderArtikelBoerse.Viewmodels
 
         private void RemoveItem(ItemViewModel item)
         {
-            item.Seller.Items.Remove( item.Data );
-
-            Sellers.First( s => s is AllSellerViewModel ).Data.Items.Remove( item.Data );
-
             Items.Remove( item );
-
+            
             Sellers.Select( s =>
              {
                  s.Update();
                  return s;
              } ).ToList();
+        }
 
+        private ICommand _exportCommand;
+        public ICommand ExportCommand => _exportCommand ?? ( _exportCommand = new ActionCommand( Export ) );
+
+        private void Export()
+        {
+            //todo excel oder pdf generieren
         }
 
     }

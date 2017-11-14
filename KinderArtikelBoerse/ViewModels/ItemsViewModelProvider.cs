@@ -17,14 +17,14 @@ namespace KinderArtikelBoerse.Viewmodels
     {
         public ItemsViewModelProvider( IMarketService dataService )
         {
-            Items = dataService.Items
+            Items = new ObservableCollection<ItemViewModel>( dataService.Items
                 .Select( i => new ItemViewModel( i ) )
-                .ToList();
+               );
             //enumerate, else the consumers will enumerate again and instanciate additional item viewmodels
             //which is not the desired behavior
         }
 
-        public IEnumerable<ItemViewModel> Items { get; }
+        public IList<ItemViewModel> Items { get; }
     }
 
     

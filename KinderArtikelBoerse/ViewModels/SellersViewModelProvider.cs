@@ -19,7 +19,7 @@ namespace KinderArtikelBoerse.Viewmodels
             Sellers = new[] { new AllSellerViewModel(itemsProvider) }
                 .Concat(
                     service.Sellers
-                    .Select( s => new SellerViewModel( s ) )
+                    .Select( s => new SellerViewModel( s, itemsProvider ) )
                     .ToList() );
         }
         public IEnumerable<SellerViewModel> Sellers { get; }

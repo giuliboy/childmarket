@@ -30,6 +30,7 @@ namespace KinderArtikelBoerse.Viewmodels
         public MainViewModel(IItemReader itemReader, ISellerProvider sellerProvider, IItemsProvider itemsProvider)
         {
             _sellerProvider = sellerProvider;
+            _itemsProvider = itemsProvider;
             _itemReader = itemReader;
             CashRegisterViewModel = new CashRegisterViewModel( sellerProvider, itemsProvider);
             DataViewModel = new DataViewModel(sellerProvider,  itemsProvider);
@@ -128,6 +129,7 @@ namespace KinderArtikelBoerse.Viewmodels
 
         private ICommand _readExcelCommand;
         private ISellerProvider _sellerProvider;
+        private IItemsProvider _itemsProvider;
 
         public ICommand ReadExcelCommand => _readExcelCommand ?? ( _readExcelCommand = new ActionCommand( () =>
         {
@@ -164,7 +166,7 @@ namespace KinderArtikelBoerse.Viewmodels
                         FamilientreffPercentage = int.Parse( c[3].ToString() )
 
                     };
-                    return new SellerViewModel( s );
+                    return new SellerViewModel( s , _itemsProvider);
                    
                 } )
                  .OrderByDescending( o => o.Name )

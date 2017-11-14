@@ -3,18 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using KinderArtikelBoerse.Contracts;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
 
     public class SellerViewModel : PropertyChangeNotifier
     {
+        protected IItemsProvider _itemsProvider;
 
         public Seller Data { get; }
 
-        public SellerViewModel(Seller s)
+        public SellerViewModel(Seller s , IItemsProvider itemsProvider)
         {
             Data = s;
+            _itemsProvider = itemsProvider;
         }
 
         public int Id
@@ -37,12 +40,21 @@ namespace KinderArtikelBoerse.Viewmodels
                 return SoldValue * ( 1.0f - FamilientreffPercentage ) / 1.0f;
             }
         }
+
+        public virtual IEnumerable<ItemViewModel> Items
+        {
+            get
+            {
+                return _itemsProvider.Items
+                    .Where( i => i.Seller == Data );
+            }
+        }
         
         public int SoldItems
         {
             get
             {
-                return Data.Items.Count(i => i.IsSold);
+                return Items.Count(i => i.IsSold);
             }
         }
 
@@ -50,7 +62,7 @@ namespace KinderArtikelBoerse.Viewmodels
         {
             get
             {
-                return Data.Items.Count();
+                return Items.Count();
             }
            
         }
@@ -59,7 +71,7 @@ namespace KinderArtikelBoerse.Viewmodels
         {
             get
             {
-                return Data.Items
+                return Items
                     .Where( i => i.IsSold )
                     .Sum( i => i.Price);
             }
@@ -69,7 +81,7 @@ namespace KinderArtikelBoerse.Viewmodels
         {
             get
             {
-                return Data.Items
+                return Items
                     .Sum( i => i.Price );
             }
         }

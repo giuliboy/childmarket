@@ -12,7 +12,7 @@
         mc:Ignorable="d"
         AllowDrop="True"
         Drop="Window_Drop"
-        Title="{Binding ToolTitle}" Height="600" Width="1000">
+        Title="{Binding ToolTitle}" Height="600" Width="1200">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <utils:SoldColorConverter x:Key="SoldColorBrush"/>
@@ -115,63 +115,60 @@
                
             </Border>
         </DataTemplate>
-        
+
         <DataTemplate x:Key="EditItemTemplate" DataType="{x:Type vm:ItemViewModel}">
-            <Border Height="35" HorizontalAlignment="Stretch" BorderThickness="1" BorderBrush="LightGray">
-                <Grid Background="#01000000" x:Name="EditItemGrid">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="10"/>
-                        <ColumnDefinition Width="60" x:Name="IdentifierColumn"/>
-                        <ColumnDefinition Width="*" x:Name="DescriptionColumn"/>
-                        <ColumnDefinition Width="80" x:Name="SizeColumn"/>
-                        <ColumnDefinition Width="100" x:Name="PriceColumn"/>
-                        <ColumnDefinition Width="30" x:Name="IsSoldColumn"/>
-                        <ColumnDefinition Width="30" x:Name="DeleteColumn"/>
-                    </Grid.ColumnDefinitions>
+            <Grid Background="#01000000" x:Name="EditItemGrid" HorizontalAlignment="Stretch" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="60" x:Name="IdentifierColumn"/>
+                    <ColumnDefinition Width="530" x:Name="DescriptionColumn"/>
+                    <ColumnDefinition Width="80" x:Name="SizeColumn"/>
+                    <ColumnDefinition Width="100" x:Name="PriceColumn"/>
+                    <ColumnDefinition Width="30" x:Name="IsSoldColumn"/>
+                    <ColumnDefinition Width="30" x:Name="DeleteColumn"/>
+                </Grid.ColumnDefinitions>
 
-                    <!--<ToggleButton Content="Edit" x:Name="EditToggleButton"/>-->
+                <!--<ToggleButton Content="Edit" x:Name="EditToggleButton"/>-->
 
-                    <Rectangle Grid.Column="0">
-                        <Rectangle.Style>
-                            <Style TargetType="{x:Type Rectangle}">
-                                <Style.Setters>
-                                    <Setter Property="Fill" Value="Brown"/>
-                                </Style.Setters>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Size}" Value="">
-                                        <Setter Property="Fill" Value="Blue"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Rectangle.Style>
-                    </Rectangle>
+                <Rectangle Grid.Column="0">
+                    <Rectangle.Style>
+                        <Style TargetType="{x:Type Rectangle}">
+                            <Style.Setters>
+                                <Setter Property="Fill" Value="Brown"/>
+                            </Style.Setters>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Size}" Value="">
+                                    <Setter Property="Fill" Value="Blue"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
 
-                    <TextBox Grid.Column="1" Foreground="White" Text="{Binding ItemIdentifier, UpdateSourceTrigger=PropertyChanged}"/>
-                    <TextBox Grid.Column="2" Foreground="White" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"/>
-                    <!--<ComboBox Grid.Column="3" Foreground="White" SelectedItem="{Binding Seller}" 
+                <TextBox Grid.Column="1" Foreground="White" Text="{Binding ItemIdentifier, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Column="2" Foreground="White" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"/>
+                <!--<ComboBox Grid.Column="3" Foreground="White" SelectedItem="{Binding Seller}" 
                               ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.DataViewModel.Sellers}" >
                       
                     </ComboBox>-->
-                    <TextBox Grid.Column="3" Text="{Binding Size}" />
+                <TextBox Grid.Column="3" Text="{Binding Size}" />
 
-                    <TextBox Grid.Column="4" Text="{Binding Price, StringFormat={}{0:C} ,UpdateSourceTrigger=PropertyChanged}" FontSize="16" FontWeight="Bold"/>
+                <TextBox Grid.Column="4" Text="{Binding Price, StringFormat={}{0:C} ,UpdateSourceTrigger=PropertyChanged}" FontSize="16" FontWeight="Bold"/>
 
-                    <ToggleButton  Grid.Column="5" IsChecked="{Binding IsSold}" Content="$"
+                <ToggleButton  Grid.Column="5" IsChecked="{Binding IsSold}" Content="$"
                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.CashRegisterViewModel.ToggleSellCommand}" 
                                    CommandParameter="{Binding Path=.}" />
-                    <Button Grid.Column="6" x:Name="DeleteItemButton" Content="X"
+                <Button Grid.Column="6" x:Name="DeleteItemButton" Content="X"
                                           Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.DataViewModel.RemoveItemCommand}" 
                                           CommandParameter="{Binding Path=.}" >
-                        <!--<i:Interaction.Behaviors>
+                    <!--<i:Interaction.Behaviors>
                             <utils:EventCommandBehavior Event="Checked" 
                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabControl}, Mode=FindAncestor}, Path=DataContext.RefreshCollectionViewCommand}" />
                            
                         </i:Interaction.Behaviors>-->
 
-                    </Button>
-                </Grid>
-
-            </Border>
+                </Button>
+            </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="SellerStatisticsItemTemplate" DataType="{x:Type vm:SellerViewModel}">
@@ -352,7 +349,9 @@
                         <TextBlock DataContext="{Binding SelectedSeller}" Foreground="White" FontSize="16"
                                    Text="{Binding Path=Revenue, StringFormat={}Gewinn {0:C} }"/>
 
-                        <Button Margin="0,20" Visibility="{Binding CanAddItem, Converter={StaticResource BooleanToVisibilityConverter}}" Content="Artikel hinzufügen" Command="{Binding AddItemCommand}" IsEnabled="{Binding CanAddItem}"/>
+                        <Button Margin="0,20,0,0" IsEnabled="{Binding CanAddItem}" 
+                                Content="Artikel hinzufügen" Command="{Binding AddItemCommand}"/>
+                        <Button Content="Export" Command="{Binding ExportCommand}"/>
                     </StackPanel>
 
                     <Grid Grid.Row="0"  Grid.Column="1">
@@ -363,17 +362,27 @@
                         <TextBox  Text="{Binding FilterText, Delay=100,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <Button Grid.Column="1" Content="Filteroptionen" />
                     </Grid>
-                    
-                    <ScrollViewer Grid.Row="1" Grid.Column="1" 
-                                  HorizontalScrollBarVisibility="Disabled" 
-                                  VerticalScrollBarVisibility="Visible">
-                        <ItemsControl Grid.Row="1" Grid.Column="1" 
-                              Background="Black"
-                                  ItemsSource="{Binding ItemsCollectionView}" 
-                                  ItemTemplate="{StaticResource EditItemTemplate}" >
-                        </ItemsControl>
-                    </ScrollViewer>
 
+                    <ListView Grid.Row="1" Grid.Column="1" 
+                              Background="Black"
+                                ScrollViewer.CanContentScroll="True"
+                                  VirtualizingStackPanel.IsVirtualizing="True"
+                                  VirtualizingStackPanel.VirtualizationMode="Recycling"
+                                  ItemsSource="{Binding ItemsCollectionView}" 
+                                  ItemTemplate="{StaticResource EditItemTemplate}"
+                                      >
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="0"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel Orientation="Vertical" Margin="0" />
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                    </ListView>
                 </Grid>
                
             </TabItem>

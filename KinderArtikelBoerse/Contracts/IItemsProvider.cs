@@ -5,6 +5,6 @@ namespace KinderArtikelBoerse.Contracts
 {
     public interface IItemsProvider
     {
-        IEnumerable<ItemViewModel> Items { get; }
+        IList<ItemViewModel> Items { get; }
     }
 }

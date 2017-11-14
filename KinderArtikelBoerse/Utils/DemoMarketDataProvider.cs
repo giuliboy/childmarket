@@ -10,9 +10,7 @@ namespace KinderArtikelBoerse.Utils
     {
         public DemoMarketDataProvider()
         {
-            Sellers.First().Items = Items.Take( 5 ).ToList();
-            Sellers.Skip(1).First().Items = Items.Skip(5).Take( 3 ).ToList(); 
-            Sellers.Skip( 2 ).First().Items = Items.Skip(8 ).Take( 2 ).ToList();
+            
         }
 
         private List<Item> _items;
@@ -36,9 +34,10 @@ namespace KinderArtikelBoerse.Utils
 
                         new Item() { ItemIdentifier="CD1", Description="jacke blau", Price=11f , Size="108",  Seller = Sellers.Skip(2).First(), },
                         new Item() { ItemIdentifier="CD2", Description="socken", Price=1f , Size="112",  Seller = Sellers.Skip(2).First(), },
-
                     }
                         .ToList();
+
+                    _items.AddRange( Enumerable.Range( 0, 1000 ).Select( i => new Item() { ItemIdentifier = "GEN" + i, Description = i.ToString(), Price = i / 5, Seller = _sellers[i % 3] } ) );
                 }
 
                 return _items;
