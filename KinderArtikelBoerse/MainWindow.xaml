@@ -117,20 +117,21 @@
         </DataTemplate>
         
         <DataTemplate x:Key="EditItemTemplate" DataType="{x:Type vm:ItemViewModel}">
-            <Border Height="60" HorizontalAlignment="Stretch" BorderThickness="2" BorderBrush="LightGray">
+            <Border Height="35" HorizontalAlignment="Stretch" BorderThickness="1" BorderBrush="LightGray">
                 <Grid Background="#01000000" x:Name="EditItemGrid">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0"/>
                         <ColumnDefinition Width="10"/>
-                        <ColumnDefinition Width="5"/>
-                        <ColumnDefinition Width="*"  x:Name="MainContent" />
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="30"/>
+                        <ColumnDefinition Width="60" x:Name="IdentifierColumn"/>
+                        <ColumnDefinition Width="*" x:Name="DescriptionColumn"/>
+                        <ColumnDefinition Width="80" x:Name="SizeColumn"/>
+                        <ColumnDefinition Width="100" x:Name="PriceColumn"/>
+                        <ColumnDefinition Width="30" x:Name="IsSoldColumn"/>
+                        <ColumnDefinition Width="30" x:Name="DeleteColumn"/>
                     </Grid.ColumnDefinitions>
 
                     <!--<ToggleButton Content="Edit" x:Name="EditToggleButton"/>-->
 
-                    <Rectangle Grid.Column="1">
+                    <Rectangle Grid.Column="0">
                         <Rectangle.Style>
                             <Style TargetType="{x:Type Rectangle}">
                                 <Style.Setters>
@@ -145,50 +146,20 @@
                         </Rectangle.Style>
                     </Rectangle>
 
-                    <TextBlock Grid.Column="3" Foreground="White" Text="{Binding ItemIdentifier}" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                    <TextBlock Grid.Column="3" Foreground="White" Text="{Binding Description}" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
-                    <TextBlock Grid.Column="3" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="{}{0} {1}">
-                                <Binding Path="Seller.FirstName" />
-                                <Binding Path="Seller.Name" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-                    <TextBlock Grid.Column="3" Text="{Binding Size}" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                    <TextBox Grid.Column="1" Foreground="White" Text="{Binding ItemIdentifier, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox Grid.Column="2" Foreground="White" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"/>
+                    <!--<ComboBox Grid.Column="3" Foreground="White" SelectedItem="{Binding Seller}" 
+                              ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.DataViewModel.Sellers}" >
+                      
+                    </ComboBox>-->
+                    <TextBox Grid.Column="3" Text="{Binding Size}" />
 
-                    <Border  Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Top" Width="80" Margin="0,2,0,0" CornerRadius="13" Height="26" >
-                        <TextBlock Foreground="White" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center" 
-                                   Text="{Binding Price, StringFormat=C}" />
-                        <Border.Style >
-                            <Style TargetType="{x:Type Border}">
-                                <Style.Setters>
-                                    <Setter Property="BorderBrush" Value="Transparent"/>
-                                    <Setter Property="Background" Value="Transparent"/>
-                                </Style.Setters>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsSold}" Value="True">
-                                        <Setter Property="Background" Value="Green"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
+                    <TextBox Grid.Column="4" Text="{Binding Price, StringFormat={}{0:C} ,UpdateSourceTrigger=PropertyChanged}" FontSize="16" FontWeight="Bold"/>
 
-                        </Border.Style>
-                    </Border>
-                    <!--<Popup Grid.Column="3" Placement="RelativePoint"
-                           PlacementRectangle="60,0,500,48"
-                            PlacementTarget="{Binding ElementName=ItemGrid}" 
-                           PopupAnimation="Slide"
-                           IsOpen="{Binding ElementName=EditToggleButton, Path=IsChecked}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox Width="50" Text="{Binding ItemIdentifier, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
-                            <TextBox Width="300" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
-                            <TextBox Width="80" Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Margin="10,0,0,0"/>
-                            
-                        </StackPanel>
-                       
-                    </Popup>-->
-                    <Button Grid.Column="5" x:Name="DeleteItemButton" Content="X"
+                    <ToggleButton  Grid.Column="5" IsChecked="{Binding IsSold}" Content="$"
+                                   Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.CashRegisterViewModel.ToggleSellCommand}" 
+                                   CommandParameter="{Binding Path=.}" />
+                    <Button Grid.Column="6" x:Name="DeleteItemButton" Content="X"
                                           Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.DataViewModel.RemoveItemCommand}" 
                                           CommandParameter="{Binding Path=.}" >
                         <!--<i:Interaction.Behaviors>
@@ -381,15 +352,16 @@
                         <TextBlock DataContext="{Binding SelectedSeller}" Foreground="White" FontSize="16"
                                    Text="{Binding Path=Revenue, StringFormat={}Gewinn {0:C} }"/>
 
+                        <Button Margin="0,20" Visibility="{Binding CanAddItem, Converter={StaticResource BooleanToVisibilityConverter}}" Content="Artikel hinzufügen" Command="{Binding AddItemCommand}" IsEnabled="{Binding CanAddItem}"/>
                     </StackPanel>
 
                     <Grid Grid.Row="0"  Grid.Column="1">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBox  Text="{Binding FilterText, Delay=100,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                        <Button Grid.Column="1" Content="Artikel hinzufügen" Command="{Binding AddItemCommand}" IsEnabled="{Binding CanAddItem}"/>
+                        <Button Grid.Column="1" Content="Filteroptionen" />
                     </Grid>
                     
                     <ScrollViewer Grid.Row="1" Grid.Column="1" 
