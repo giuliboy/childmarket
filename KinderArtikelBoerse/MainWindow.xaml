@@ -114,12 +114,13 @@
             <Grid Background="#01000000" x:Name="EditItemGrid" HorizontalAlignment="Stretch" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="30" x:Name="DeleteColumn"/>
                     <ColumnDefinition Width="60" x:Name="IdentifierColumn"/>
                     <ColumnDefinition Width="530" x:Name="DescriptionColumn"/>
                     <ColumnDefinition Width="80" x:Name="SizeColumn"/>
-                    <ColumnDefinition Width="100" x:Name="PriceColumn"/>
+                    <ColumnDefinition Width="105" x:Name="PriceColumn"/>
                     <ColumnDefinition Width="30" x:Name="IsSoldColumn"/>
-                    <ColumnDefinition Width="30" x:Name="DeleteColumn"/>
+                    
                 </Grid.ColumnDefinitions>
 
                 <!--<ToggleButton Content="Edit" x:Name="EditToggleButton"/>-->
@@ -139,33 +140,28 @@
                     </Rectangle.Style>
                 </Rectangle>
 
-                <TextBox Grid.Column="1" Foreground="White" Text="{Binding ItemIdentifier, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Column="2" Foreground="White" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"/>
+                <ToggleButton  Grid.Column="1" IsChecked="{Binding IsSold}" Content="$"
+                                   Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.CashRegisterViewModel.ToggleSellCommand}" 
+                                   CommandParameter="{Binding Path=.}" />
+                
+                <TextBox Grid.Column="2" Foreground="White" Text="{Binding ItemIdentifier, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Column="3" Foreground="White" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"/>
                 <!--<ComboBox Grid.Column="3" Foreground="White" SelectedItem="{Binding Seller}" 
                               ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.DataViewModel.Sellers}" >
                       
                     </ComboBox>-->
-                <TextBox Grid.Column="3" Text="{Binding Size}" />
+                <TextBox Grid.Column="4" Text="{Binding Size}" />
 
-                <TextBox Grid.Column="4" Text="{Binding Price, StringFormat={}{0:C} ,UpdateSourceTrigger=PropertyChanged}" FontSize="16" FontWeight="Bold">
+                <TextBox Grid.Column="5" Text="{Binding Price, StringFormat={}{0:C} ,UpdateSourceTrigger=PropertyChanged}" FontSize="16" FontWeight="Bold">
                     <i:Interaction.Behaviors>
                         <utils:EventCommandBehavior Event="TextChanged" 
                         Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabControl}, Mode=FindAncestor}, Path=DataContext.DataViewModel.UpdateCommand}" />
                     </i:Interaction.Behaviors>
                 </TextBox>
 
-                <ToggleButton  Grid.Column="5" IsChecked="{Binding IsSold}" Content="$"
-                                   Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.CashRegisterViewModel.ToggleSellCommand}" 
-                                   CommandParameter="{Binding Path=.}" />
                 <Button Grid.Column="6" x:Name="DeleteItemButton" Content="X"
                                           Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.DataViewModel.RemoveItemCommand}" 
                                           CommandParameter="{Binding Path=.}" >
-                    <!--<i:Interaction.Behaviors>
-                            <utils:EventCommandBehavior Event="Checked" 
-                   Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabControl}, Mode=FindAncestor}, Path=DataContext.RefreshCollectionViewCommand}" />
-                           
-                        </i:Interaction.Behaviors>-->
-
                 </Button>
             </Grid>
         </DataTemplate>

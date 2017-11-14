@@ -98,6 +98,10 @@
     <Compile Include="Contracts\IItemsProvider.cs" />
     <Compile Include="Contracts\IMarketService.cs" />
     <Compile Include="Contracts\ISellerProvider.cs" />
+    <Compile Include="Migrations\201711141738594_Initial.cs" />
+    <Compile Include="Migrations\201711141738594_Initial.Designer.cs">
+      <DependentUpon>201711141738594_Initial.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\MarketDbContext.cs" />
@@ -168,6 +172,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Migrations\201711141738594_Initial.resx">
+      <DependentUpon>201711141738594_Initial.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
