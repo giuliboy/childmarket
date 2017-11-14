@@ -142,20 +142,13 @@ namespace KinderArtikelBoerse.Viewmodels
             }
 
 
-            var seller = Sellers.FirstOrDefault( s => s.Id == item.Seller.Id );
-            seller.Update();
+            var seller = Sellers.Where( s => s.Id == item.Seller.Id || s is WildCardSeller )
+                .Select(s => {
+                    s.Update();
+                    return s; })
+                    .ToList();
 
-           // var sellerToUpdate =_dataService.Sellers.First( s => s.Id == item.SellerId );
-            //TODO
-            //var updatedStats = _statisticsService.GetStatistics( association.Seller.Id, Items.Select( i => i.Item ) );
-            //sellerToUpdate.SoldItems = updatedStats.SoldItems;
-            //sellerToUpdate.TotalItems = updatedStats.TotalItems;
-            //sellerToUpdate.SoldValue = updatedStats.SoldValue;
-
-            //association.Seller.Update( item.SellerId );
             RaisePropertyChanged( nameof( BatchValue ) );
-
-            
         }
 
         private ICommand _keyDownCommand;

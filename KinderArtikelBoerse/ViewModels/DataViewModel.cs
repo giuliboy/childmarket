@@ -13,10 +13,7 @@ namespace KinderArtikelBoerse.Viewmodels
         public DataViewModel(ISellerProvider sellerProvider, IItemsProvider itemsProvider)
         {
             _sellerProvider = sellerProvider;
-            Sellers = new ObservableCollection<SellerViewModel>(
-                        new[] { new WildCardSeller() }
-                        .Concat( sellerProvider.Sellers )
-                        );
+            Sellers = new ObservableCollection<SellerViewModel>( sellerProvider.Sellers );
 
             Items = new ObservableCollection<ItemViewModel>( itemsProvider.Items );
         }

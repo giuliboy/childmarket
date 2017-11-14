@@ -14,9 +14,13 @@ namespace KinderArtikelBoerse.Viewmodels
 {
     public class SellersViewModelProvider : ISellerProvider
     {
-        public SellersViewModelProvider(IMarketService service)
+        public SellersViewModelProvider(IMarketService service, IItemsProvider itemsProvider)
         {
-            Sellers = service.Sellers.Select( s => new SellerViewModel( s ) );
+            Sellers = new[] { new WildCardSeller(itemsProvider) }
+                .Concat(
+                    service.Sellers
+                    .Select( s => new SellerViewModel( s ) )
+                    .ToList() );
         }
         public IEnumerable<SellerViewModel> Sellers { get; }
     }

@@ -362,10 +362,49 @@
                         <ColumnDefinition Width="300"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-
-
-                    <ComboBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding Sellers}" 
+                    <ComboBox Grid.Row="0" Grid.Column="0"
+                        ItemsSource="{Binding Sellers}" 
                                   SelectedItem="{Binding SelectedSeller}"/>
+                    <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical" Margin="10" >
+                        
+
+                        <TextBlock DataContext="{Binding SelectedSeller}" Foreground="White" FontSize="16">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}verkaufte Artikel  {0} / {1}">
+                                    <Binding Path="SoldItems" />
+                                    <Binding Path="TotalItems" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+
+                        <TextBlock DataContext="{Binding SelectedSeller}" Foreground="White" FontSize="16">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}im Wert von  {0:C} / {1:C}">
+                                    <Binding Path="SoldValue" />
+                                    <Binding Path="TotalValue" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+
+                        <TextBlock DataContext="{Binding SelectedSeller}" Foreground="White" FontSize="16"
+                                   Text="{Binding Path=FamilientreffPercentage, StringFormat={}Anteil Familientreff {0:0%} }" />
+
+                        <TextBlock DataContext="{Binding SelectedSeller}" Foreground="White" FontSize="16"
+                                   Text="{Binding Path=Revenue, StringFormat={}Gewinn {0:C} }"/>
+
+                        <!--<TextBlock DataContext="{Binding SelectedSeller}" Foreground="White" FontSize="16">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}Gewinn (Familientreff Anteil: {0:0%}) {1:C}">
+                                    <Binding Path="FamilientreffSharePercentage" />
+                                    <Binding Path="Revenue" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>-->
+
+
+
+                    </StackPanel>
+                   
                     
                     <TextBox Grid.Row="0"  Grid.Column="1" Text="{Binding FilterText, Delay=100,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 

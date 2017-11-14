@@ -194,7 +194,7 @@ namespace KinderArtikelBoerse.Viewmodels
 
                     sheet.Cells[3, "C"].Value = GetSheetName(seller);
 
-                    sheet.Cells[9, "D"].Value = $"{seller.FamilientreffSharePercentage}%";
+                    sheet.Cells[9, "D"].Value = $"{seller.FamilientreffPercentage}%";
 
                     sheet.Name = GetSheetName(seller);
 
