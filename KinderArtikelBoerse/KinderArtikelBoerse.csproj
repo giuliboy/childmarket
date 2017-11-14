@@ -115,6 +115,7 @@
     <Compile Include="Utils\FocusExtension.cs" />
     <Compile Include="Utils\MarketDataService.cs" />
     <Compile Include="Utils\SoldColorConverter.cs" />
+    <Compile Include="ViewModels\AllSellerViewModel.cs" />
     <Compile Include="ViewModels\CashRegisterViewModel.cs" />
     <Compile Include="ViewModels\DataViewModel.cs" />
     <Compile Include="ViewModels\ItemListFixer.cs" />

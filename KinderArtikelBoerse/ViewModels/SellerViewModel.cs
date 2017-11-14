@@ -1,5 +1,4 @@
-﻿using KinderArtikelBoerse.Contracts;
-using KinderArtikelBoerse.Models;
+﻿using KinderArtikelBoerse.Models;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,36 +6,6 @@ using System;
 
 namespace KinderArtikelBoerse.Viewmodels
 {
-    public class WildCardSeller : SellerViewModel
-    {
-        public WildCardSeller( IItemsProvider itemsProvider ) 
-            : base( new Seller() {
-                Id = -1,
-                Items = itemsProvider.Items.Select(i => i.Data).ToList()
-            } )
-        {
-        }
-
-        public override float FamilientreffPercentage
-        {
-            get { return Data.Items.Average( i => i.Seller.FamilientreffPercentage ); }
-        }
-
-        public override float Revenue
-        {
-            get
-            {
-                return Data.Items
-                    .Where( i => i.IsSold )
-                    .Sum( i => i.Price * ( 1.0f - i.Seller.FamilientreffPercentage ) / 1.0f );
-            }
-        }
-
-        public override string ToString()
-        {
-            return "Alle";
-        }
-    }
 
     public class SellerViewModel : PropertyChangeNotifier
     {
@@ -77,7 +46,7 @@ namespace KinderArtikelBoerse.Viewmodels
             }
         }
 
-        public int TotalItems
+        public virtual int TotalItems
         {
             get
             {
@@ -104,8 +73,7 @@ namespace KinderArtikelBoerse.Viewmodels
                     .Sum( i => i.Price );
             }
         }
-
-
+        
         public override string ToString()
         {
             return $"{Name}, {FirstName}";

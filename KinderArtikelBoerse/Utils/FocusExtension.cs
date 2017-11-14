@@ -1,7 +1,10 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
 
 namespace KinderArtikelBoerse.Utils
 {
+
     public static class FocusExtension
     {
         public static bool GetIsFocused( DependencyObject obj )

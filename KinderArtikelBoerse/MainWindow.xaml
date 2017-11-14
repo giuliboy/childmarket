@@ -118,19 +118,7 @@
         
         <DataTemplate x:Key="EditItemTemplate" DataType="{x:Type vm:ItemViewModel}">
             <Border Height="60" HorizontalAlignment="Stretch" BorderThickness="2" BorderBrush="LightGray">
-                <!--<Border.Style>
-                    <Style TargetType="{x:Type Border}">
-                        <Style.Setters>
-                            <Setter Property="BorderBrush" Value="LightGray"/>
-                        </Style.Setters>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Item.IsSold}" Value="True">
-                                <Setter Property="BorderBrush" Value="Green"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>-->
-                <Grid Background="#01000000" x:Name="ItemGrid">
+                <Grid Background="#01000000" x:Name="EditItemGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0"/>
                         <ColumnDefinition Width="10"/>
@@ -200,8 +188,8 @@
                         </StackPanel>
                        
                     </Popup>-->
-                    <ToggleButton Grid.Column="5" x:Name="IsSoldToggleButton" Content="$" IsChecked="{Binding IsSold}" 
-                                          Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.CashRegisterViewModel.ToggleSellCommand}" 
+                    <Button Grid.Column="5" x:Name="DeleteItemButton" Content="X"
+                                          Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.DataViewModel.RemoveItemCommand}" 
                                           CommandParameter="{Binding Path=.}" >
                         <!--<i:Interaction.Behaviors>
                             <utils:EventCommandBehavior Event="Checked" 
@@ -209,11 +197,12 @@
                            
                         </i:Interaction.Behaviors>-->
 
-                    </ToggleButton>
+                    </Button>
                 </Grid>
 
             </Border>
         </DataTemplate>
+
         <DataTemplate x:Key="SellerStatisticsItemTemplate" DataType="{x:Type vm:SellerViewModel}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -392,22 +381,17 @@
                         <TextBlock DataContext="{Binding SelectedSeller}" Foreground="White" FontSize="16"
                                    Text="{Binding Path=Revenue, StringFormat={}Gewinn {0:C} }"/>
 
-                        <!--<TextBlock DataContext="{Binding SelectedSeller}" Foreground="White" FontSize="16">
-                            <TextBlock.Text>
-                                <MultiBinding StringFormat="{}Gewinn (Familientreff Anteil: {0:0%}) {1:C}">
-                                    <Binding Path="FamilientreffSharePercentage" />
-                                    <Binding Path="Revenue" />
-                                </MultiBinding>
-                            </TextBlock.Text>
-                        </TextBlock>-->
-
-
-
                     </StackPanel>
-                   
-                    
-                    <TextBox Grid.Row="0"  Grid.Column="1" Text="{Binding FilterText, Delay=100,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
+                    <Grid Grid.Row="0"  Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox  Text="{Binding FilterText, Delay=100,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Grid.Column="1" Content="Artikel hinzufügen" Command="{Binding AddItemCommand}" IsEnabled="{Binding CanAddItem}"/>
+                    </Grid>
+                    
                     <ScrollViewer Grid.Row="1" Grid.Column="1" 
                                   HorizontalScrollBarVisibility="Disabled" 
                                   VerticalScrollBarVisibility="Visible">

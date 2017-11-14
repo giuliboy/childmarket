@@ -142,7 +142,7 @@ namespace KinderArtikelBoerse.Viewmodels
             }
 
 
-            var seller = Sellers.Where( s => s.Id == item.Seller.Id || s is WildCardSeller )
+            var seller = Sellers.Where( s => s.Id == item.Seller.Id || s is AllSellerViewModel )
                 .Select(s => {
                     s.Update();
                     return s; })

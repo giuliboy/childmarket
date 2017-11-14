@@ -16,7 +16,7 @@ namespace KinderArtikelBoerse.Viewmodels
     {
         public SellersViewModelProvider(IMarketService service, IItemsProvider itemsProvider)
         {
-            Sellers = new[] { new WildCardSeller(itemsProvider) }
+            Sellers = new[] { new AllSellerViewModel(itemsProvider) }
                 .Concat(
                     service.Sellers
                     .Select( s => new SellerViewModel( s ) )
