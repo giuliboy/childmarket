@@ -18,5 +18,7 @@ namespace KinderArtikelBoerse.Contracts
         Item Add( Item data );
 
         Item Remove( Item data );
+
+        bool Save();
     }
 }

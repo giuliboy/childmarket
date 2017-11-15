@@ -27,13 +27,13 @@ namespace KinderArtikelBoerse.Viewmodels
 
         public DataViewModel DataViewModel { get; }
 
-        public MainViewModel(IItemReader itemReader, ISellerProvider sellerProvider, IItemsProvider itemsProvider)
+        public MainViewModel(IItemReader itemReader, IMarketService dataService, ISellerProvider sellerProvider, IItemsProvider itemsProvider)
         {
             _sellerProvider = sellerProvider;
             _itemsProvider = itemsProvider;
             _itemReader = itemReader;
             CashRegisterViewModel = new CashRegisterViewModel( sellerProvider, itemsProvider);
-            DataViewModel = new DataViewModel(sellerProvider,  itemsProvider);
+            DataViewModel = new DataViewModel(sellerProvider,  itemsProvider, dataService, itemReader);
         }
 
         private IItemReader _itemReader;

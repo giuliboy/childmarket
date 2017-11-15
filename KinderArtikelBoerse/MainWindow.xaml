@@ -116,7 +116,7 @@
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="30" x:Name="DeleteColumn"/>
                     <ColumnDefinition Width="60" x:Name="IdentifierColumn"/>
-                    <ColumnDefinition Width="530" x:Name="DescriptionColumn"/>
+                    <ColumnDefinition Width="525" x:Name="DescriptionColumn"/>
                     <ColumnDefinition Width="80" x:Name="SizeColumn"/>
                     <ColumnDefinition Width="105" x:Name="PriceColumn"/>
                     <ColumnDefinition Width="30" x:Name="IsSoldColumn"/>
@@ -142,15 +142,34 @@
 
                 <ToggleButton  Grid.Column="1" IsChecked="{Binding IsSold}" Content="$"
                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.CashRegisterViewModel.ToggleSellCommand}" 
-                                   CommandParameter="{Binding Path=.}" />
-                
-                <TextBox Grid.Column="2" Foreground="White" Text="{Binding ItemIdentifier, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Column="3" Foreground="White" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"/>
-                <!--<ComboBox Grid.Column="3" Foreground="White" SelectedItem="{Binding Seller}" 
-                              ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.DataViewModel.Sellers}" >
-                      
-                    </ComboBox>-->
-                <TextBox Grid.Column="4" Text="{Binding Size}" />
+                                   CommandParameter="{Binding Path=.}" >
+                    <i:Interaction.Behaviors>
+                        <utils:EventCommandBehavior Event="Checked" 
+                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabControl}, Mode=FindAncestor}, Path=DataContext.DataViewModel.UpdateCommand}" />
+                        <utils:EventCommandBehavior Event="Unchecked" 
+                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabControl}, Mode=FindAncestor}, Path=DataContext.DataViewModel.UpdateCommand}" />
+                    </i:Interaction.Behaviors>
+                </ToggleButton>
+
+                <TextBox Grid.Column="2" Foreground="White" Text="{Binding ItemIdentifier, UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Behaviors>
+                        <utils:EventCommandBehavior Event="TextChanged" 
+                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabControl}, Mode=FindAncestor}, Path=DataContext.DataViewModel.UpdateCommand}" />
+                    </i:Interaction.Behaviors>
+                </TextBox>
+                <TextBox Grid.Column="3" Foreground="White" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap">
+                    <i:Interaction.Behaviors>
+                        <utils:EventCommandBehavior Event="TextChanged" 
+                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabControl}, Mode=FindAncestor}, Path=DataContext.DataViewModel.UpdateCommand}" />
+                    </i:Interaction.Behaviors>
+                </TextBox>
+
+                <TextBox Grid.Column="4" Text="{Binding Size}" >
+                    <i:Interaction.Behaviors>
+                        <utils:EventCommandBehavior Event="TextChanged" 
+                        Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabControl}, Mode=FindAncestor}, Path=DataContext.DataViewModel.UpdateCommand}" />
+                    </i:Interaction.Behaviors>
+                </TextBox>
 
                 <TextBox Grid.Column="5" Text="{Binding Price, StringFormat={}{0:C} ,UpdateSourceTrigger=PropertyChanged}" FontSize="16" FontWeight="Bold">
                     <i:Interaction.Behaviors>
@@ -304,8 +323,11 @@
 
                 </ListView>
             </TabItem>
-            <TabItem Header="Data" DataContext="{Binding DataViewModel}">
-                <Grid Background="Black">
+            <TabItem Header="Data" DataContext="{Binding DataViewModel}" >
+                <Grid Background="Black" AllowDrop="True">
+                    <i:Interaction.Behaviors>
+                        <utils:EventCommandBehavior Event="Drop" Command="{Binding DropCommand}" PassArguments="True" />
+                    </i:Interaction.Behaviors>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="*"/>
@@ -347,6 +369,7 @@
                         <Button Margin="0,20,0,0" IsEnabled="{Binding CanAddItem}" 
                                 Content="Artikel hinzufügen" Command="{Binding AddItemCommand}"/>
                         <Button Content="Export" Command="{Binding ExportCommand}"/>
+
                     </StackPanel>
 
                     <Grid Grid.Row="0"  Grid.Column="1">

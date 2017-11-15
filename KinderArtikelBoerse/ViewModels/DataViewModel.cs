@@ -1,10 +1,12 @@
 ﻿using KinderArtikelBoerse.Contracts;
 using KinderArtikelBoerse.Models;
 using KinderArtikelBoerse.Utils;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -12,8 +14,10 @@ namespace KinderArtikelBoerse.Viewmodels
 {
     public class DataViewModel : PropertyChangeNotifier
     {
-        public DataViewModel(ISellerProvider sellerProvider, IItemsProvider itemsProvider)
+        public DataViewModel(ISellerProvider sellerProvider, IItemsProvider itemsProvider, IMarketService dataService, IItemReader itemReader)
         {
+            _dataService = dataService;
+            _itemReader = itemReader;
             Sellers = new ObservableCollection<SellerViewModel>( sellerProvider.Sellers );
             Items = itemsProvider.Items;
         }
@@ -100,16 +104,18 @@ namespace KinderArtikelBoerse.Viewmodels
         }
 
         private ICommand _addItemCommand;
-        public ICommand AddItemCommand => _addItemCommand ?? ( _addItemCommand = new ActionCommand( AddItem ) );
-        
-        private void AddItem()
-        {
+        public ICommand AddItemCommand => _addItemCommand ?? ( _addItemCommand = new ActionCommand( () => {
             var item = new Item()
             {
                 Seller = SelectedSeller.Data,
                 ItemIdentifier = "TODO"
             };
-
+            AddItem( item );
+        } ) );
+        
+        private void AddItem(Item data)
+        {
+            var item = _dataService.Add( data );
             Items.Add( new ItemViewModel( item ) );
             UpdateSellers();
         }
@@ -120,6 +126,7 @@ namespace KinderArtikelBoerse.Viewmodels
         private void RemoveItem(ItemViewModel item)
         {
             Items.Remove( item );
+            _dataService.Remove( item.Data );
 
             UpdateSellers();
         }
@@ -142,9 +149,49 @@ namespace KinderArtikelBoerse.Viewmodels
                 s.Update();
                 return s;
             } ).ToList();
+
+            //TODO nur wenn validation ok ist, abspeichern
+            _dataService.Save();
         }
 
+        private ICommand _dropCommand;
+        private IMarketService _dataService;
+        private IItemReader _itemReader;
 
+        public ICommand DropCommand
+        {
+            get
+            {
+                return _dropCommand ?? ( _dropCommand = new ActionCommand<DragEventArgs>( args =>
+                {
+                    if ( args.Data.GetDataPresent( DataFormats.FileDrop ) )
+                    {
+                        string[] files = (string[])args.Data.GetData( DataFormats.FileDrop );
+
+                        var droppedFile = files
+                        .FirstOrDefault();
+
+                        try
+                        {
+                            //auslesen aus file
+                            //kein excel installiert => exception
+                            //var items = _itemReader.ReadItems( droppedFile );
+                            //in db einfügen
+
+                            var item = new Item() { ItemIdentifier = "Z1", Description = "neues item", Price = 5.0f, Size = "36/38", Seller = SelectedSeller.Data };
+
+                            AddItem( item );
+                            //_dataService.Add( new Item() );
+                        }
+                        catch ( Exception ex )
+                        {
+                            
+                        }
+                        
+                    }
+                } ) );
+            }
+        }
     }
 
 

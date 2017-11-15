@@ -3,6 +3,7 @@ using KinderArtikelBoerse.Models;
 using KinderArtikelBoerse.Viewmodels;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace KinderArtikelBoerse.Utils
 {
@@ -81,7 +82,12 @@ namespace KinderArtikelBoerse.Utils
                 return _sellers;
             }
         }
-        
+
+        public bool Save()
+        {
+            return false;
+        }
+
         public Seller Add( Seller seller )
         {
             seller.Id = _sellers.Select( s => s.Id ).Distinct().Max() + 1;

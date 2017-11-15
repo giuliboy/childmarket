@@ -2,6 +2,7 @@
 using KinderArtikelBoerse.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace KinderArtikelBoerse.Utils
 {
@@ -13,6 +14,11 @@ namespace KinderArtikelBoerse.Utils
         public MarketDataService(string connectionString)
         {
             _context = new MarketDbContext( connectionString);
+        }
+
+        public bool Save()
+        {
+            return _context.SaveChanges() > 0;
         }
 
         public Seller Add( Seller seller )
@@ -35,7 +41,7 @@ namespace KinderArtikelBoerse.Utils
         {
             var addedEntity = _context.ItemsDbSet.Add( data );
 
-            _context.SaveChanges();
+           // _context.SaveChanges();
             return addedEntity;
         }
 
