@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -144,6 +146,7 @@ namespace KinderArtikelBoerse.Viewmodels
 
         private void UpdateSellers()
         {
+            Console.WriteLine( "{0} updating sellers and saving", DateTime.Now.Ticks );
             Sellers.Select( s =>
             {
                 s.Update();
@@ -151,8 +154,27 @@ namespace KinderArtikelBoerse.Viewmodels
             } ).ToList();
 
             //TODO nur wenn validation ok ist, abspeichern
-            _dataService.Save();
+            //_dataService.Save();
         }
+
+        private ICommand _saveCommand;
+        public ICommand SaveCommand => _saveCommand ?? ( _saveCommand = new ActionCommand( async () => await SaveAsync() ) );
+
+        private async Task SaveAsync()
+        {
+            if ( Interlocked.CompareExchange( ref _saveLock, 1, 0 ) == 0 )
+            {
+                
+                await Task.Delay( 5000 );
+
+                _dataService.Save();
+                Console.WriteLine( "data saved" );
+                // free the lock.
+                Interlocked.Decrement( ref _saveLock );
+            }
+        }
+
+        private int _saveLock = 0;
 
         private ICommand _dropCommand;
         private IMarketService _dataService;

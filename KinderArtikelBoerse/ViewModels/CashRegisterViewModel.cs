@@ -26,7 +26,7 @@ namespace KinderArtikelBoerse.Viewmodels
         public CashRegisterViewModel( ISellerProvider sellerProvider, IItemsProvider itemsProvider )
         {
             _sellerProvider = sellerProvider;
-            Items = new ObservableCollection<ItemViewModel>( itemsProvider.Items );
+            Items = itemsProvider.Items;
         }
 
         private string _searchItemText = string.Empty;
@@ -47,7 +47,6 @@ namespace KinderArtikelBoerse.Viewmodels
                     RaisePropertyChanged();
                     ItemsCollectionView.Refresh();
                 }
-
             }
         }
 
