@@ -1,5 +1,7 @@
-﻿using KinderArtikelBoerse.Utils;
+﻿using KinderArtikelBoerse.Models;
+using KinderArtikelBoerse.Utils;
 using KinderArtikelBoerse.Viewmodels;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Windows;
 
@@ -16,6 +18,7 @@ namespace KinderArtikelBoerse
         {
             InitializeComponent();
 
+            var optionsBuilder = new DbContextOptionsBuilder<MarketDbContext>();
             var dataService = new MarketDataService( "MarketDbContext" ); // new DemoMarketDataProvider();
             //var dataService = new DemoMarketDataProvider();
             var itemsViewModelProvider = new ItemsViewModelProvider( dataService );

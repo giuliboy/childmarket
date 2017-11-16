@@ -13,44 +13,34 @@ namespace KinderArtikelBoerse.Utils
 
         public MarketDataService(string connectionString)
         {
-            _context = new MarketDbContext( connectionString);
+            _context = new MarketDbContext( );
         }
 
         public bool Save()
         {
-            return _context.SaveChanges() > 0;
+            return true;// _context() > 0;
         }
 
         public Seller Add( Seller seller )
         {
-            var addedEntity = _context.SellersDbSet.Add( seller );
+            return  _context.SellersDbSet.Add( seller ).Entity;
 
-            _context.SaveChanges();
-            return addedEntity;
         }
 
         public Seller Remove( Seller seller )
         {
-            var removedEntity = _context.SellersDbSet.Remove( seller );
-
-            _context.SaveChanges();
-            return removedEntity;
+            return _context.SellersDbSet.Remove( seller ).Entity; 
         }
 
         public Item Add( Item data )
         {
-            var addedEntity = _context.ItemsDbSet.Add( data );
-
-           // _context.SaveChanges();
-            return addedEntity;
+            return _context.ItemsDbSet.Add( data ).Entity;
         }
 
         public Item Remove( Item data )
         {
-            var removedEntity = _context.ItemsDbSet.Remove( data );
+            return _context.ItemsDbSet.Remove( data ).Entity;
 
-            _context.SaveChanges();
-            return removedEntity;
         }
 
         public void Dispose()

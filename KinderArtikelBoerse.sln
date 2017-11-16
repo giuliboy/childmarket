@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinderArtikelBoerse", "Kind
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemMarketWebApp", "ItemMarketWebApp\ItemMarketWebApp.csproj", "{F2677F37-42C3-4B31-A71D-CAA13D680103}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Market.Data", "Market.Data\Market.Data.csproj", "{80A67521-60D3-4CBB-A86D-D38D58870991}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F2677F37-42C3-4B31-A71D-CAA13D680103}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F2677F37-42C3-4B31-A71D-CAA13D680103}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2677F37-42C3-4B31-A71D-CAA13D680103}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80A67521-60D3-4CBB-A86D-D38D58870991}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80A67521-60D3-4CBB-A86D-D38D58870991}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80A67521-60D3-4CBB-A86D-D38D58870991}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80A67521-60D3-4CBB-A86D-D38D58870991}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

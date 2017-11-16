@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace KinderArtikelBoerse.Models
 {
-    public class Item 
+    public class Item
     {
         [DatabaseGenerated( DatabaseGeneratedOption.Identity )]
         public int Id { get; set; }
