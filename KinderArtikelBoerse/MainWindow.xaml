@@ -176,6 +176,9 @@
                 <Button Grid.Column="6" x:Name="DeleteItemButton" Content="X"
                                           Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Path=DataContext.DataViewModel.RemoveItemCommand}" 
                                           CommandParameter="{Binding Path=.}" >
+                    <i:Interaction.Behaviors>
+                        <utils:EventCommandBehavior Event="Click" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabControl}, Mode=FindAncestor}, Path=DataContext.DataViewModel.SaveCommand}" />
+                    </i:Interaction.Behaviors>
                 </Button>
             </Grid>
         </DataTemplate>
