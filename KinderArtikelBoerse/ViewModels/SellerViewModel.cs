@@ -20,7 +20,7 @@ namespace KinderArtikelBoerse.Viewmodels
             _itemsProvider = itemsProvider;
         }
 
-        public int Id
+        public string Id
         {
             get { return Data.Id; }
         }

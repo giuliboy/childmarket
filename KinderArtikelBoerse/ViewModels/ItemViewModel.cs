@@ -27,7 +27,7 @@ namespace KinderArtikelBoerse.Viewmodels
         }
 
 
-        public int SellerId
+        public string SellerId
         {
             get
             {

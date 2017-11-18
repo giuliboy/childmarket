@@ -56,21 +56,21 @@ namespace KinderArtikelBoerse.Utils
                     {
                         new Seller()
                         {
-                            Id=1,
+                            Id="1",
                             Name = "Zahner",
                             FirstName = "Nina",
                             FamilientreffPercentage = 0.1f,
                         },
                         new Seller()
                         {
-                            Id=2,
+                            Id="2",
                             Name = "Zahner",
                             FirstName = "Nicole",
                             FamilientreffPercentage = 0.2f,
                         },
                         new Seller()
                         {
-                            Id=3,
+                            Id="3",
                             Name = "Brunner",
                             FirstName="Marianne",
                             FamilientreffPercentage = 0.0f,

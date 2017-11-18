@@ -9,7 +9,7 @@ namespace KinderArtikelBoerse.Viewmodels
     {
         public AllSellerViewModel( IItemsProvider itemsProvider ) 
             : base( new Seller() {
-                Id = -1,
+                Id = "allSellerId",
             } , itemsProvider )
         {
         }
