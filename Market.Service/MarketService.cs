@@ -21,7 +21,7 @@ namespace Market.Service
 
         public bool Save()
         {
-            return true;// _context() > 0;
+            return _context.SaveChanges() > 0;
         }
 
         public Seller Add( Seller seller )
@@ -65,6 +65,7 @@ namespace Market.Service
             get
             {
                 return _context.ItemsDbSet
+                    .Include(i => i.Seller)
                     .AsEnumerable();
             }
         }

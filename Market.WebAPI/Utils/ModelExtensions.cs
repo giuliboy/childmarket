@@ -1,5 +1,6 @@
 ﻿using Market.Data;
 using Market.WebAPI.ViewModel;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Market.WebAPI.Utils
@@ -20,7 +21,23 @@ namespace Market.WebAPI.Utils
                 Email = u.Email,
             };
         }
-        
+
+        public static IEnumerable<ItemViewModel> ToViewModels( this IEnumerable<Item> items )
+        {
+            return items.Select( u => ToViewModel( u ) );
+        }
+
+        public static ItemViewModel ToViewModel( this Item i )
+        {
+            return new ItemViewModel()
+            {
+                ItemIdentifier = i.ItemIdentifier,
+                Description = i.Description,
+                Size = i.Size,
+                Price = i.Price
+            };
+        }
+
     }
 
 }

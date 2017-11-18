@@ -54,6 +54,7 @@ namespace Market.WebAPI.Controllers
         [ProducesResponseType( typeof( UserViewModel ), 201 )]
         [ProducesResponseType( typeof( BadRequestResult ), 400 )]
         [AllowAnonymous]
+        //TODO tut noch nicht, wieso 
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Register( [FromBody]RegisterViewModel registration )
         {
