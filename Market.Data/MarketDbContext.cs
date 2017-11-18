@@ -16,7 +16,7 @@ namespace KinderArtikelBoerse.Models
             //default constructor for migration
         }
 
-        public MarketDbContext( DbContextOptions<MarketDbContext> options )
+        public MarketDbContext( DbContextOptions options )
             : base( options )
         {
 

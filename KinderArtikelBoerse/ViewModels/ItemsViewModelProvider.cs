@@ -3,14 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-/*
- * TODOS:
- * Schalter um verkaufte items zu filtern 
- * Kassa VM isolieren
- * "neuer Kunde" und Summe als Knopf kombiniert
- * 
- */
-
 namespace KinderArtikelBoerse.Viewmodels
 {
     public class ItemsViewModelProvider : IItemsProvider

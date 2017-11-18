@@ -19,7 +19,10 @@ namespace KinderArtikelBoerse
             InitializeComponent();
 
             var optionsBuilder = new DbContextOptionsBuilder<MarketDbContext>();
-            var dataService = new MarketDataService( "MarketDbContext" ); // new DemoMarketDataProvider();
+            optionsBuilder.UseInMemoryDatabase( "memory.db" );
+
+            var dataService = new MarketDataService( optionsBuilder.Options ); // new DemoMarketDataProvider();
+            
             //var dataService = new DemoMarketDataProvider();
             var itemsViewModelProvider = new ItemsViewModelProvider( dataService );
             var sellersViewModelProvider = new SellersViewModelProvider( dataService , itemsViewModelProvider );

@@ -46,6 +46,9 @@
     <Reference Include="EntityFramework.SqlServerCompact, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.SqlServerCompact.6.2.0\lib\net45\EntityFramework.SqlServerCompact.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFrameworkCore.SqlServerCompact40, Version=2.0.1.0, Culture=neutral, PublicKeyToken=9af395b34ac99006, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFrameworkCore.SqlServerCompact40.2.0.1.1\lib\net461\EntityFrameworkCore.SqlServerCompact40.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNetCore.Authentication, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Authentication.2.0.1\lib\netstandard2.0\Microsoft.AspNetCore.Authentication.dll</HintPath>
     </Reference>
@@ -99,6 +102,9 @@
     </Reference>
     <Reference Include="Microsoft.EntityFrameworkCore, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.EntityFrameworkCore.2.0.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.InMemory, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.InMemory.2.0.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.InMemory.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.EntityFrameworkCore.Relational, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.EntityFrameworkCore.Relational.2.0.1\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Relational.dll</HintPath>
@@ -252,7 +258,6 @@
     </ApplicationDefinition>
     <Compile Include="Contracts\IItemReader.cs" />
     <Compile Include="Contracts\IItemsProvider.cs" />
-    <Compile Include="Contracts\IMarketService.cs" />
     <Compile Include="Contracts\ISellerProvider.cs" />
     <Compile Include="Utils\ActionCommand.cs" />
     <Compile Include="Utils\DemoMarketDataProvider.cs" />
@@ -260,7 +265,6 @@
     <Compile Include="Utils\ExcelItemReader.cs" />
     <Compile Include="Utils\ExcelReaderExtensions.cs" />
     <Compile Include="Utils\FocusExtension.cs" />
-    <Compile Include="Utils\MarketDataService.cs" />
     <Compile Include="Utils\SoldColorConverter.cs" />
     <Compile Include="ViewModels\AllSellerViewModel.cs" />
     <Compile Include="ViewModels\CashRegisterViewModel.cs" />
@@ -344,6 +348,10 @@
     <ProjectReference Include="..\Market.Data\Market.Data.csproj">
       <Project>{80a67521-60d3-4cbb-a86d-d38d58870991}</Project>
       <Name>Market.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Market.Service\Market.Service.csproj">
+      <Project>{356245ca-0853-4fa1-bb97-0ad56e350fe9}</Project>
+      <Name>Market.Service</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

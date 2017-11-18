@@ -3,6 +3,7 @@ using KinderArtikelBoerse.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace KinderArtikelBoerse.Utils
 {
@@ -11,9 +12,11 @@ namespace KinderArtikelBoerse.Utils
     {
         private readonly MarketDbContext _context;
 
-        public MarketDataService(string connectionString)
+        public MarketDataService( DbContextOptions options )
         {
-            _context = new MarketDbContext( );
+            
+            _context = new MarketDbContext( options );
+
         }
 
         public bool Save()
