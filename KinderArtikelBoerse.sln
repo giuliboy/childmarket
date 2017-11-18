@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinderArtikelBoerse", "KinderArtikelBoerse\KinderArtikelBoerse.csproj", "{0F653030-8A36-4E8E-9274-65735E44DE34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemMarketWebApp", "ItemMarketWebApp\ItemMarketWebApp.csproj", "{F2677F37-42C3-4B31-A71D-CAA13D680103}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Market.Data", "Market.Data\Market.Data.csproj", "{80A67521-60D3-4CBB-A86D-D38D58870991}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Market.Service", "Market.Service\Market.Service.csproj", "{356245CA-0853-4FA1-BB97-0AD56E350FE9}"
@@ -21,10 +19,6 @@ Global
 		{0F653030-8A36-4E8E-9274-65735E44DE34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F653030-8A36-4E8E-9274-65735E44DE34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F653030-8A36-4E8E-9274-65735E44DE34}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F2677F37-42C3-4B31-A71D-CAA13D680103}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F2677F37-42C3-4B31-A71D-CAA13D680103}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F2677F37-42C3-4B31-A71D-CAA13D680103}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F2677F37-42C3-4B31-A71D-CAA13D680103}.Release|Any CPU.Build.0 = Release|Any CPU
 		{80A67521-60D3-4CBB-A86D-D38D58870991}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{80A67521-60D3-4CBB-A86D-D38D58870991}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80A67521-60D3-4CBB-A86D-D38D58870991}.Release|Any CPU.ActiveCfg = Release|Any CPU
