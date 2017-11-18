@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using KinderArtikelBoerse.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Market.WebAPI.Utils;
 using Swashbuckle.AspNetCore.Swagger;
+using Market.Service.Contracts;
+using Market.Data;
+using Market.Service;
+using System;
+using Microsoft.Extensions.Logging;
 
 namespace Market.WebAPI
 {
@@ -40,17 +37,23 @@ namespace Market.WebAPI
             services.AddMvc();
 
             services.AddSingleton<IConfiguration>( Configuration );
-
+            services.AddTransient( typeof( IMarketService ), typeof( MarketService ) );
             //identity datenbank + restliches coffer zeug
             services.AddDbContext<MarketDbContext>( options =>
             {
                 //https://azure.microsoft.com/en-us/blog/windows-azure-web-sites-how-application-strings-and-connection-strings-work/
-                var connectionString = _environment.IsDevelopment() ? "LocalDbConnection" : "TODO";
-                options.UseSqlServer( Configuration.GetConnectionString( connectionString ) );
+                //var connectionString = _environment.IsDevelopment() ? "LocalDbConnection" : "TODO";
+                options.UseSqlServer( Configuration.GetConnectionString( "LocalDbConnection" ) );
+                //options.UseInMemoryDatabase( Guid.NewGuid().ToString() );
             } );
 
+            services.AddIdentity<Seller, IdentityRole>()
+                .AddEntityFrameworkStores<MarketDbContext>()
+                .AddDefaultTokenProviders();
+
             //identity verhalten
-            services.AddIdentity<Seller, IdentityRole>( options => {
+            services.Configure<IdentityOptions>( options =>
+            {
                 //password settings
                 options.Password.RequireDigit = false;
                 options.Password.RequiredLength = 1;
@@ -76,9 +79,8 @@ namespace Market.WebAPI
                 //        return Task.FromResult( 0 );
                 //    }
                 //};
-            } )
-                .AddEntityFrameworkStores<MarketDbContext>()
-                .AddDefaultTokenProviders();
+            } );
+               
 
             //swashbuckle hat services die in den DI Container rein müssen
             services.AddSwaggerGen( c =>
@@ -88,8 +90,11 @@ namespace Market.WebAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory )
         {
+            loggerFactory.AddConsole( Configuration.GetSection( "Logging" ) );
+            loggerFactory.AddDebug();
+
             int sslPort = 0;
             if ( env.IsDevelopment() )
             {
@@ -127,26 +132,26 @@ namespace Market.WebAPI
                 c.SwaggerEndpoint( "/swagger/v1/swagger.json", "market api v1" );
             } );
 
-            //var logger = loggerFactory.CreateLogger( "startup logger" );
-            //try
-            //{
-            //    //logger.LogInformation( "starting migration" );
+            var logger = loggerFactory.CreateLogger( "startup logger" );
+            try
+            {
+                logger.LogInformation( "starting migration" );
 
-            //    using ( var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope() )
-            //    {
-            //        var context = serviceScope.ServiceProvider.GetService<MarketDbContext>();
-            //        context.Database.Migrate();
-            //        if ( context.EnsureSeed() )
-            //        {
-            //            logger.LogError( "database seeded" );
-            //        }
-            //    }
-            //}
-            //catch ( System.Exception ex )
-            //{
-            //    logger.LogError( "migration or seeding failed {0}", ex );
-            //    throw;
-            //}
+                using ( var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope() )
+                {
+                    var context = serviceScope.ServiceProvider.GetService<MarketDbContext>();
+                    context.Database.Migrate();
+                    //if ( context.EnsureSeed() )
+                    //{
+                    //    logger.LogError( "database seeded" );
+                    //}
+                }
+            }
+            catch ( Exception ex )
+            {
+                logger.LogError( "migration or seeding failed {0}", ex );
+                throw;
+            }
         }
     }
 }

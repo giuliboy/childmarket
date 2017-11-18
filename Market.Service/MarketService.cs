@@ -1,18 +1,18 @@
-﻿using KinderArtikelBoerse.Contracts;
-using KinderArtikelBoerse.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System;
 using Microsoft.EntityFrameworkCore;
+using Market.Service.Contracts;
+using Market.Data;
 
-namespace KinderArtikelBoerse.Utils
+namespace Market.Service
 {
 
-    public class MarketDataService : IMarketService
+    public class MarketService : IMarketService
     {
         private readonly MarketDbContext _context;
 
-        public MarketDataService( DbContextOptions options )
+        public MarketService( DbContextOptions options )
         {
             
             _context = new MarketDbContext( options );
@@ -26,13 +26,13 @@ namespace KinderArtikelBoerse.Utils
 
         public Seller Add( Seller seller )
         {
-            return  _context.SellersDbSet.Add( seller ).Entity;
+            return  _context.Users.Add( seller ).Entity;
 
         }
 
         public Seller Remove( Seller seller )
         {
-            return _context.SellersDbSet.Remove( seller ).Entity; 
+            return _context.Users.Remove( seller ).Entity; 
         }
 
         public Item Add( Item data )
@@ -55,7 +55,7 @@ namespace KinderArtikelBoerse.Utils
         {
             get
             {
-                return _context.SellersDbSet
+                return _context.Users
                         .AsEnumerable();
             }
         }

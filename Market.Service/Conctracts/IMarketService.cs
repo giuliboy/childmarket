@@ -1,8 +1,8 @@
-﻿using KinderArtikelBoerse.Models;
+﻿using Market.Data;
 using System;
 using System.Collections.Generic;
 
-namespace KinderArtikelBoerse.Contracts
+namespace Market.Service.Contracts
 {
 
     public interface IMarketService : IDisposable

@@ -1,4 +1,5 @@
 ﻿using KinderArtikelBoerse.Contracts;
+using Market.Service.Contracts;
 using System.Collections.Generic;
 using System.Linq;
 

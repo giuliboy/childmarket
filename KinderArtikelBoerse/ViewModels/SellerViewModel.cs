@@ -1,9 +1,9 @@
-﻿using KinderArtikelBoerse.Models;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System;
 using KinderArtikelBoerse.Contracts;
+using Market.Data;
 
 namespace KinderArtikelBoerse.Viewmodels
 {

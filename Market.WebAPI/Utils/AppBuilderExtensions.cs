@@ -14,4 +14,5 @@ namespace Market.WebAPI.Utils
             return app.UseMiddleware<EnforceHttpsMiddleware>( sslPort );
         }
     }
+
 }

@@ -1,9 +1,10 @@
 ﻿using KinderArtikelBoerse.Contracts;
 using System;
-using KinderArtikelBoerse.Models;
+using Market.Data;
 using System.Data;
 using System.Linq;
 using System.Collections.Generic;
+using Market.Service.Contracts;
 
 namespace KinderArtikelBoerse.Utils
 {

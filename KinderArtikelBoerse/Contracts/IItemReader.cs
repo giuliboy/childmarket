@@ -1,4 +1,4 @@
-﻿using KinderArtikelBoerse.Models;
+﻿using Market.Data;
 using System.Collections.Generic;
 
 namespace KinderArtikelBoerse.Contracts

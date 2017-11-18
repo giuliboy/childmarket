@@ -1,6 +1,7 @@
 ﻿using KinderArtikelBoerse.Contracts;
-using KinderArtikelBoerse.Models;
 using KinderArtikelBoerse.Utils;
+using Market.Data;
+using Market.Service.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

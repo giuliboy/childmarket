@@ -1,7 +1,7 @@
 ﻿
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace KinderArtikelBoerse.Models
+namespace Market.Data
 {
     public class Item
     {

@@ -1,6 +1,5 @@
-﻿using KinderArtikelBoerse.Contracts;
-using KinderArtikelBoerse.Models;
-using KinderArtikelBoerse.Utils;
+﻿using KinderArtikelBoerse.Utils;
+using Market.Data;
 using System.Linq;
 using System.Windows.Input;
 

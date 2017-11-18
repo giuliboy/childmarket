@@ -1,5 +1,5 @@
 ﻿using KinderArtikelBoerse.Contracts;
-using KinderArtikelBoerse.Models;
+using Market.Data;
 using KinderArtikelBoerse.Utils;
 using Microsoft.Office.Interop.Excel;
 using System;
@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Excel = Microsoft.Office.Interop.Excel;
+using Market.Service.Contracts;
 
 /*
  * TODOS:

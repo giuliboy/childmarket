@@ -1,6 +1,6 @@
-﻿using KinderArtikelBoerse.Models;
-using KinderArtikelBoerse.Utils;
+﻿using KinderArtikelBoerse.Utils;
 using KinderArtikelBoerse.Viewmodels;
+using Market.Service;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Windows;
@@ -19,9 +19,9 @@ namespace KinderArtikelBoerse
             InitializeComponent();
 
             var optionsBuilder = new DbContextOptionsBuilder<MarketDbContext>();
-            optionsBuilder.UseInMemoryDatabase( "memory.db" );
-
-            var dataService = new MarketDataService( optionsBuilder.Options ); // new DemoMarketDataProvider();
+            //optionsBuilder.UseInMemoryDatabase( "memory.db" );
+            optionsBuilder.UseSqlServer( "Server=(localdb)\\mssqllocaldb;Database=MarketDatabase;Trusted_Connection=True;MultipleActiveResultSets=true" );
+            var dataService = new MarketService( optionsBuilder.Options ); // new DemoMarketDataProvider();
             
             //var dataService = new DemoMarketDataProvider();
             var itemsViewModelProvider = new ItemsViewModelProvider( dataService );
