@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Market.WebAPI.Controllers
 {
@@ -37,6 +36,33 @@ namespace Market.WebAPI.Controllers
             var userId = _userManager.GetUserId( User );
             return _service.Items.Where( o => o.Seller.Id == userId )
                 .ToViewModels();
+        }
+
+        [Route( "/[controller]" )]
+        [HttpGet]
+        [ProducesResponseType( typeof( IEnumerable<ItemViewModel> ), 200 )]
+        public IActionResult Items()
+        {
+            return View(GetItems());
+        }
+
+        [Route( "/api/[controller]/id" )]
+        [HttpGet]
+        [ProducesResponseType( typeof(ItemViewModel ), 200 )]
+        public ItemViewModel GetItem(string id)
+        {
+            var userId = _userManager.GetUserId( User );
+            return _service.Items.Where( o => o.Seller.Id == userId )
+                .FirstOrDefault(i => i.ItemIdentifier == id)
+                .ToViewModel();
+        }
+
+        [Route( "/[controller]/id" )]
+        [HttpGet]
+        [ProducesResponseType( typeof( ItemViewModel ), 200 )]
+        public IActionResult Item( string id )
+        {
+            return View( GetItem( id ) );
         }
 
         // POST api/orders

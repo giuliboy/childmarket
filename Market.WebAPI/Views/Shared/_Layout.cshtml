@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Main Page</title>
+    <link rel="stylesheet" href="/css/bootstrap.css" />
+    <link href="css/site.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row content">
+            @Html.Partial( "../Shared/_Header.cshtml" )
+        </div>
+        <div class="row">
+            @RenderBody()
+        </div>
+    </div>
+    @Html.Partial( "../Shared/_Footer.cshtml" )
+</body>
+
+
+</html>

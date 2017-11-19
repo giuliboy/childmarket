@@ -97,6 +97,23 @@ namespace Market.WebAPI.Controllers
 
         }
 
+        [Route( "/register" )]
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [Route( "/register" )]
+        [HttpPost]
+        [ProducesResponseType( typeof( UserViewModel ), 201 )]
+        [ProducesResponseType( typeof( BadRequestResult ), 400 )]
+        public async Task<IActionResult> RegisterPost( RegisterViewModel registration )
+        {
+            return await Register( registration );
+        }
+
         [Route( "/api/[controller]/login" )]
         [HttpPost]
         [ProducesResponseType( typeof( Microsoft.AspNetCore.Identity.SignInResult ), 201 )]

@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KinderArtikelBoerse", "Kind
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Market.Data", "Market.Data\Market.Data.csproj", "{80A67521-60D3-4CBB-A86D-D38D58870991}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Market.Service", "Market.Service\Market.Service.csproj", "{356245CA-0853-4FA1-BB97-0AD56E350FE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Market.Service", "Market.Service\Market.Service.csproj", "{356245CA-0853-4FA1-BB97-0AD56E350FE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Market.WebAPI", "Market.WebAPI\Market.WebAPI.csproj", "{2184C56D-D836-4E57-B909-BD3F30D847C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Market.WebAPI", "Market.WebAPI\Market.WebAPI.csproj", "{2184C56D-D836-4E57-B909-BD3F30D847C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,32 @@
+﻿h1 {
+   
+}
+
+ul {
+    list-style-type: none;
+}
+
+body {
+   
+}
+
+#list {
+    margin: 1em 0 7em -3em;
+    padding: 1em 0 0 0;
+    background-color: #ffffff;
+    color: #996600;
+    width: 25%;
+    float: left;
+}
+
+#header, #footer {
+    margin: 0;
+    padding: 0;
+    color: #996600;
+}
+
+.center {
+    margin: auto;
+    width: 60%;
+    padding: 10px;
+}

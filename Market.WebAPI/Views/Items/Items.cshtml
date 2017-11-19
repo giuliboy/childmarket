@@ -1,0 +1,11 @@
+﻿@model IEnumerable<Market.WebAPI.ViewModel.ItemViewModel>
+@{
+    ViewData["Title"] = "Items";
+    Layout = "_Layout";
+}
+
+
+@foreach ( var item in Model )
+{
+    @Html.Partial( "_Item", item )
+}

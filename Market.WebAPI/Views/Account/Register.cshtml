@@ -1,0 +1,32 @@
+﻿
+@model Market.WebAPI.ViewModel.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+    Layout = "_Layout";
+}
+
+@using ( Html.BeginForm( "registerPost", "Account", FormMethod.Post ) )
+{
+    @Html.ValidationSummary( true, "Registeration Failed, fields." );
+    <div class="center">
+        <fieldset>
+            <legend>Registriere dich als Verkäufer</legend>
+
+            <div class="editor-label">Vorname</div>
+            <div class="editor-field">@Html.TextBoxFor( u => u.FirstName )</div>
+
+            <div class="editor-label">Nachname</div>
+            <div class="editor-field">@Html.TextBoxFor( u => u.Name )</div>
+
+            <div class="editor-label">Email</div>
+            <div class="editor-field">@Html.TextBoxFor( u => u.Email )</div>
+
+            <div class="editor-label">Passwort</div>
+            <div class="editor-field">@Html.PasswordFor( u => u.Password )</div>
+            
+            <input type="submit" value="Registrieren" />
+        </fieldset>
+    </div>
+}
+
+  
