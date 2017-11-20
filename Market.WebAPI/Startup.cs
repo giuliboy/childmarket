@@ -38,6 +38,7 @@ namespace Market.WebAPI
 
             services.AddSingleton<IConfiguration>( Configuration );
             services.AddTransient( typeof( IMarketService ), typeof( MarketService ) );
+            services.AddTransient( typeof( Controllers.API.AccountController ) );
             //identity datenbank + restliches coffer zeug
             services.AddDbContext<MarketDbContext>( options =>
             {
