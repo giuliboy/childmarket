@@ -9,6 +9,7 @@ using Market.WebAPI.Controllers.API;
 
 namespace Market.WebAPI.Controllers
 {
+    [Route("[controller]")]
     public class AccountController : Controller
     {
         private API.AccountController _api;
