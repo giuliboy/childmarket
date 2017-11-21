@@ -12,10 +12,10 @@ namespace Market.WebAPI.Controllers
         {
             if ( !User.Identity.IsAuthenticated )
             {
-                return Redirect( "register" );
+                return Redirect( "user/login" );
             }
 
-            return View();
+            return Redirect("items");
         }
     }
 }

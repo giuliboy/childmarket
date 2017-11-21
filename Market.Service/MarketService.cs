@@ -65,9 +65,10 @@ namespace Market.Service
             get
             {
                 return _context.ItemsDbSet
-                    .Include(i => i.Seller)
+                    .Include( i => i.Seller )
                     .AsEnumerable();
             }
+           
         }
     }
 }

@@ -1,11 +1,29 @@
 ﻿
 @model Market.WebAPI.ViewModel.RegisterViewModel
 @{
-    ViewBag.Title = "Register";
+    ViewBag.Title = "Login";
     Layout = "_Layout";
 }
 
-@using ( Html.BeginForm( "register", "Account", FormMethod.Post ) )
+@using ( Html.BeginForm( null, null, FormMethod.Post , "user/login") )
+{
+    @Html.ValidationSummary( true, "Login failed, fields." );
+    <div class="center">
+        <fieldset>
+            <legend>Login</legend>
+
+            <div class="editor-label">Email</div>
+            <div class="editor-field">@Html.TextBoxFor( u => u.Email )</div>
+
+            <div class="editor-label">Passwort</div>
+            <div class="editor-field">@Html.PasswordFor( u => u.Password )</div>
+
+            <input type="submit" value="Anmelden" />
+        </fieldset>
+    </div>
+}
+
+@using ( Html.BeginForm( null, null, FormMethod.Post, "user/register" ) )
 {
     @Html.ValidationSummary( true, "Registeration Failed, fields." );
     <div class="center">

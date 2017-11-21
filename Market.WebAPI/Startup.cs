@@ -37,8 +37,7 @@ namespace Market.WebAPI
             services.AddMvc();
 
             services.AddSingleton<IConfiguration>( Configuration );
-            services.AddTransient( typeof( IMarketService ), typeof( MarketService ) );
-            services.AddTransient( typeof( Controllers.API.AccountController ) );
+            
             //identity datenbank + restliches coffer zeug
             services.AddDbContext<MarketDbContext>( options =>
             {
@@ -81,7 +80,10 @@ namespace Market.WebAPI
                 //    }
                 //};
             } );
-               
+
+            services.AddTransient( typeof( IMarketService ), typeof( MarketService ) );
+            services.AddTransient( typeof( Controllers.API.UserController ) );
+            services.AddTransient( typeof( Controllers.API.ItemsController ) );
 
             //swashbuckle hat services die in den DI Container rein müssen
             services.AddSwaggerGen( c =>

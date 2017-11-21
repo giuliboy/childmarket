@@ -7,14 +7,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Market.WebAPI.Controllers.API
 {
     [Route( "api/[controller]" )]
-    public class AccountController : Controller
+    public class UserController : Controller
     {
         //create user für die identity db
         private readonly UserManager<Seller> _userManager;
@@ -24,7 +23,7 @@ namespace Market.WebAPI.Controllers.API
         private readonly ILogger _logger;
         private readonly IMarketService _marketService;
 
-        public AccountController( UserManager<Seller> userManager, SignInManager<Seller> signInManager, IMarketService marketService, ILogger<AccountController> logger )
+        public UserController( UserManager<Seller> userManager, SignInManager<Seller> signInManager, IMarketService marketService, ILogger<UserController> logger )
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -37,17 +36,17 @@ namespace Market.WebAPI.Controllers.API
         /// gibt den eingeloggten <see cref="UserViewModel"/> zurück
         /// </summary>
         /// <returns></returns>
-        [Authorize]
-        [HttpGet()]
-        [ProducesResponseType( typeof( UserViewModel ), 200 )]
-        [ProducesResponseType( typeof( UnauthorizedResult ), 401 )]
-        public UserViewModel Get()
-        {
-            var userId = _userManager.GetUserId( User );
-            var user = _marketService.Sellers.FirstOrDefault( u => u.Id == userId );
+        //[Authorize]
+        //[HttpGet()]
+        //[ProducesResponseType( typeof( UserViewModel ), 200 )]
+        //[ProducesResponseType( typeof( UnauthorizedResult ), 401 )]
+        //public UserViewModel Get()
+        //{
+        //    var userId = _userManager.GetUserId( User );
+        //    var user = _marketService.Sellers.FirstOrDefault( u => u.Id == userId );
 
-            return user.ToViewModel();
-        }
+        //    return user.ToViewModel();
+        //}
 
         [Route( "/api/[controller]/register" )]
         [HttpPost]
@@ -93,12 +92,8 @@ namespace Market.WebAPI.Controllers.API
                 _logger.LogError( "Register failed {0}", ex );
                 return BadRequest( "error while registering" );
             }
-
-
         }
-
-       
-
+        
         [Route( "/api/[controller]/login" )]
         [HttpPost]
         [ProducesResponseType( typeof( Microsoft.AspNetCore.Identity.SignInResult ), 201 )]

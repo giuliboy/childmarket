@@ -18,7 +18,7 @@ namespace KinderArtikelBoerse.Utils
         {
             get
             {
-                if(_items == null )
+                if ( _items == null )
                 {
                     _items = new List<Item>()
                     {
@@ -35,13 +35,17 @@ namespace KinderArtikelBoerse.Utils
                         new Item() { ItemIdentifier="CD1", Description="jacke blau", Price=11f , Size="108",  Seller = Sellers.Skip(2).First(), },
                         new Item() { ItemIdentifier="CD2", Description="socken", Price=1f , Size="112",  Seller = Sellers.Skip(2).First(), },
                     }
-                        .ToList();
+                            .ToList();
 
                     _items.AddRange( Enumerable.Range( 0, 1000 ).Select( i => new Item() { ItemIdentifier = "GEN" + i, Description = i.ToString(), Price = i / 5, Seller = _sellers[i % 3] } ) );
                 }
 
                 return _items;
             }
+        }
+        public IEnumerable<Item> GetItemsByUserId(string userId)
+        {
+            return Items.Where(i => i.Seller.Id == userId);
         }
 
         private List<Seller> _sellers;
